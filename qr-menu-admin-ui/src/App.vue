@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import '@/css/app.scss';
-
 </script>
 
 <template>

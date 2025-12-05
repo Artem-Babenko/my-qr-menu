@@ -12,5 +12,6 @@ public static class UserMapper
         Email = src.Email,
         Surname = src.Surname,
         Phone = src.Phone,
+        NetworkId = src.NetworkId,
     };
 }
