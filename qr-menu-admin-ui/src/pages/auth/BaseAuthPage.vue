@@ -6,7 +6,8 @@ defineProps<{ pageTitle: string }>();
 
 <template>
   <div class="base-auth-page">
-    <app-text weight="600" size="xl">{{ pageTitle }}</app-text>
+    <app-text weight="600" size="xl">My QR-Menu</app-text>
+    <app-text weight="600" size="m">{{ pageTitle }}</app-text>
     <slot></slot>
   </div>
 </template>
@@ -19,6 +20,10 @@ defineProps<{ pageTitle: string }>();
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  .app-text {
+    margin-top: 40px;
+  }
 
   :deep(.app-button) {
     margin-top: 10px;

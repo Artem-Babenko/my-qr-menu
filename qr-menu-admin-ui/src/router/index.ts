@@ -23,6 +23,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
     component: AuthLayout,
+    meta: { authLayout: true },
     children: [
       {
         name: ROUTES.login,
@@ -73,6 +74,10 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !authStore.token) {
     return { name: ROUTES.login };
+  }
+
+  if (to.meta.authLayout && authStore.token) {
+    return { name: ROUTES.dashboard };
   }
 
   return true;

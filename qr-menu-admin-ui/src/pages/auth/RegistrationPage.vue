@@ -82,6 +82,7 @@ const registrate = async () => {
       v-model="model.password"
       label="Пароль"
       placeholder="Введіть пароль"
+      type="password"
     ></app-input>
     <app-button @click="registrate()">Зареєструватись</app-button>
     <router-link :to="{ name: ROUTES.login }">
