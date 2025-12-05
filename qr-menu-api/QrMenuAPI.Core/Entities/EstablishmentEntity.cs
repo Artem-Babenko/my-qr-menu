@@ -1,0 +1,13 @@
+﻿namespace QrMenuAPI.Core.Entities;
+
+public class EstablishmentEntity
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
+    public string Address { get; set; } = null!;
+
+    public int NetworkId { get; set; }
+    public NetworkEntity Network { get; set; } = null!;
+
+    public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
+}
