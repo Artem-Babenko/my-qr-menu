@@ -4,7 +4,6 @@ import { AppButton, AppInput, AppText } from '@/components/shared';
 import { ROUTES } from '@/router';
 import { useUserStore } from '@/store/user';
 import type { CreateEstablishmentReq } from '@/types/network';
-import { HttpStatusCode } from 'axios';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -27,7 +26,6 @@ const create = async () => {
 
   const req: CreateEstablishmentReq = { ...model };
   const resp = await networkApi.createEstablishment(req);
-  if (resp.status !== HttpStatusCode.Ok) return;
 
   userStore.user!.networkId = resp.data.networkId;
   router.replace({ name: ROUTES.dashboard });

@@ -6,7 +6,6 @@ import { ROUTES } from '@/router';
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 import type { LoginReq, RegistrationReq } from '@/types/auth';
-import { HttpStatusCode } from 'axios';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseAuthPage from './BaseAuthPage.vue';
@@ -38,16 +37,13 @@ const registrate = async () => {
   const regReq: RegistrationReq = {
     ...model,
   };
-
   const regResp = await authApi.reg(regReq);
-  if (regResp.status !== HttpStatusCode.Ok) return;
 
   const logingReq: LoginReq = {
     phone: regReq.phone,
     password: regReq.password,
   };
   const logingResp = await authApi.login(logingReq);
-  if (logingResp.status !== HttpStatusCode.Ok) return;
 
   authStore.setToken(logingResp.data.token);
   userStore.user = { ...regReq, id: regResp.data.userId, networkId: null };

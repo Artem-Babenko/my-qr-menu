@@ -5,7 +5,6 @@ import { AppText } from '@/components/shared';
 import { useNetworkStore } from '@/store/network';
 import { useUserStore } from '@/store/user';
 import type { Establishment } from '@/types/network';
-import { HttpStatusCode } from 'axios';
 import { ref, watchEffect } from 'vue';
 import PageButton from '../components/buttons/NavButton.vue';
 import EstablishmentSelect from './EstablishmentSelect.vue';
@@ -31,10 +30,6 @@ const selectedEstablishment = ref<Establishment | null>(null);
 
 const loadNetwork = async (networkId: number) => {
   const resp = await networkApi.getNetwork(networkId);
-  if (resp.status !== HttpStatusCode.Ok) {
-    // TODO: всюди прибрати ці перевірки статусу
-    throw new Error(resp.statusText);
-  }
   networkStore.network = resp.data;
   selectedEstablishment.value = resp.data.establishments[0]!;
 };

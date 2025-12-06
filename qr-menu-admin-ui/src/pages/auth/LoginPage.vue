@@ -5,7 +5,6 @@ import { PHONE_MASK } from '@/consts/masks';
 import { ROUTES } from '@/router';
 import { useAuthStore } from '@/store/auth';
 import type { LoginReq } from '@/types/auth';
-import { HttpStatusCode } from 'axios';
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import BaseAuthPage from './BaseAuthPage.vue';
@@ -21,7 +20,6 @@ const model = reactive({
 const login = async () => {
   const req: LoginReq = { ...model };
   const resp = await authApi.login(req);
-  if (resp.status !== HttpStatusCode.Ok) return;
   authStore.setToken(resp.data.token);
   router.replace({ name: ROUTES.dashboard });
 };

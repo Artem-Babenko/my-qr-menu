@@ -3,7 +3,6 @@ import { userApi } from '@/api/userApi';
 import { ROUTES } from '@/router';
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
-import { HttpStatusCode } from 'axios';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -14,9 +13,6 @@ const loaded = ref(false);
 
 const loadUser = async () => {
   const resp = await userApi.current();
-  if (resp.status !== HttpStatusCode.Ok) {
-    throw new Error(resp.statusText);
-  }
   return resp.data;
 };
 
