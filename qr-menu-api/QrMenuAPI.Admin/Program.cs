@@ -35,8 +35,14 @@ builder.Services
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+            LifetimeValidator = (nbf, exp, token, param) =>
+            {
+                if (exp == null) return false;
+                return DateTime.UtcNow < exp.Value;
+            },
         };
     });
 
@@ -44,7 +50,7 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
-app.MapControllers();
+app.UseRouting();
 
 app.UseCors(opt => opt
     .WithOrigins("http://localhost:5173")
@@ -52,12 +58,17 @@ app.UseCors(opt => opt
     .AllowAnyMethod()
     .AllowCredentials());
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseMiddleware<UserActivityMiddleware>();
+
+app.MapControllers();
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
-
-app.UseMiddleware<UserActivityMiddleware>();
 
 app.Run();

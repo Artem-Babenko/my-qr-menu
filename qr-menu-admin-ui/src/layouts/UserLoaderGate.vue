@@ -4,7 +4,7 @@ import { ROUTES } from '@/router';
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 import { HttpStatusCode } from 'axios';
-import { onBeforeMount, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
@@ -20,7 +20,7 @@ const loadUser = async () => {
   return resp.data;
 };
 
-onBeforeMount(async () => {
+onMounted(async () => {
   if (!authStore.authenticated) {
     await router.replace({ name: ROUTES.login });
     return;
