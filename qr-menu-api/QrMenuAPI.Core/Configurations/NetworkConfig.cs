@@ -18,6 +18,9 @@ internal class NetworkConfig : IEntityTypeConfiguration<NetworkEntity>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.HasIndex(n => n.Name)
+            .IsUnique();
+
         builder.Property(n => n.CreatedAt)
             .IsRequired()
             .HasColumnType("timestamp with time zone");

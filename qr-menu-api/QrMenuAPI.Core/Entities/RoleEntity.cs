@@ -9,5 +9,6 @@ public class RoleEntity
     public int NetworkId { get; set; }
     public NetworkEntity Network { get; set; } = null!;
 
+    public ICollection<RolePermissionEntity> Permissions { get; set; } = [];
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
 }

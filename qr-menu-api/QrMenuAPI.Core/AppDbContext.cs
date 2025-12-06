@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<EstablishmentEntity> Establishments { get; set; }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
-    public DbSet<PermissionEntity> Permissions { get; set; }
+    public DbSet<RolePermissionEntity> RolePermissions { get; set; }
     public DbSet<UserEstablishmentEntity> UserEstablishments { get; set; }
     public DbSet<UserSessionEntity> UserSessions { get; set; }
 
@@ -24,7 +24,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EstablishmentConfig());
         modelBuilder.ApplyConfiguration(new UserConfig());
         modelBuilder.ApplyConfiguration(new RoleConfig());
-        modelBuilder.ApplyConfiguration(new PermissionConfig());
+        modelBuilder.ApplyConfiguration(new RolePermissionConfig());
         modelBuilder.ApplyConfiguration(new UserEstablishmentConfig());
         modelBuilder.ApplyConfiguration(new UserSessionConfig());
         base.OnModelCreating(modelBuilder);

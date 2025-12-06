@@ -18,6 +18,13 @@ internal class EstablishmentConfig : IEntityTypeConfiguration<EstablishmentEntit
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.HasIndex(n => n.Name)
+            .IsUnique();
+
+        builder.Property(n => n.CreatedAt)
+            .IsRequired()
+            .HasColumnType("timestamp with time zone");
+
         builder.Property(e => e.Address)
             .IsRequired()
             .HasMaxLength(500);

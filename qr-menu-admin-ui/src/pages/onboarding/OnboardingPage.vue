@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { AppButton, AppText } from '@/components/shared';
+import { ROUTES } from '@/router';
 import { useUserStore } from '@/store/user';
 
 const userStore = useUserStore();
@@ -11,11 +12,13 @@ const userStore = useUserStore();
       Вітаємо, {{ userStore.user?.name }}!
     </app-text>
     <app-text class="description">
-      Ваш акаунт успішно створено. Наразі ви не додані до жодної мережі
-      закладів. Очікуйте, поки адміністратор вас додасть, або створіть власну
-      мережу.
+      Ваш акаунт успішно створено. Наразі ви не додані до жодного закладу
+      харчування. Очікуйте, поки адміністратор вас додасть, або створіть власний
+      заклад.
     </app-text>
-    <app-button>Створити мережу закладів</app-button>
+    <router-link :to="{ name: ROUTES.createEstablishment }">
+      <app-button>Створити заклад харчування</app-button>
+    </router-link>
   </div>
 </template>
 
@@ -29,7 +32,7 @@ const userStore = useUserStore();
   height: 100vh;
 }
 .app-text {
-  max-width: 400px;
+  max-width: 450px;
 }
 .description {
   line-height: 1.5;

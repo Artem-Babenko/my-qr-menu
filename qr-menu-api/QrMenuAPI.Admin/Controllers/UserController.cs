@@ -18,11 +18,9 @@ public class UserController : BaseApiController
     [HttpGet("")]
     public async Task<IActionResult> CurrentUser()
     {
-        var userIdClaim = User.FindFirst(AuthConsts.USER_ID_CLAIM);
-        if (string.IsNullOrEmpty(userIdClaim?.Value))
+        if (!TryGetUserId(out var userId))
             return Unauthorized();
 
-        var userId = int.Parse(userIdClaim.Value);
         var user = await db.Users.FindAsync(userId);
         if (user == null)
             return Unauthorized();

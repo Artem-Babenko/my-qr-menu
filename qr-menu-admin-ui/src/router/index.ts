@@ -4,7 +4,8 @@ import UserLoaderGate from '@/layouts/UserLoaderGate.vue';
 import LoginPage from '@/pages/auth/LoginPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import MainPage from '@/pages/MainPage.vue';
-import OnboardingPage from '@/pages/OnboardingPage.vue';
+import CreateEstablishmentPage from '@/pages/onboarding/CreateEstablishmentPage.vue';
+import OnboardingPage from '@/pages/onboarding/OnboardingPage.vue';
 import { useAuthStore } from '@/store/auth';
 import {
   createRouter,
@@ -16,6 +17,7 @@ export const ROUTES = {
   login: 'login',
   registration: 'registration',
   onboarding: 'onboarding',
+  createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
 };
 
@@ -49,9 +51,13 @@ const routes: RouteRecordRaw[] = [
         component: OnboardingPage,
       },
       {
+        name: ROUTES.createEstablishment,
+        path: ROUTES.createEstablishment,
+        component: CreateEstablishmentPage,
+      },
+      {
         path: '',
         component: MainLayout,
-        meta: { requiresAuth: true },
         children: [
           {
             path: ROUTES.dashboard,

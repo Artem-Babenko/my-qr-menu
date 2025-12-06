@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { networkApi } from '@/api/networkApi';
 import type { IconName } from '@/components/shared';
 import { AppText } from '@/components/shared';
-import type { Establishment } from '@/types/models';
-import { ref } from 'vue';
+import { useNetworkStore } from '@/store/network';
+import { useUserStore } from '@/store/user';
+import type { Establishment } from '@/types/network';
+import { HttpStatusCode } from 'axios';
+import { ref, watchEffect } from 'vue';
 import PageButton from '../components/buttons/NavButton.vue';
 import EstablishmentSelect from './EstablishmentSelect.vue';
 import NavUserInfo from './NavUserInfo.vue';
@@ -19,23 +23,35 @@ const pageButtons: PageButton[] = [
   { icon: 'Settings', name: 'Налаштування' },
 ];
 
-const establishments: Establishment[] = [
-  { id: 1, name: 'Смакота - Центер', address: 'вул. Цетральна 23' },
-  { id: 2, name: 'Смакота - Паркова', address: 'вул. Паркова 56' },
-  { id: 3, name: 'Смакота - Магістраль', address: 'вул. Заводська 14' },
-];
+const userStore = useUserStore();
+const networkStore = useNetworkStore();
 
 const selectedPage = ref<PageButton>(pageButtons[0]!);
-const selectedEstablishment = ref<Establishment>(establishments[0]!);
+const selectedEstablishment = ref<Establishment | null>(null);
+
+const loadNetwork = async (networkId: number) => {
+  const resp = await networkApi.getNetwork(networkId);
+  if (resp.status !== HttpStatusCode.Ok) {
+    // TODO: всюди прибрати ці перевірки статусу
+    throw new Error(resp.statusText);
+  }
+  networkStore.network = resp.data;
+  selectedEstablishment.value = resp.data.establishments[0]!;
+};
+
+watchEffect(() => {
+  const id = userStore.user?.networkId;
+  if (id) loadNetwork(id);
+});
 </script>
 
 <template>
-  <div class="main-layout">
+  <div v-if="networkStore.network" class="main-layout">
     <aside class="nav">
       <app-text size="l" weight="600" class="site-name">QR Menu</app-text>
       <establishment-select
         v-model="selectedEstablishment"
-        :establishments="establishments"
+        :establishments="networkStore.network.establishments"
       ></establishment-select>
       <div class="nav-buttons">
         <PageButton
