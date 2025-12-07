@@ -3,7 +3,8 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import UserLoaderGate from '@/layouts/UserLoaderGate.vue';
 import LoginPage from '@/pages/auth/LoginPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
-import MainPage from '@/pages/MainPage.vue';
+import DashboardPage from '@/pages/main/DashboardPage.vue';
+import UsersPage from '@/pages/main/UsersPage.vue';
 import CreateEstablishmentPage from '@/pages/onboarding/CreateEstablishmentPage.vue';
 import OnboardingPage from '@/pages/onboarding/OnboardingPage.vue';
 import { useAuthStore } from '@/store/auth';
@@ -19,6 +20,7 @@ export const ROUTES = {
   onboarding: 'onboarding',
   createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
+  users: 'users',
 };
 
 const routes: RouteRecordRaw[] = [
@@ -62,7 +64,12 @@ const routes: RouteRecordRaw[] = [
           {
             path: ROUTES.dashboard,
             name: ROUTES.dashboard,
-            component: MainPage,
+            component: DashboardPage,
+          },
+          {
+            path: ROUTES.users,
+            name: ROUTES.users,
+            component: UsersPage,
           },
         ],
       },

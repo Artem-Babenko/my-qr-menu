@@ -2,36 +2,41 @@
 import { networkApi } from '@/api/networkApi';
 import type { IconName } from '@/components/shared';
 import { AppText } from '@/components/shared';
+import { ROUTES } from '@/router';
 import { useNetworkStore } from '@/store/network';
 import { useUserStore } from '@/store/user';
-import type { Establishment } from '@/types/network';
-import { ref, watchEffect } from 'vue';
+import { watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 import PageButton from '../components/buttons/NavButton.vue';
-import EstablishmentSelect from './EstablishmentSelect.vue';
 import NavUserInfo from './NavUserInfo.vue';
 
-type PageButton = { icon: IconName; name: string };
+interface PageButton {
+  icon: IconName;
+  name: string;
+  routeName: string;
+}
 
 const pageButtons: PageButton[] = [
-  { icon: 'LayoutDashboard', name: 'Головна' },
-  { icon: 'UtensilsCrossed', name: 'Меню' },
-  { icon: 'ShoppingBag', name: 'Замовлення' },
-  { icon: 'BarChart3', name: 'Аналітика' },
-  { icon: 'Store', name: 'Заклади' },
-  { icon: 'Users', name: 'Користувачі' },
-  { icon: 'Settings', name: 'Налаштування' },
+  { icon: 'LayoutDashboard', name: 'Головна', routeName: ROUTES.dashboard },
+  { icon: 'UtensilsCrossed', name: 'Меню', routeName: '' },
+  { icon: 'ShoppingBag', name: 'Замовлення', routeName: '' },
+  { icon: 'BarChart3', name: 'Аналітика', routeName: '' },
+  { icon: 'Store', name: 'Заклади', routeName: '' },
+  { icon: 'Users', name: 'Користувачі', routeName: ROUTES.users },
+  { icon: 'Settings', name: 'Налаштування', routeName: '' },
 ];
 
 const userStore = useUserStore();
 const networkStore = useNetworkStore();
+const router = useRouter();
 
-const selectedPage = ref<PageButton>(pageButtons[0]!);
-const selectedEstablishment = ref<Establishment | null>(null);
+const goToPage = (routeName: string) => {
+  router.push({ name: routeName });
+};
 
 const loadNetwork = async (networkId: number) => {
   const resp = await networkApi.getNetwork(networkId);
   networkStore.network = resp.data;
-  selectedEstablishment.value = resp.data.establishments[0]!;
 };
 
 watchEffect(() => {
@@ -44,19 +49,15 @@ watchEffect(() => {
   <div v-if="networkStore.network" class="main-layout">
     <aside class="nav">
       <app-text size="l" weight="600" class="site-name">QR Menu</app-text>
-      <establishment-select
-        v-model="selectedEstablishment"
-        :establishments="networkStore.network.establishments"
-      ></establishment-select>
       <div class="nav-buttons">
-        <PageButton
+        <page-button
           v-for="btn in pageButtons"
           :key="btn.name"
           :label="btn.name"
           :icon="btn.icon"
-          :selected="selectedPage.name === btn.name"
-          @click="selectedPage = btn"
-        ></PageButton>
+          :selected="router.currentRoute.value.name === btn.routeName"
+          @click="goToPage(btn.routeName)"
+        ></page-button>
       </div>
       <nav-user-info></nav-user-info>
     </aside>
