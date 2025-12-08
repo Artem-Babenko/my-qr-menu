@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QrMenuAPI.APP.Mappings;
+using QrMenuAPI.Admin.Consts;
+using QrMenuAPI.Admin.Mappings;
 using QrMenuAPI.Core;
 
-namespace QrMenuAPI.APP.Controllers;
+namespace QrMenuAPI.Admin.Controllers;
 
 [Route("users")]
 public class UsersController(AppDbContext db) : BaseApiController
@@ -12,21 +13,21 @@ public class UsersController(AppDbContext db) : BaseApiController
     public async Task<IActionResult> CurrentUser()
     {
         if (!TryGetUserId(out var userId))
-            return Unauthorized();
+            return Unauthorized(ErrorCodes.UserNotFound);
 
         var user = await db.Users.FindAsync(userId);
         if (user == null)
-            return Unauthorized();
+            return Unauthorized(ErrorCodes.UserNotFound);
 
-        var model = UserMapper.MapToModel(user);
-        return Ok(model);
+        var model = user.MapToModel();
+        return Success(model);
     }
 
     [HttpGet("search")]
     public async Task<IActionResult> SearchUser([FromQuery] string query)
     {
         if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
-            return Ok(null);
+            return Success(null);
 
         var normalizedQuery = query.Trim();
 
@@ -34,6 +35,6 @@ public class UsersController(AppDbContext db) : BaseApiController
             user => user.Phone.Contains(normalizedQuery)
         );
 
-        return Ok(user != null ? UserMapper.MapToModel(user) : null);
+        return Success(user?.MapToModel());
     }
 }

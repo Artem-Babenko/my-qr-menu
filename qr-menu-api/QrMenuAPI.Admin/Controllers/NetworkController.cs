@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Network;
 using QrMenuAPI.Admin.Utils;
-using QrMenuAPI.APP.Controllers;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
 
@@ -12,25 +12,24 @@ namespace QrMenuAPI.Admin.Controllers;
 public class NetworkController(AppDbContext db) : BaseApiController
 {
     [HttpPost("establishment")]
-    public async Task<IActionResult> CreateEstablishment(
-        [FromBody] CreateEstablishmentRequest req)
+    public async Task<IActionResult> CreateEstablishment([FromBody] CreateEstablishmentRequest req)
     {
         if (!TryGetUserId(out var userId))
-            return Unauthorized();
+            return Unauthorized(ErrorCodes.UserNotFound);
 
         var user = await db.Users.FindAsync(userId);
         if (user == null)
-            return Unauthorized();
+            return NotFound(ErrorCodes.UserNotFound);
 
         if (await db.Establishments.AnyAsync(x => x.Name == req.Name))
-            return BadRequest("Заклад з такою назвою вже існує.");
+            return Conflict(ErrorCodes.DuplicateEstablishment);
 
         var network = await GetOrCreateNetwork(user, req.Name);
         var establishment = CreateEstablishment(req.Name, req.Address, network, userId);
 
         await db.SaveChangesAsync();
 
-        return Ok(new
+        return Success(new
         {
             NetworkId = network.Id,
             EstablishmentId = establishment.Id
@@ -89,16 +88,16 @@ public class NetworkController(AppDbContext db) : BaseApiController
     }
 
     [HttpGet("{networkId:int}")]
-    public async Task<IActionResult> GetNetwork(int networkId)
+    public async Task<IActionResult> GetNetwork([FromRoute] int networkId)
     {
         if (networkId <= 0)
-            return BadRequest();
+            return BadRequest(ErrorCodes.InvalidRequest);
 
         var network = await db.Networks
             .Include(x => x.Establishments)
             .FirstOrDefaultAsync(x => x.Id == networkId);
         if (network == null)
-            return BadRequest();
+            return NotFound(ErrorCodes.NetworkNotFound);
 
         var response = new NetworkResponse()
         {
@@ -112,6 +111,6 @@ public class NetworkController(AppDbContext db) : BaseApiController
             })
         };
 
-        return Ok(response);
+        return Success(response);
     }
 }
