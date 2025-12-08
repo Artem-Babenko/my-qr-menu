@@ -11,4 +11,5 @@ public class EstablishmentEntity
     public NetworkEntity Network { get; set; } = null!;
 
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
+    public ICollection<InvitationEntity> Invitations { get; set; } = [];
 }

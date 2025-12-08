@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { userApi } from '@/api/userApi';
+import { usersApi } from '@/api/usersApi';
 import { ROUTES } from '@/router';
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
@@ -12,7 +12,7 @@ const router = useRouter();
 const loaded = ref(false);
 
 const loadUser = async () => {
-  const resp = await userApi.current();
+  const resp = await usersApi.current();
   return resp.data;
 };
 

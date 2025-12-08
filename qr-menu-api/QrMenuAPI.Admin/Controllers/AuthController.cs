@@ -13,18 +13,11 @@ using System.Text;
 namespace QrMenuAPI.APP.Controllers;
 
 [Route("auth")]
-public class AuthController : BaseApiController
+public class AuthController(
+    AppDbContext db,
+    IConfiguration config) : BaseApiController
 {
-    readonly AppDbContext db;
-    readonly IConfiguration config;
-
     readonly TimeSpan LIFE_TIME = TimeSpan.FromHours(3);
-
-    public AuthController(AppDbContext db, IConfiguration config)
-    {
-        this.db = db;
-        this.config = config;
-    }
 
     [AllowAnonymous]
     [HttpPost("login")]

@@ -11,8 +11,6 @@ namespace QrMenuAPI.Admin.Controllers;
 [Route("network")]
 public class NetworkController(AppDbContext db) : BaseApiController
 {
-    readonly AppDbContext db = db;
-
     [HttpPost("establishment")]
     public async Task<IActionResult> CreateEstablishment(
         [FromBody] CreateEstablishmentRequest req)
