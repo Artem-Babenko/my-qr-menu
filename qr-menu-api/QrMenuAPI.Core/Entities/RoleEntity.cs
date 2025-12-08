@@ -11,4 +11,5 @@ public class RoleEntity
 
     public ICollection<RolePermissionEntity> Permissions { get; set; } = [];
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
+    public ICollection<InvitationEntity> Invitations { get; set; } = [];
 }

@@ -1,4 +1,4 @@
-﻿namespace QrMenuAPI.APP.Models.Auth;
+﻿namespace QrMenuAPI.Admin.Models.Auth;
 
 public class LoginRequest
 {

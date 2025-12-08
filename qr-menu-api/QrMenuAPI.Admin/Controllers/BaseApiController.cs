@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QrMenuAPI.Core.Consts;
+using QrMenuAPI.Admin.Consts;
+using QrMenuAPI.Admin.Models.Api;
 
-namespace QrMenuAPI.APP.Controllers;
+namespace QrMenuAPI.Admin.Controllers;
 
 [Authorize]
 [ApiController]
-public abstract class BaseApiController : Controller
+public abstract class BaseApiController : ControllerBase
 {
     public bool TryGetUserId(out int userId)
     {
@@ -18,4 +19,22 @@ public abstract class BaseApiController : Controller
 
         return int.TryParse(userIdClaim.Value, out userId);
     }
+
+    public IActionResult Success() =>
+        Ok(new ApiResponse());
+
+    public IActionResult Success(object? data) =>
+        Ok(new ApiResponse(data));
+
+    public IActionResult BadRequest(string errorCode, object? data = null) =>
+        BadRequest(new ApiResponse(errorCode, data));
+
+    public IActionResult NotFound(string errorCode, object? data = null) =>
+        NotFound(new ApiResponse(errorCode, data));
+
+    public IActionResult Unauthorized(string errorCode, object? data = null) =>
+        Unauthorized(new ApiResponse(errorCode, data));
+
+    public IActionResult Conflict(string errorCode, object? data = null) =>
+        Conflict(new ApiResponse(errorCode, data));
 }

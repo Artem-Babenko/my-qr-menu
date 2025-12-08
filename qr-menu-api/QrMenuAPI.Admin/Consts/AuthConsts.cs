@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 
-namespace QrMenuAPI.Core.Consts;
+namespace QrMenuAPI.Admin.Consts;
 
 public class AuthConsts
 {

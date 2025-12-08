@@ -13,6 +13,6 @@ public class UserEntity
     public NetworkEntity? Network { get; set; }
 
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
-
     public ICollection<UserSessionEntity> Sessions { get; set; } = [];
+    public ICollection<InvitationEntity> Invitations { get; set; } = [];
 }

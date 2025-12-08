@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { AppText } from '@/components/shared';
+import { AppSearchInput, AppText } from '@/components/shared';
+import { ref } from 'vue';
+
+const search = ref('');
 </script>
 
 <template>
@@ -9,6 +12,7 @@ import { AppText } from '@/components/shared';
       <app-text color="secondary">
         Управління ролями та правами доступу
       </app-text>
+      <app-search-input v-model="search"></app-search-input>
     </div>
     <div class="main"></div>
   </div>
