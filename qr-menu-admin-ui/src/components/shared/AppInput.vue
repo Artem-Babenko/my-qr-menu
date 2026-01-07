@@ -7,6 +7,7 @@ interface Props {
   placeholder?: string;
   type?: 'text' | 'password';
   mask?: string | RegExp | object;
+  errorMessage?: string | null;
 }
 
 defineProps<Props>();
@@ -37,6 +38,9 @@ const id = `input-${getRandomInt(111111, 999999)}`;
       color="secondary"
     >
       {{ label }}
+    </app-text>
+    <app-text class="error" size="xs" color="error">
+      {{ errorMessage }}
     </app-text>
   </div>
 </template>
@@ -86,5 +90,9 @@ const id = `input-${getRandomInt(111111, 999999)}`;
 }
 .app-input.has-value .label {
   color: #000;
+}
+.error {
+  height: 12px;
+  padding: 2px;
 }
 </style>

@@ -1,6 +1,8 @@
 import type { User } from '@/types/user';
-import { api } from './api';
+import { apiClient } from './api';
 
 export const usersApi = {
-  current: () => api.get<User>('/user/current'),
+  current: () => apiClient.get<User>('/users/current'),
+  search: (word: string) =>
+    apiClient.get<User[]>('/users/search', { params: { query: word } }),
 };
