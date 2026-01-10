@@ -47,7 +47,7 @@ const login = async () => {
   if (!validate()) return;
   const req: LoginReq = { ...model };
   const resp = await authApi.login(req);
-  authStore.setToken(resp.data.token);
+  authStore.setToken(resp.data!.token);
   router.replace({ name: ROUTES.dashboard });
 };
 </script>

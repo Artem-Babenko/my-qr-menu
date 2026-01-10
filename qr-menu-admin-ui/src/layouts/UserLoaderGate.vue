@@ -25,7 +25,7 @@ onMounted(async () => {
   userStore.user ??= await loadUser();
 
   if (
-    !userStore.user.networkId &&
+    !userStore.user!.networkId &&
     router.currentRoute.value.name !== ROUTES.onboarding
   ) {
     await router.replace({ name: ROUTES.onboarding });
