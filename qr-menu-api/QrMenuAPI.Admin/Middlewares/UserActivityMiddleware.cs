@@ -1,17 +1,10 @@
-﻿using QrMenuAPI.Core;
-using QrMenuAPI.Core.Consts;
+﻿using QrMenuAPI.Admin.Consts;
+using QrMenuAPI.Core;
 
-namespace QrMenuAPI.APP.Middlewares;
+namespace QrMenuAPI.Admin.Middlewares;
 
-public class UserActivityMiddleware
+public class UserActivityMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate next;
-
-    public UserActivityMiddleware(RequestDelegate next)
-    {
-        this.next = next;
-    }
-
     public async Task Invoke(HttpContext context, AppDbContext db)
     {
         var sessionId = context.User.FindFirst(AuthConsts.SESSION_ID_CLAIM)?.Value;

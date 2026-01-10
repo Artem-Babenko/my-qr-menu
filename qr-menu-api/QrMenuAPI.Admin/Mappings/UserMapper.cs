@@ -1,7 +1,7 @@
-﻿using QrMenuAPI.APP.Models.User;
+﻿using QrMenuAPI.Admin.Models.User;
 using QrMenuAPI.Core.Entities;
 
-namespace QrMenuAPI.APP.Mappings;
+namespace QrMenuAPI.Admin.Mappings;
 
 public static class UserMapper
 {

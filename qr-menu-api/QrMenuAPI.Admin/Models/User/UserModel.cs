@@ -1,4 +1,4 @@
-﻿namespace QrMenuAPI.APP.Models.User;
+﻿namespace QrMenuAPI.Admin.Models.User;
 
 public class UserModel
 {

@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 type TextSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl';
 type TextWeight = '400' | '500' | '600';
-type TextColor = 'primary' | 'secondary';
+type TextColor = 'primary' | 'secondary' | 'error';
 
 interface AppTextProps {
   size?: TextSize;
@@ -70,5 +70,8 @@ const classes = computed(() => [
 }
 .color-secondary {
   color: var(--secondary-text);
+}
+.color-error {
+  color: var(--error-text);
 }
 </style>

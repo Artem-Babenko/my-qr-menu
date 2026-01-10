@@ -3,10 +3,11 @@ import type {
   CreateEstablishmentResp,
   Network,
 } from '@/types/network';
-import { api } from './api';
+import { apiClient } from './api';
 
 export const networkApi = {
   createEstablishment: (req: CreateEstablishmentReq) =>
-    api.post<CreateEstablishmentResp>('/network/establishment', req),
-  getNetwork: (networkId: number) => api.get<Network>(`/network/${networkId}`),
+    apiClient.post<CreateEstablishmentResp>('/network/establishment', req),
+  getNetwork: (networkId: number) =>
+    apiClient.get<Network>(`/network/${networkId}`),
 };

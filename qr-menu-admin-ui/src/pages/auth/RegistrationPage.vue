@@ -45,8 +45,8 @@ const registrate = async () => {
   };
   const logingResp = await authApi.login(logingReq);
 
-  authStore.setToken(logingResp.data.token);
-  userStore.user = { ...regReq, id: regResp.data.userId, networkId: null };
+  authStore.setToken(logingResp.data!.token);
+  userStore.user = { ...regReq, id: regResp.data!.userId, networkId: null };
   router.replace({ name: ROUTES.dashboard });
 };
 </script>

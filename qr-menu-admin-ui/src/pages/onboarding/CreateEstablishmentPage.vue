@@ -27,7 +27,7 @@ const create = async () => {
   const req: CreateEstablishmentReq = { ...model };
   const resp = await networkApi.createEstablishment(req);
 
-  userStore.user!.networkId = resp.data.networkId;
+  userStore.user!.networkId = resp.data!.networkId;
   router.replace({ name: ROUTES.dashboard });
 };
 </script>
