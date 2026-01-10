@@ -10,6 +10,6 @@
 
 <style scoped>
   .dots-button {
-    padding: 6px 5px 3px;
+    padding: 5px;
   }
 </style>

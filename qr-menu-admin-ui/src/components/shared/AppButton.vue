@@ -1,9 +1,9 @@
 <script setup lang="ts">
-type ButtonTypes = 'filled' | 'outlined' | 'text';
+  type ButtonTypes = 'filled' | 'outlined' | 'text';
 
-withDefaults(defineProps<{ type?: ButtonTypes }>(), {
-  type: 'filled',
-});
+  withDefaults(defineProps<{ type?: ButtonTypes }>(), {
+    type: 'filled',
+  });
 </script>
 
 <template>
@@ -13,32 +13,36 @@ withDefaults(defineProps<{ type?: ButtonTypes }>(), {
 </template>
 
 <style scoped>
-.app-button {
-  border: 0;
-  outline: 0;
-  background-color: transparent;
-  font: var(--font-s);
-  padding: 10px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
-}
+  .app-button {
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    font: var(--font-s);
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 5px;
+  }
 
-.filled {
-  background-color: var(--primary);
-  color: var(--text-on-primary);
-}
-.filled:hover {
-  background-color: var(--hover-on-primary);
-}
+  .filled {
+    background-color: var(--primary);
+    color: var(--text-on-primary);
+  }
+  .filled:hover {
+    background-color: var(--hover-on-primary);
+  }
 
-.text {
-  background-color: var(--secondary);
-  color: var(--text-on-secondary);
-}
-.text:hover {
-  background-color: var(--hover-on-secondary);
-  color: var(--hover-text-on-secondary);
-}
+  .text {
+    background-color: var(--secondary);
+    color: var(--text-on-secondary);
+  }
+  .text:hover {
+    background-color: var(--hover-on-secondary);
+    color: var(--hover-text-on-secondary);
+  }
 </style>

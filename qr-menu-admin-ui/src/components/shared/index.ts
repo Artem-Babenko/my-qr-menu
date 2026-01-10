@@ -6,3 +6,6 @@ export { default as AppSearchInput } from './AppSearchInput.vue';
 export { default as AppSelect } from './AppSelect.vue';
 export { default as AppTabs } from './AppTabs.vue';
 export { default as AppText } from './AppText.vue';
+export { default as AppCard } from './AppCard.vue';
+export { default as AppFlex } from './AppFlex.vue';
+export { default as AppDropdown } from './AppDropdown.vue';

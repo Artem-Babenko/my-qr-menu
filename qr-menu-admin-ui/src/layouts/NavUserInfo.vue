@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import UserInitials from '@/components/other/UserInitials.vue';
+  import { UserInitials } from '@/components/other';
   import { AppText } from '@/components/shared';
 
   const user = {
@@ -28,7 +28,6 @@
     padding: 15px;
     border-top: 1px solid var(--border);
   }
-
   .info-inner {
     display: flex;
     flex-direction: column;

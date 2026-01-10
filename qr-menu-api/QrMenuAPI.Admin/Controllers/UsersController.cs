@@ -37,4 +37,15 @@ public class UsersController(AppDbContext db) : BaseApiController
 
         return Success(user?.MapToModel());
     }
+
+    [HttpGet("by-network/{networkId:int}")]
+    public async Task<IActionResult> GetByNetwork(int networkId)
+    {
+        var users = await db.Users
+            .Where(u => u.NetworkId == networkId)
+            .Select(u => u.MapToModel())
+            .ToListAsync();
+
+        return Success(users);
+    }
 }

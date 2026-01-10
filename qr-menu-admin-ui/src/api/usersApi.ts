@@ -5,4 +5,6 @@ export const usersApi = {
   current: () => apiClient.get<User>('/users/current'),
   search: (word: string) =>
     apiClient.get<User[]>('/users/search', { params: { query: word } }),
+  byNetwork: (networkId: number) =>
+    apiClient.get<User[]>(`/users/by-network/${networkId}`),
 };

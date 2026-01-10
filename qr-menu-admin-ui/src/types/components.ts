@@ -1,4 +1,6 @@
+export type AppTabId = number | string;
+
 export interface AppTab {
-  id: number | string;
+  id: AppTabId;
   title: string;
 }

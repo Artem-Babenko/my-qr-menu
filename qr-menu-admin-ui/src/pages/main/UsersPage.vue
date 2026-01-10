@@ -1,21 +1,23 @@
 <script lang="ts" setup>
-import { AppSearchInput, AppText } from '@/components/shared';
-import { ref } from 'vue';
+  import { UsersPageHeader } from '@/components/headers';
+  import { UserList, RoleList } from '@/components/lists';
+  import { UserPageTab } from '@/consts/tabs';
+  import { ref } from 'vue';
 
-const search = ref('');
+  const searchWord = ref('');
+  const selectedTab = ref(UserPageTab.users);
 </script>
 
 <template>
   <div class="page">
-    <div class="header">
-      <app-text size="xl" weight="600">Користувачі</app-text>
-      <app-text color="secondary">
-        Управління ролями та правами доступу
-      </app-text>
-      <app-search-input v-model="search"></app-search-input>
+    <users-page-header
+      v-model:search="searchWord"
+      v-model:selected-tab="selectedTab"
+    ></users-page-header>
+    <div class="main">
+      <user-list v-if="selectedTab === UserPageTab.users"></user-list>
+      <role-list v-else-if="selectedTab === UserPageTab.roles"></role-list>
+      <template v-else-if="selectedTab === UserPageTab.invites"></template>
     </div>
-    <div class="main"></div>
   </div>
 </template>
-
-<style scoped></style>

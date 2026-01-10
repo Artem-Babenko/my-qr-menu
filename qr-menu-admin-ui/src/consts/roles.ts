@@ -1,0 +1,16 @@
+export enum PermissionType {
+  menuView = 1,
+  menuEdit,
+  ordersView,
+  ordersEdit,
+  ordersChangeStatus,
+  analyticsView,
+  establishmentsView,
+  establishmentsEdit,
+  usersView,
+  usersEdit,
+  usersInvite,
+  usersRolesEdit,
+  settingsView,
+  settingsEdit,
+}
