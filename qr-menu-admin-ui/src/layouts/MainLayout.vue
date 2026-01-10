@@ -61,7 +61,7 @@ watchEffect(() => {
       </div>
       <nav-user-info></nav-user-info>
     </aside>
-    <main>
+    <main class="page-content">
       <router-view></router-view>
     </main>
   </div>
@@ -93,5 +93,9 @@ watchEffect(() => {
   flex-direction: column;
   gap: 5px;
   padding: 20px 10px;
+}
+.page-content {
+  width: 100%;
+  padding: 25px;
 }
 </style>

@@ -34,4 +34,22 @@ body {
   --font-m: 16px / 1 'Montserrat';
   --font-l: 18px / 1 'Montserrat';
   --font-xl: 20px / 1 'Montserrat';
+  --font-xxl: 25px / 1 'Montserrat';
+}
+
+.fade {
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-to,
+  &-leave-from {
+    opacity: 1;
+  }
 }

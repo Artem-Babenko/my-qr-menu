@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-type TextSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl';
+type TextSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 type TextWeight = '400' | '500' | '600';
 type TextColor = 'primary' | 'secondary' | 'error';
 
@@ -53,6 +53,9 @@ const classes = computed(() => [
 }
 .size-xl {
   font: var(--font-xl);
+}
+.size-xxl {
+  font: var(--font-xxl);
 }
 
 .weight-400 {
