@@ -1,98 +1,82 @@
 <script setup lang="ts">
-import { getRandomInt } from '@/utils/numbers';
-import AppText from './AppText.vue';
+  interface AppInputProps {
+    placeholder?: string;
+    type?: 'text' | 'password';
+    mask?: string | RegExp | object;
+    id?: string;
+  }
 
-interface Props {
-  label?: string;
-  placeholder?: string;
-  type?: 'text' | 'password';
-  mask?: string | RegExp | object;
-  errorMessage?: string | null;
-}
+  defineProps<AppInputProps>();
 
-defineProps<Props>();
-
-const model = defineModel<string | null>({
-  required: true,
-});
-
-const id = `input-${getRandomInt(111111, 999999)}`;
+  const model = defineModel<string | null>({
+    required: true,
+  });
 </script>
 
 <template>
-  <div class="app-input" :class="{ 'has-value': !!model }">
+  <div class="app-input">
+    <span v-if="$slots.before" class="slot before">
+      <slot name="before"></slot>
+    </span>
     <input
+      v-model="model"
       :id="id"
       :placeholder="placeholder"
-      v-model="model"
-      class="input"
       :type="type"
       v-maska="mask"
+      class="app-input-inner"
+      :class="{
+        'has-before': !!$slots.before,
+        'has-after': !!$slots.after,
+      }"
     />
-    <app-text
-      v-if="label"
-      el="label"
-      :for="id"
-      class="label"
-      size="xs"
-      color="secondary"
-    >
-      {{ label }}
-    </app-text>
-    <app-text class="error" size="xs" color="error">
-      {{ errorMessage }}
-    </app-text>
+    <span v-if="$slots.after" class="slot after">
+      <slot name="after"></slot>
+    </span>
   </div>
 </template>
 
-<style scoped lang="scss">
-.app-input {
-  position: relative;
-  margin-top: 10px;
-  width: 100%;
-}
-.label {
-  position: absolute;
-  top: -6px;
-  left: 6px;
-  background-color: #ffffff;
-  padding: 0 5px;
-  border-radius: 20px;
-  transition: all 0.2s ease-in-out;
-}
-.input {
-  padding: 10px 12px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  outline: 1px solid transparent;
-  font-size: 14px;
-  transition: all 0.2s ease-in-out;
-  width: calc(100% - 24px);
-}
-.input::placeholder {
-  font: var(--font-s);
-  color: #bbb;
-}
-.app-input:hover {
-  .label {
-    color: #000;
+<style scoped>
+  .app-input {
+    position: relative;
+    width: 100%;
+    display: flex;
   }
-  .input {
-    border-color: #000;
+  .app-input-inner {
+    padding: 0 12px;
+    height: 34px;
+    border-radius: 5px;
+    flex: 1;
+    border: 1px solid var(--border);
+    outline: 0;
+    transition: 0.2s ease;
   }
-}
-.input:focus {
-  border-color: #000;
-
-  + .label {
-    color: #000;
+  .app-input-inner::placeholder {
+    font: var(--font-s);
+    color: var(--secondary-text);
   }
-}
-.app-input.has-value .label {
-  color: #000;
-}
-.error {
-  height: 12px;
-  padding: 2px;
-}
+  .app-input-inner:hover,
+  .app-input-inner:focus {
+    border-color: var(--primary);
+  }
+  .slot {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+  }
+  .slot.before {
+    left: 10px;
+  }
+  .slot.after {
+    right: 10px;
+  }
+  .app-input-inner.has-before {
+    padding-left: 36px;
+  }
+  .app-input-inner.has-after {
+    padding-right: 36px;
+  }
 </style>

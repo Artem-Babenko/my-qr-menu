@@ -9,3 +9,4 @@ export { default as AppText } from './AppText.vue';
 export { default as AppCard } from './AppCard.vue';
 export { default as AppFlex } from './AppFlex.vue';
 export { default as AppDropdown } from './AppDropdown.vue';
+export { default as AppLabel } from './AppLabel.vue';

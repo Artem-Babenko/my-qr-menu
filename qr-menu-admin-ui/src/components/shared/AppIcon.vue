@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import * as icons from 'lucide-vue-next';
-import { computed } from 'vue';
+  import * as icons from 'lucide-vue-next';
+  import { computed } from 'vue';
 
-export type IconName = keyof typeof icons;
+  export type IconName = keyof typeof icons;
 
-interface AppIconProps {
-  name: IconName;
-  size?: number;
-  color?: string;
-  strokeWidth?: number;
-}
+  interface AppIconProps {
+    name: IconName;
+    size?: number;
+    color?: string;
+    strokeWidth?: number;
+  }
 
-const props = defineProps<AppIconProps>();
+  const props = defineProps<AppIconProps>();
 
-const icon = computed(() => icons[props.name] as any);
+  const icon = computed(() => icons[props.name] as any);
 </script>
 
 <template>
   <component
     :is="icon"
-    :size="size"
+    :size="size ?? 16"
     :color="color"
     :stroke-width="strokeWidth"
     class="app-icon"

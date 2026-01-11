@@ -18,7 +18,8 @@
     outline: 0;
     background-color: transparent;
     font: var(--font-s);
-    padding: 10px 12px;
+    font-weight: 600;
+    padding: 0 12px;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
@@ -26,7 +27,8 @@
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 5px;
+    height: 36px;
+    gap: 10px;
   }
 
   .filled {

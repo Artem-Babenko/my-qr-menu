@@ -1,36 +1,45 @@
 <script setup lang="ts">
-import { AppText } from '@/components/shared';
+  import { AppFlex, AppText } from '@/components/shared';
 
-defineProps<{ pageTitle: string }>();
+  defineProps<{ pageTitle: string }>();
 </script>
 
 <template>
-  <div class="base-auth-page">
-    <app-text weight="600" size="xl">My QR-Menu</app-text>
-    <app-text weight="600" size="m">{{ pageTitle }}</app-text>
-    <slot></slot>
-  </div>
+  <app-flex class="base-auth-page" direction="column">
+    <app-text weight="600" size="xl" class="site-name">My QR-Menu</app-text>
+    <app-flex class="container" direction="column">
+      <app-text class="page-title" weight="600" size="l">
+        {{ pageTitle }}
+      </app-text>
+      <slot></slot>
+    </app-flex>
+  </app-flex>
 </template>
 
 <style scoped lang="scss">
-.base-auth-page {
-  margin: 60px auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  .base-auth-page {
+    justify-content: center;
 
-  .app-text {
-    margin-top: 40px;
-  }
+    .site-name {
+      margin: 80px 0 40px;
+    }
 
-  :deep(.app-button) {
-    margin-top: 10px;
-    min-width: 100px;
+    .container {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+
+      .page-title {
+        margin-bottom: 20px;
+      }
+
+      :deep(.app-input) {
+        width: 300px;
+        margin-bottom: 15px;
+      }
+      :deep(.app-button) {
+        margin-top: 10px;
+      }
+    }
   }
-  :deep(.app-input) {
-    width: 250px;
-  }
-}
 </style>

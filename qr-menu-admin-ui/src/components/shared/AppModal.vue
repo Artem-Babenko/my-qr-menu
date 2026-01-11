@@ -1,9 +1,20 @@
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { AppButton, AppIcon, AppText } from '.';
 
-  defineProps<{ title: string }>();
+  const props = defineProps<{
+    title: string;
+    width?: number;
+  }>();
 
   const showed = defineModel<boolean>('showed', { required: true });
+
+  const modalStyle = computed(() => {
+    if (!props.width) return {};
+    return {
+      width: `${props.width}px`,
+    };
+  });
 
   function close() {
     showed.value = false;
@@ -13,10 +24,10 @@
 <template>
   <teleport to="body">
     <transition name="fade" appear>
-      <div v-if="showed" class="background" @click.self="close">
-        <div class="modal">
+      <div v-if="showed" class="background" @mousedown.self="close">
+        <div class="modal" :style="modalStyle">
           <div class="header">
-            <app-text size="m" weight="600">{{ title }}</app-text>
+            <app-text size="l" weight="600">{{ title }}</app-text>
             <app-button class="close-btn" type="text" @click="close">
               <app-icon name="X" :size="16"></app-icon>
             </app-button>
@@ -55,9 +66,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 15px;
+    padding-bottom: 5px;
   }
   .close-btn {
-    padding: 5px 5px 3px;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    justify-content: center;
   }
 </style>

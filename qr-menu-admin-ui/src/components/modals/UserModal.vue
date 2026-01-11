@@ -14,9 +14,9 @@
 <template>
   <app-modal v-model:showed="showed" title="Запрошення користувача">
     <div class="form">
-      <app-input v-model="user.name" label="Ім'я"></app-input>
-      <app-input v-model="user.surname" label="Прізвище"></app-input>
-      <app-input v-model="user.email" label="Пошта"></app-input>
+      <app-input v-model="user.name"></app-input>
+      <app-input v-model="user.surname"></app-input>
+      <app-input v-model="user.email"></app-input>
       <div class="buttons">
         <app-button type="text" @click="close">Скасувати</app-button>
         <app-button>Зберегти</app-button>
