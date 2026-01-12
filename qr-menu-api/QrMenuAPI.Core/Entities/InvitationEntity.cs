@@ -6,9 +6,9 @@ public class InvitationEntity
 {
     public Guid Id { get; set; }
 
-    public string? Phone { get; set; } = null!;
-    public string? Name { get; set; } = null!;
-    public string? Surname { get; set; } = null!;
+    public string? Phone { get; set; }
+    public string? Name { get; set; }
+    public string? Surname { get; set; }
 
     public int? TargetUserId { get; set; }
     public UserEntity? TargetUser { get; set; }

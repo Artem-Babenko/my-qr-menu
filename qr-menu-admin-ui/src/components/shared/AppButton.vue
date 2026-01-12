@@ -1,13 +1,18 @@
 <script setup lang="ts">
-  type ButtonTypes = 'filled' | 'outlined' | 'text';
+  type ButtonTypes = 'filled' | 'outline' | 'text';
 
-  withDefaults(defineProps<{ type?: ButtonTypes }>(), {
+  interface AppButtonProps {
+    type?: ButtonTypes;
+    disabled?: boolean;
+  }
+
+  withDefaults(defineProps<AppButtonProps>(), {
     type: 'filled',
   });
 </script>
 
 <template>
-  <button class="app-button" :class="type">
+  <button class="app-button" :class="[type, { disabled }]" :disabled="disabled">
     <slot></slot>
   </button>
 </template>
@@ -21,7 +26,6 @@
     font-weight: 600;
     padding: 0 12px;
     border-radius: 6px;
-    cursor: pointer;
     position: relative;
     transition: all 0.2s ease;
     display: flex;
@@ -31,20 +35,34 @@
     gap: 10px;
   }
 
+  .app-button:hover:not(.disabled) {
+    cursor: pointer;
+  }
+
   .filled {
     background-color: var(--primary);
     color: var(--text-on-primary);
   }
-  .filled:hover {
+  .filled:hover:not(.disabled) {
     background-color: var(--hover-on-primary);
   }
 
+  .outline,
   .text {
     background-color: var(--secondary);
     color: var(--text-on-secondary);
   }
-  .text:hover {
+  .outline:hover:not(.disabled),
+  .text:hover:not(.disabled) {
     background-color: var(--hover-on-secondary);
     color: var(--hover-text-on-secondary);
+  }
+
+  .outline {
+    border: 1px solid var(--border);
+  }
+
+  .disabled {
+    opacity: 0.6;
   }
 </style>

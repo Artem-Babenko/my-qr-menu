@@ -3,7 +3,7 @@
 
   type TextSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
   type TextWeight = '400' | '500' | '600';
-  type TextColor = 'primary' | 'secondary' | 'error';
+  type TextColor = 'primary' | 'secondary' | 'accent' | 'error';
   type LineHeight = 's' | 'm';
 
   interface AppTextProps {
@@ -84,6 +84,9 @@
   }
   .color-secondary {
     color: var(--secondary-text);
+  }
+  .color-accent {
+    color: var(--text-on-accent);
   }
   .color-error {
     color: var(--error-text);

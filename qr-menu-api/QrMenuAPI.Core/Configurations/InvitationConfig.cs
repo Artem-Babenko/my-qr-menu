@@ -13,8 +13,7 @@ internal class InvitationConfig : IEntityTypeConfiguration<InvitationEntity>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Phone)
-            .HasMaxLength(32)
-            .IsRequired();
+            .HasMaxLength(32);
 
         builder.Property(x => x.Name)
             .HasMaxLength(128);

@@ -9,6 +9,8 @@
   import { useRouter } from 'vue-router';
   import { NavButton } from '@/components/buttons';
   import NavUserInfo from './NavUserInfo.vue';
+  import { useRolesStore } from '@/store/roles';
+  import { rolesApi } from '@/api/rolesApi';
 
   interface PageButton {
     icon: IconName;
@@ -28,25 +30,30 @@
 
   const userStore = useUserStore();
   const networkStore = useNetworkStore();
+  const rolesStore = useRolesStore();
   const router = useRouter();
 
   const goToPage = (routeName: string) => {
     router.push({ name: routeName });
   };
 
-  const loadNetwork = async (networkId: number) => {
-    const resp = await networkApi.getNetwork(networkId);
-    networkStore.network = resp.data;
+  const loadNetworkData = async (networkId: number) => {
+    const promises = await Promise.all([
+      networkApi.getNetwork(networkId),
+      rolesApi.all(networkId),
+    ]);
+    networkStore.network = promises[0].data;
+    rolesStore.roles = promises[1].data;
   };
 
   watchEffect(() => {
     const id = userStore.user?.networkId;
-    if (id) loadNetwork(id);
+    if (id) loadNetworkData(id);
   });
 </script>
 
 <template>
-  <div v-if="networkStore.network" class="main-layout">
+  <div class="main-layout">
     <aside class="nav">
       <app-text size="l" weight="600" class="site-name">QR Menu</app-text>
       <div class="nav-buttons">

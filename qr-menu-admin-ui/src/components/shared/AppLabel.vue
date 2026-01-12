@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { AppText } from '.';
 
-  defineProps<{ label: string; for: string }>();
+  defineProps<{ label: string; for?: string }>();
 </script>
 
 <template>

@@ -14,7 +14,7 @@
   });
   const search = defineModel<string>('search', { required: true });
 
-  const emit = defineEmits<{ buttonClick: [] }>();
+  const emit = defineEmits<{ addButtonClick: [] }>();
 
   const tabs: AppTab[] = [
     { id: UserPageTab.users, title: 'Користувачі' },
@@ -49,7 +49,7 @@
         v-model="search"
         :placeholder="placeholders[selectedTab]"
       ></app-search-input>
-      <app-button @click="emit('buttonClick')">
+      <app-button @click="emit('addButtonClick')">
         <app-icon name="Plus" :size="15"></app-icon>
         {{ buttonTitles[selectedTab] }}
       </app-button>

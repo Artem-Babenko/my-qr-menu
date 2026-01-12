@@ -4,6 +4,7 @@
     type?: 'text' | 'password';
     mask?: string | RegExp | object;
     id?: string;
+    disabled?: boolean;
   }
 
   defineProps<AppInputProps>();
@@ -23,11 +24,13 @@
       :id="id"
       :placeholder="placeholder"
       :type="type"
+      :disabled="disabled"
       v-maska="mask"
       class="app-input-inner"
       :class="{
         'has-before': !!$slots.before,
         'has-after': !!$slots.after,
+        disabled: disabled,
       }"
     />
     <span v-if="$slots.after" class="slot after">
@@ -55,7 +58,7 @@
     font: var(--font-s);
     color: var(--secondary-text);
   }
-  .app-input-inner:hover,
+  .app-input-inner:hover:not(.disabled),
   .app-input-inner:focus {
     border-color: var(--primary);
   }
@@ -78,5 +81,8 @@
   }
   .app-input-inner.has-after {
     padding-right: 36px;
+  }
+  .app-input-inner.disabled {
+    opacity: 0.7;
   }
 </style>

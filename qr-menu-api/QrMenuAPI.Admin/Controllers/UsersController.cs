@@ -24,12 +24,12 @@ public class UsersController(AppDbContext db) : BaseApiController
     }
 
     [HttpGet("search")]
-    public async Task<IActionResult> SearchUser([FromQuery] string query)
+    public async Task<IActionResult> SearchUser([FromQuery] string phone)
     {
-        if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+        if (string.IsNullOrWhiteSpace(phone) || phone.Length < 2)
             return Success(null);
 
-        var normalizedQuery = query.Trim();
+        var normalizedQuery = phone.Trim();
 
         var user = await db.Users.FirstOrDefaultAsync(
             user => user.Phone.Contains(normalizedQuery)

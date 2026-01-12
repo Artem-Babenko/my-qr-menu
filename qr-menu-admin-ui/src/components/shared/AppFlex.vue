@@ -20,7 +20,7 @@
     align?: AlignOptions;
     justify?: JustifyOptions;
     direction?: DirectionOptions;
-    gap?: number;
+    gap?: number | string;
   }>();
 
   const style = computed(() => ({
