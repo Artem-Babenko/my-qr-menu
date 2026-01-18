@@ -9,6 +9,7 @@ public class InvitationModel
     public string? Name { get; set; } = null!;
     public string? Surname { get; set; } = null!;
     public int RoleId { get; set; }
+    public int EstablishmentId { get; set; }
     public InvitationStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ExpiredAt { get; set; }

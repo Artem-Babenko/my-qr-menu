@@ -18,6 +18,7 @@ public static class InvitationMapper
             Phone = src.Phone,
             Name = src.Name,
             Surname = src.Surname,
+            EstablishmentId = src.EstablishmentId,
         };
 
         if (src.TargetUser != null)

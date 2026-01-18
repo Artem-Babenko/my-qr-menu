@@ -49,15 +49,15 @@ public class InvitationsController(
         return Success(new { InvitationId = invitation.Id });
     }
 
-    [HttpGet("by-establishment/{establishmentId:int}")]
-    public async Task<IActionResult> GetByEstablishment([FromRoute] int establishmentId)
+    [HttpGet("by-network/{networkId:int}")]
+    public async Task<IActionResult> GetByNetwork([FromRoute] int networkId)
     {
-        if (establishmentId <= 0)
+        if (networkId <= 0)
             return BadRequest(ErrorCodes.InvalidRequest);
 
         var invitations = await db.Invitations
             .Include(inv => inv.TargetUser)
-            .Where(inv => inv.EstablishmentId == establishmentId)
+            .Where(inv => inv.Establishment.NetworkId == networkId)
             .ToListAsync();
 
         var models = invitations
