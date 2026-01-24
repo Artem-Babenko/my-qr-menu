@@ -1,6 +1,10 @@
 <script lang="ts" setup>
   import { UsersPageHeader } from '@/components/headers';
-  import { UserList, RoleList, InvitationList } from '@/components/lists';
+  import {
+    UserList,
+    RoleList,
+    NetworkInvitationList,
+  } from '@/components/lists';
   import { InvitationModal } from '@/components/modals';
   import { UserPageTab } from '@/consts/tabs';
   import { reactive, ref } from 'vue';
@@ -29,9 +33,9 @@
     <div class="main">
       <user-list v-if="selectedTab === UserPageTab.users"></user-list>
       <role-list v-else-if="selectedTab === UserPageTab.roles"></role-list>
-      <invitation-list
+      <network-invitation-list
         v-else-if="selectedTab === UserPageTab.invites"
-      ></invitation-list>
+      ></network-invitation-list>
     </div>
 
     <invitation-modal

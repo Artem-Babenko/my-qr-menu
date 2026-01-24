@@ -3,6 +3,7 @@ import type {
   InvitationForExisting,
   InvitationForNew,
   InvitationResp,
+  UserInvitation,
 } from '@/types/invitations';
 import { apiClient } from './api';
 
@@ -13,4 +14,6 @@ export const invitationApi = {
     apiClient.post<InvitationResp>('/invitations/for-new-user', payload),
   getByNetwork: (networkId: number) =>
     apiClient.get<Invitation[]>(`/invitations/by-network/${networkId}`),
+  getByCurrentUser: () =>
+    apiClient.get<UserInvitation[]>('/invitations/by-current-user'),
 };

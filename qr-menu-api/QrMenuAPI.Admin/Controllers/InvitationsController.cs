@@ -94,6 +94,8 @@ public class InvitationsController(
             return NotFound(ErrorCodes.UserNotFound);
 
         var invitations = await db.Invitations
+            .Include(inv => inv.Role)
+            .Include(inv => inv.Establishment)
             .Where(inv =>
                 (inv.TargetUserId == userId) ||
                 (inv.Phone == user.Phone)
@@ -101,7 +103,7 @@ public class InvitationsController(
             .ToListAsync();
 
         var models = invitations
-            .Select(InvitationMapper.MapToModel)
+            .Select(InvitationMapper.MapToUserModel)
             .ToList();
 
         return Success(models);

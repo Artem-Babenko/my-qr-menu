@@ -31,6 +31,24 @@ public static class InvitationMapper
         return model;
     }
 
+    public static UserInvatationModel MapToUserModel(this InvitationEntity src)
+    {
+        var model = new UserInvatationModel()
+        {
+            Id = src.Id,
+            CreatedAt = src.CreatedAt,
+            ExpiredAt = src.ExpiredAt,
+            Status = src.Status,
+            EstablishmentId = src.EstablishmentId,
+            EstablishmentAddress = src.Establishment.Address,
+            EstablishmentName = src.Establishment.Name,
+            NetworkId = src.Establishment.NetworkId,
+            RoleId = src.RoleId,
+            RoleName = src.Role.Name,
+        };
+        return model;
+    }
+
     public static InvitationEntity MapToEntity(this InvitationRequest req) => new()
     {
         EstablishmentId = req.EstablishmentId,

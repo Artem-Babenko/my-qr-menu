@@ -4,6 +4,7 @@
   import { computed } from 'vue';
   import { useRolesStore } from '@/store/roles';
   import { useNetworkStore } from '@/store/network';
+  import { expiresAt } from '@/utils/dates';
 
   const props = defineProps<{ invitation: Invitation }>();
 
@@ -27,20 +28,7 @@
     return new Date(props.invitation.createdAt).toLocaleDateString();
   });
 
-  const expiresIn = computed(() => {
-    const now = new Date();
-    const expiredAt = new Date(props.invitation.expiredAt);
-
-    const diffMs = expiredAt.getTime() - now.getTime();
-    if (diffMs <= 0) return 'Запрошення прострочене';
-
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const days = Math.floor(diffHours / 24);
-    const hours = diffHours % 24;
-
-    if (days > 0) return `Діє ще ${days} дн.`;
-    return `Діє ще ${hours} год.`;
-  });
+  const expiresIn = computed(() => expiresAt(props.invitation.expiredAt));
 </script>
 
 <template>
