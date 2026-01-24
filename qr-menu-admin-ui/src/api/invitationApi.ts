@@ -16,4 +16,6 @@ export const invitationApi = {
     apiClient.get<Invitation[]>(`/invitations/by-network/${networkId}`),
   getByCurrentUser: () =>
     apiClient.get<UserInvitation[]>('/invitations/by-current-user'),
+  delete: (invitationId: string) =>
+    apiClient.delete(`/invitations/${invitationId}`),
 };

@@ -7,6 +7,7 @@
   import { expiresAt } from '@/utils/dates';
 
   const props = defineProps<{ invitation: Invitation }>();
+  const emit = defineEmits<{ delete: [] }>();
 
   const roleStore = useRolesStore();
   const networkStore = useNetworkStore();
@@ -76,6 +77,7 @@
         name="Trash"
         :size="16"
         color="var(--secondary-text)"
+        @click="emit('delete')"
       ></app-icon>
     </app-flex>
   </app-card>
