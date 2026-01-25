@@ -18,4 +18,10 @@ export const invitationApi = {
     apiClient.get<UserInvitation[]>('/invitations/by-current-user'),
   delete: (invitationId: string) =>
     apiClient.delete(`/invitations/${invitationId}`),
+  cancel: (invitationId: string) =>
+    apiClient.put(`/invitations/${invitationId}/cancel`),
+  acceptByCurrentUser: (invitationId: string) =>
+    apiClient.post<{ networkId: number }>(
+      `/invitations/${invitationId}/accept`,
+    ),
 };

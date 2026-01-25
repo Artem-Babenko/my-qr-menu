@@ -1,24 +1,10 @@
 <script lang="ts" setup>
-  import { invitationApi } from '@/api/invitationApi';
-  import { NoInvitationsCard } from '@/components/cards';
   import { UserInvitationList } from '@/components/lists';
   import { AppButton, AppText } from '@/components/shared';
-  import { useLoader } from '@/composables';
   import { ROUTES } from '@/router';
   import { useUserStore } from '@/store/user';
-  import { toRef } from 'vue';
 
   const userStore = useUserStore();
-  const userId = toRef(() => userStore.user?.id);
-
-  const { data: invations } = useLoader({
-    keys: ['userInvatations', userId],
-    fn: async () => {
-      const resp = await invitationApi.getByCurrentUser();
-      return resp.data;
-    },
-    enabled: () => !!userId.value,
-  });
 </script>
 
 <template>
@@ -34,11 +20,7 @@
     <router-link :to="{ name: ROUTES.createEstablishment }">
       <app-button>Створити заклад харчування</app-button>
     </router-link>
-    <no-invitations-card v-if="!invations?.length"></no-invitations-card>
-    <user-invitation-list
-      v-else
-      :invitations="invations"
-    ></user-invitation-list>
+    <user-invitation-list></user-invitation-list>
   </div>
 </template>
 
