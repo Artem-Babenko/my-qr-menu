@@ -35,11 +35,8 @@
       <role-list v-else-if="selectedTab === UserPageTab.roles"></role-list>
       <network-invitation-list
         v-else-if="selectedTab === UserPageTab.invites"
+        v-model:modal-showed="modalShowed.invitation"
       ></network-invitation-list>
     </div>
-
-    <invitation-modal
-      v-model:showed="modalShowed.invitation"
-    ></invitation-modal>
   </div>
 </template>

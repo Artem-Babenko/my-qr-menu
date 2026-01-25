@@ -5,11 +5,13 @@
   import { toRef } from 'vue';
   import { invitationApi } from '@/api/invitationApi';
   import { InvitationCard } from '../cards';
+  import { InvitationModal } from '../modals';
 
+  const modalShowed = defineModel<boolean>('modalShowed', { required: true });
   const networkStore = useNetworkStore();
   const networkId = toRef(() => networkStore.network?.id);
 
-  const { data: invitations } = useLoader({
+  const { data: invitations, refetch } = useLoader({
     keys: ['invations', networkId],
     fn: async () => {
       if (!networkId.value) return;
@@ -36,5 +38,10 @@
       :invitation="inv"
       @delete="deleteInvitation(inv.id)"
     ></invitation-card>
+
+    <invitation-modal
+      v-model:showed="modalShowed"
+      @save="refetch()"
+    ></invitation-modal>
   </base-card-list>
 </template>
