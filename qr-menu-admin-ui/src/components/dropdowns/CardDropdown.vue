@@ -1,19 +1,31 @@
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { DotsButton } from '../buttons';
-  import { AppButton, AppDropdown, AppIcon, type IconName } from '../shared';
+  import { AppButton, AppDropdown, AppIcon } from '../shared';
+  import type { ActionButton } from './types';
+
+  const props = withDefaults(defineProps<{ buttons?: ActionButton[] }>(), {
+    buttons: () => [],
+  });
 
   const emit = defineEmits<{ edit: []; delete: [] }>();
 
-  interface ActionButton {
-    icon: IconName;
-    title: string;
-    click: () => void;
-  }
-
-  const buttons: ActionButton[] = [
+  const defaultButtons: ActionButton[] = [
     { icon: 'Pencil', title: 'Редагувати', click: () => emit('edit') },
     { icon: 'Trash', title: 'Видалити', click: () => emit('delete') },
   ];
+
+  const buttons = computed(() => {
+    return props.buttons.length > 0 ? props.buttons : defaultButtons;
+  });
+
+  const isButtonDisabled = (button: ActionButton): boolean => {
+    if (button.disabled === undefined) return false;
+    if (typeof button.disabled === 'function') {
+      return button.disabled();
+    }
+    return button.disabled;
+  };
 </script>
 
 <template>
@@ -27,7 +39,8 @@
           type="text"
           v-for="btn in buttons"
           :key="btn.title"
-          @click="btn.click"
+          :disabled="isButtonDisabled(btn)"
+          @click="!isButtonDisabled(btn) && btn.click()"
         >
           <app-icon :name="btn.icon" :size="14"></app-icon>
           {{ btn.title }}

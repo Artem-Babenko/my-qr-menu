@@ -7,4 +7,5 @@ export const rolesApi = {
     apiClient.post<RoleView>('/roles/create', payload),
   update: (roleId: number, payload: RoleRequest) =>
     apiClient.put<RoleView>(`/roles/${roleId}`, payload),
+  delete: (roleId: number) => apiClient.delete<void>(`/roles/${roleId}`),
 };

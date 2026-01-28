@@ -20,5 +20,13 @@ export const useRolesStore = defineStore('roles', () => {
     }
   };
 
-  return { roles, addRole, updateRole };
+  const deleteRole = (role: RoleView) => {
+    if (!roles.value) return;
+    const index = roles.value.findIndex((r) => r.id === role.id);
+    if (index !== -1) {
+      roles.value.splice(index, 1);
+    }
+  };
+
+  return { roles, addRole, updateRole, deleteRole };
 });
