@@ -31,6 +31,40 @@ public static class InvitationMapper
         return model;
     }
 
+    public static UserInvitationModel MapToUserModel(this InvitationEntity src)
+    {
+        if (src == null)
+            throw new ArgumentNullException(nameof(src));
+        if (src.Establishment == null)
+            throw new InvalidOperationException("Establishment cannot be null");
+        if (src.Role == null)
+            throw new InvalidOperationException("Role cannot be null");
+
+        var phone = (src.Phone ?? src.TargetUser?.Phone)
+            ?? throw new InvalidOperationException("Phone cannot be null");
+        var name = (src.Name ?? src.TargetUser?.Name)
+            ?? throw new InvalidOperationException("Name cannot be null");
+        var surname = (src.Surname ?? src.TargetUser?.Surname)
+            ?? throw new InvalidOperationException("Surname cannot be null");
+
+        return new UserInvitationModel
+        {
+            Id = src.Id,
+            CreatedAt = src.CreatedAt,
+            ExpiredAt = src.ExpiredAt,
+            Status = src.Status,
+            EstablishmentId = src.EstablishmentId,
+            EstablishmentAddress = src.Establishment.Address,
+            EstablishmentName = src.Establishment.Name,
+            NetworkId = src.Establishment.NetworkId,
+            RoleId = src.RoleId,
+            RoleName = src.Role.Name,
+            Phone = phone,
+            Name = name,
+            Surname = surname,
+        };
+    }
+
     public static InvitationEntity MapToEntity(this InvitationRequest req) => new()
     {
         EstablishmentId = req.EstablishmentId,

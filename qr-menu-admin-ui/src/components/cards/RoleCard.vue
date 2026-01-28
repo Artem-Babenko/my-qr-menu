@@ -1,9 +1,37 @@
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import type { RoleView } from '@/types/roles';
   import { AppCard, AppFlex, AppIcon, AppText } from '../shared';
   import { CardDropdown } from '../dropdowns';
+  import type { ActionButton } from '../dropdowns';
 
-  defineProps<{ role: RoleView }>();
+  const props = defineProps<{ role: RoleView }>();
+  const emit = defineEmits<{
+    edit: [role: RoleView];
+    delete: [role: RoleView];
+  }>();
+
+  const handleEdit = () => {
+    emit('edit', props.role);
+  };
+
+  const handleDelete = () => {
+    emit('delete', props.role);
+  };
+
+  const buttons = computed<ActionButton[]>(() => [
+    {
+      icon: 'Pencil',
+      title: 'Редагувати',
+      click: handleEdit,
+    },
+    {
+      icon: 'Trash',
+      title: 'Видалити',
+      click: handleDelete,
+      disabled: () => props.role.numberOfUsers > 0,
+    },
+  ]);
 </script>
 
 <template>
@@ -23,7 +51,7 @@
           </app-text>
         </app-flex>
       </app-flex>
-      <card-dropdown></card-dropdown>
+      <card-dropdown :buttons="buttons"></card-dropdown>
     </app-flex>
     <app-text class="description" color="secondary">
       {{ role.description }}

@@ -17,6 +17,7 @@
   import { invitationApi } from '@/api/invitationApi';
 
   const showed = defineModel<boolean>('showed', { required: true });
+  const emit = defineEmits<{ save: [] }>();
 
   const phone = ref('');
   const invitation = ref<NewInvitation>(createNewInvitation());
@@ -88,6 +89,7 @@
         });
     if (!resp.data?.invitationId) return;
     showed.value = false;
+    emit('save');
   };
 </script>
 

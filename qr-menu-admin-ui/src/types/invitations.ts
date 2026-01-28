@@ -18,6 +18,22 @@ export interface Invitation extends NewInvitation {
   roleId: number;
 }
 
+export interface UserInvitation {
+  id: string;
+  roleId: number;
+  roleName: string;
+  networkId: number;
+  establishmentId: number;
+  establishmentName: string;
+  establishmentAddress: string;
+  status: InvitationStatus;
+  createdAt: string;
+  expiredAt: string;
+  phone: string;
+  name: string;
+  surname: string;
+}
+
 export interface InvitationRequest {
   establishmentId: number;
   roleId: number;

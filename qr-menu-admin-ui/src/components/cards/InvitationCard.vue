@@ -4,8 +4,11 @@
   import { computed } from 'vue';
   import { useRolesStore } from '@/store/roles';
   import { useNetworkStore } from '@/store/network';
+  import { expiresAt } from '@/utils/dates';
+  import { ROUTES } from '@/router';
 
   const props = defineProps<{ invitation: Invitation }>();
+  const emit = defineEmits<{ delete: [] }>();
 
   const roleStore = useRolesStore();
   const networkStore = useNetworkStore();
@@ -27,20 +30,15 @@
     return new Date(props.invitation.createdAt).toLocaleDateString();
   });
 
-  const expiresIn = computed(() => {
-    const now = new Date();
-    const expiredAt = new Date(props.invitation.expiredAt);
+  const expiresIn = computed(() => expiresAt(props.invitation.expiredAt));
 
-    const diffMs = expiredAt.getTime() - now.getTime();
-    if (diffMs <= 0) return 'Запрошення прострочене';
-
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const days = Math.floor(diffHours / 24);
-    const hours = diffHours % 24;
-
-    if (days > 0) return `Діє ще ${days} дн.`;
-    return `Діє ще ${hours} год.`;
-  });
+  const copyInvitationLink = async () => {
+    const link = new URL(
+      `/auth/${ROUTES.regByInvitation}/${props.invitation.id}`,
+      window.location.origin,
+    ).toString();
+    await navigator.clipboard.writeText(link);
+  };
 </script>
 
 <template>
@@ -83,12 +81,14 @@
         </app-text>
       </app-flex>
 
-      <app-icon
-        class="delete-icon"
-        name="Trash"
-        :size="16"
-        color="var(--secondary-text)"
-      ></app-icon>
+      <app-flex class="icons" gap="10">
+        <app-icon name="Trash" @click="emit('delete')"></app-icon>
+        <app-icon
+          v-if="!invitation.targetUserId"
+          name="Copy"
+          @click="copyInvitationLink"
+        ></app-icon>
+      </app-flex>
     </app-flex>
   </app-card>
 </template>
@@ -100,12 +100,16 @@
     background-color: var(--hover-on-secondary);
     border-radius: 10px;
   }
-  .delete-icon {
+  .icons {
     margin-left: auto;
+  }
+  .icons .app-icon {
+    color: var(--secondary-text);
     transition: all 0.2s ease;
     cursor: pointer;
-  }
-  .delete-icon:hover {
-    stroke: var(--error-text) !important;
+
+    &:hover {
+      color: var(--primary-text);
+    }
   }
 </style>

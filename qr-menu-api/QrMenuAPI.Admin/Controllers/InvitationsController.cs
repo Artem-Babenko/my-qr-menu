@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Mappings;
 using QrMenuAPI.Admin.Models.Invitation;
 using QrMenuAPI.Admin.Services.Invitations;
 using QrMenuAPI.Core;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -67,6 +69,7 @@ public class InvitationsController(
         return Success(models);
     }
 
+    [AllowAnonymous]
     [HttpGet("{invitationId:Guid}")]
     public async Task<IActionResult> GetInvitation([FromRoute] Guid invitationId)
     {
@@ -75,9 +78,11 @@ public class InvitationsController(
 
         var invitation = await db.Invitations
             .Include(inv => inv.TargetUser)
+            .Include(inv => inv.Role)
+            .Include(inv => inv.Establishment)
             .FirstOrDefaultAsync(inv => inv.Id == invitationId);
 
-        return Success(invitation?.MapToModel());
+        return Success(invitation?.MapToUserModel());
     }
 
     [HttpGet("by-current-user")]
@@ -94,6 +99,9 @@ public class InvitationsController(
             return NotFound(ErrorCodes.UserNotFound);
 
         var invitations = await db.Invitations
+            .Include(inv => inv.Role)
+            .Include(inv => inv.Establishment)
+            .Include(inv => inv.TargetUser)
             .Where(inv =>
                 (inv.TargetUserId == userId) ||
                 (inv.Phone == user.Phone)
@@ -101,7 +109,7 @@ public class InvitationsController(
             .ToListAsync();
 
         var models = invitations
-            .Select(InvitationMapper.MapToModel)
+            .Select(InvitationMapper.MapToUserModel)
             .ToList();
 
         return Success(models);
@@ -121,15 +129,20 @@ public class InvitationsController(
             return BadRequest(ErrorCodes.InvalidRequest);
 
         var invitation = await db.Invitations
-            .Include(inv => inv.Establishment)
-            .FirstOrDefaultAsync(inv => inv.Id == invitationId);
+          .Include(inv => inv.Establishment)
+          .FirstOrDefaultAsync(inv => inv.Id == invitationId);
 
-        if (invitation == null ||
-            invitation.TargetUserId != userId ||
-            invitation.ExpiredAt <= DateTime.UtcNow)
-        {
+        if (invitation == null)
             return NotFound(ErrorCodes.InvitationNotFound);
-        }
+
+        var isTargetUserValid =
+            invitation.TargetUserId == user.Id ||
+            invitation.Phone == user.Phone;
+
+        var isExpired = invitation.ExpiredAt <= DateTime.UtcNow;
+
+        if (!isTargetUserValid || isExpired)
+            return NotFound(ErrorCodes.InvitationNotFound);
 
         using var transaction = await db.Database.BeginTransactionAsync();
 
@@ -157,6 +170,23 @@ public class InvitationsController(
             return NotFound(ErrorCodes.InvitationNotFound);
 
         db.Invitations.Remove(invitation);
+        await db.SaveChangesAsync();
+
+        return Success();
+    }
+
+    [HttpPut("{invitationId:Guid}/cancel")]
+    public async Task<IActionResult> CancelInvation([FromRoute] Guid invitationId)
+    {
+        if (invitationId == Guid.Empty)
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var invitation = await db.Invitations.FindAsync(invitationId);
+        if (invitation == null)
+            return NotFound(ErrorCodes.InvitationNotFound);
+
+        invitation.Status = InvitationStatus.Canceled;
+        db.Invitations.Update(invitation);
         await db.SaveChangesAsync();
 
         return Success();
