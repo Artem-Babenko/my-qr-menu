@@ -33,10 +33,6 @@
       .page-title {
         margin-bottom: 20px;
       }
-
-      :deep(.app-input) {
-        margin-bottom: 15px;
-      }
       :deep(.app-button) {
         margin-top: 10px;
       }

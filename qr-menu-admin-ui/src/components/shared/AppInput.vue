@@ -1,4 +1,7 @@
 <script setup lang="ts">
+  import AppIcon from './AppIcon.vue';
+  import { computed, ref } from 'vue';
+
   interface AppInputProps {
     placeholder?: string;
     type?: 'text' | 'password';
@@ -7,11 +10,24 @@
     disabled?: boolean;
   }
 
-  defineProps<AppInputProps>();
+  const props = defineProps<AppInputProps>();
 
   const model = defineModel<string | null>({
     required: true,
   });
+
+  const isPasswordVisible = ref(false);
+
+  const inputType = computed(() =>
+    props.type === 'password' && isPasswordVisible.value ? 'text' : props.type,
+  );
+
+  const isPassword = computed(() => props.type === 'password');
+
+  const togglePasswordVisibility = () => {
+    if (!isPassword.value) return;
+    isPasswordVisible.value = !isPasswordVisible.value;
+  };
 </script>
 
 <template>
@@ -23,7 +39,7 @@
       v-model="model"
       :id="id"
       :placeholder="placeholder"
-      :type="type"
+      :type="inputType"
       :disabled="disabled"
       v-maska="mask"
       class="app-input-inner"
@@ -36,6 +52,14 @@
     <span v-if="$slots.after" class="slot after">
       <slot name="after"></slot>
     </span>
+    <button
+      v-else-if="isPassword"
+      type="button"
+      class="slot after password-toggle"
+      @click="togglePasswordVisibility"
+    >
+      <app-icon :name="isPasswordVisible ? 'EyeOff' : 'Eye'" />
+    </button>
   </div>
 </template>
 
@@ -75,6 +99,12 @@
   }
   .slot.after {
     right: 10px;
+  }
+  .password-toggle {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
   }
   .app-input-inner.has-before {
     padding-left: 36px;

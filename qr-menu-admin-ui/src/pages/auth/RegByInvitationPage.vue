@@ -1,19 +1,25 @@
 <script lang="ts" setup>
-  import { useLoader } from '@/composables';
+  import {
+    useLoader,
+    useRegistrationFormFields,
+    useRegistrationFlow,
+    useToast,
+  } from '@/composables';
   import BaseAuthPage from './BaseAuthPage.vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import { computed, reactive, watch, watchEffect } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { computed, watchEffect } from 'vue';
   import { invitationApi } from '@/api/invitationApi';
-  import { authApi } from '@/api/authApi';
-  import { AppInput, AppLabel, AppButton } from '@/components/shared';
-  import { ROUTES } from '@/router';
-  import { useAuthStore } from '@/store/auth';
-  import { useUserStore } from '@/store/user';
+  import {
+    AppButton,
+    AppErrorText,
+    AppInput,
+    AppLabel,
+  } from '@/components/shared';
+  import { getErrorMessage } from '@/consts/errorMessages';
 
   const route = useRoute();
-  const router = useRouter();
-  const authStore = useAuthStore();
-  const userStore = useUserStore();
+  const toast = useToast();
+  const { register } = useRegistrationFlow();
 
   const invitationId = computed<string | null>(() => {
     const id = route.params.invitationId;
@@ -32,12 +38,7 @@
     enabled: () => !!invitationId.value,
   });
 
-  const model = reactive({
-    name: '',
-    surname: '',
-    email: '',
-    password: '',
-  });
+  const { model, errors, validateFields } = useRegistrationFormFields();
 
   watchEffect(() => {
     if (invitation.value) {
@@ -49,92 +50,109 @@
   const validate = () => {
     if (!invitation.value) return false;
     if (!invitation.value.phone) return false;
-    if (!model.name) return false;
-    if (!model.surname) return false;
-    if (!model.email) return false;
-    if (!model.password) return false;
-    return true;
+    return validateFields();
   };
 
   const registerByInvitation = async () => {
     if (!validate() || !invitation.value || !invitationId.value) return;
 
-    const regResp = await authApi.reg({
+    await register({
       phone: invitation.value.phone,
-      name: model.name,
-      surname: model.surname,
-      email: model.email,
-      password: model.password,
+      formFields: model,
+      onSuccess: async () => {
+        const acceptResp = await invitationApi.acceptByCurrentUser(
+          invitationId.value!,
+        );
+        if (!acceptResp.success || !acceptResp.data) {
+          toast.error(getErrorMessage(acceptResp.errorCode));
+          throw new Error('Failed to accept invitation');
+        }
+        return { networkId: acceptResp.data.networkId };
+      },
     });
-    if (!regResp.success || !regResp.data) return;
-
-    const loginResp = await authApi.login({
-      phone: invitation.value.phone,
-      password: model.password,
-    });
-    if (!loginResp.success || !loginResp.data) return;
-
-    authStore.setToken(loginResp.data.token);
-
-    const acceptResp = await invitationApi.acceptByCurrentUser(
-      invitationId.value,
-    );
-    if (!acceptResp.success || !acceptResp.data) return;
-
-    userStore.user = {
-      id: regResp.data.userId,
-      name: model.name,
-      surname: model.surname,
-      email: model.email,
-      phone: invitation.value.phone,
-      networkId: acceptResp.data.networkId,
-    };
-
-    router.replace({ name: ROUTES.dashboard });
   };
 </script>
 
 <template>
   <base-auth-page page-title="Реєстрація за запрошенням" v-if="invitation">
-    <app-label for="phone" label="Номер телефону"></app-label>
-    <app-input id="phone" :model-value="invitation.phone" disabled></app-input>
-    <app-label for="name" label="Ім'я"></app-label>
-    <app-input
-      id="name"
-      v-model="model.name"
-      placeholder="Введіть ім'я"
-    ></app-input>
-    <app-label for="surname" label="Прізвище"></app-label>
-    <app-input
-      id="surname"
-      v-model="model.surname"
-      placeholder="Введіть прізвище"
-    ></app-input>
-    <app-label for="email" label="Пошта"></app-label>
-    <app-input
-      id="email"
-      v-model="model.email"
-      placeholder="Введіть електронну пошту"
-    ></app-input>
-    <app-label for="password" label="Пароль"></app-label>
-    <app-input
-      id="password"
-      v-model="model.password"
-      type="password"
-      placeholder="Введіть пароль"
-    ></app-input>
-    <app-label for="role" label="Роль"></app-label>
-    <app-input
-      id="role"
-      :model-value="invitation.roleName"
-      disabled
-    ></app-input>
-    <app-label for="establishment" label="Заклад"></app-label>
-    <app-input
-      id="establishment"
-      :model-value="invitation.establishmentName"
-      disabled
-    ></app-input>
+    <div class="field">
+      <app-label for="phone" label="Номер телефону"></app-label>
+      <app-input
+        id="phone"
+        :model-value="invitation.phone"
+        disabled
+      ></app-input>
+    </div>
+    <div class="field">
+      <app-label for="name" label="Ім'я"></app-label>
+      <app-input
+        id="name"
+        v-model="model.name"
+        placeholder="Введіть ім'я"
+      ></app-input>
+      <app-error-text :message="errors.name" />
+    </div>
+    <div class="field">
+      <app-label for="surname" label="Прізвище"></app-label>
+      <app-input
+        id="surname"
+        v-model="model.surname"
+        placeholder="Введіть прізвище"
+      ></app-input>
+      <app-error-text :message="errors.surname" />
+    </div>
+    <div class="field">
+      <app-label for="email" label="Пошта"></app-label>
+      <app-input
+        id="email"
+        v-model="model.email"
+        placeholder="Введіть електронну пошту"
+      ></app-input>
+      <app-error-text :message="errors.email" />
+    </div>
+    <div class="field">
+      <app-label for="password" label="Пароль"></app-label>
+      <app-input
+        id="password"
+        v-model="model.password"
+        type="password"
+        placeholder="Введіть пароль"
+      ></app-input>
+      <app-error-text :message="errors.password" />
+    </div>
+    <div class="field">
+      <app-label for="passwordConfirm" label="Повторіть пароль"></app-label>
+      <app-input
+        id="passwordConfirm"
+        v-model="model.passwordConfirm"
+        type="password"
+        placeholder="Повторіть пароль"
+      ></app-input>
+      <app-error-text :message="errors.passwordConfirm" />
+    </div>
+    <div class="field">
+      <app-label for="role" label="Роль"></app-label>
+      <app-input
+        id="role"
+        :model-value="invitation.roleName"
+        disabled
+      ></app-input>
+    </div>
+    <div class="field">
+      <app-label for="establishment" label="Заклад"></app-label>
+      <app-input
+        id="establishment"
+        :model-value="invitation.establishmentName"
+        disabled
+      ></app-input>
+    </div>
     <app-button @click="registerByInvitation()">Зареєструватись</app-button>
   </base-auth-page>
 </template>
+
+<style scoped>
+  .field {
+    margin-bottom: 12px;
+    width: 100%;
+  }
+</style>

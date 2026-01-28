@@ -11,3 +11,6 @@ export { default as AppFlex } from './AppFlex.vue';
 export { default as AppDropdown } from './AppDropdown.vue';
 export { default as AppLabel } from './AppLabel.vue';
 export { default as AppCheckbox } from './AppCheckbox.vue';
+export { default as AppErrorText } from './AppErrorText.vue';
+export { default as AppToast } from './AppToast.vue';
+export { default as AppToastContainer } from './AppToastContainer.vue';

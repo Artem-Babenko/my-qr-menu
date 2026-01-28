@@ -1,94 +1,112 @@
 <script setup lang="ts">
-  import { authApi } from '@/api/authApi';
-  import { AppButton, AppInput, AppLabel } from '@/components/shared';
+  import {
+    AppButton,
+    AppErrorText,
+    AppInput,
+    AppLabel,
+  } from '@/components/shared';
+  import {
+    useRegistrationFormFields,
+    useRegistrationFlow,
+    useFieldValidator,
+  } from '@/composables';
   import { PHONE_MASK } from '@/consts/masks';
+  import { nullOrEmptyStringRule, phoneLengthRule } from '@/consts/rules';
   import { ROUTES } from '@/router';
-  import { useAuthStore } from '@/store/auth';
-  import { useUserStore } from '@/store/user';
-  import type { LoginReq, RegistrationReq } from '@/types/auth';
   import { reactive } from 'vue';
-  import { useRouter } from 'vue-router';
   import BaseAuthPage from './BaseAuthPage.vue';
 
-  const userStore = useUserStore();
-  const authStore = useAuthStore();
-  const router = useRouter();
+  const { model, errors, validateFields } = useRegistrationFormFields();
+  const { register } = useRegistrationFlow();
 
-  const model = reactive({
-    phone: '',
-    name: '',
-    surname: '',
-    password: '',
-    email: '',
+  const phoneModel = reactive({ phone: '' });
+  const phoneErrors = reactive({ phone: '' });
+
+  const phoneValidator = useFieldValidator({
+    value: () => phoneModel.phone,
+    rules: [nullOrEmptyStringRule, phoneLengthRule],
+    errorName: 'phone',
+    errors: phoneErrors,
   });
 
   const validate = () => {
-    if (!model.phone) return false;
-    if (!model.name) return false;
-    if (!model.surname) return false;
-    if (!model.password) return false;
-    if (!model.email) return false;
-    return true;
+    return phoneValidator.validate() && validateFields();
   };
 
   const registrate = async () => {
     if (!validate()) return;
 
-    const regReq: RegistrationReq = {
-      ...model,
-    };
-    const regResp = await authApi.reg(regReq);
-
-    const logingReq: LoginReq = {
-      phone: regReq.phone,
-      password: regReq.password,
-    };
-    const logingResp = await authApi.login(logingReq);
-
-    authStore.setToken(logingResp.data!.token);
-    userStore.user = { ...regReq, id: regResp.data!.userId, networkId: null };
-    router.replace({ name: ROUTES.dashboard });
+    await register({
+      phone: phoneModel.phone,
+      formFields: model,
+    });
   };
 </script>
 
 <template>
   <base-auth-page page-title="Реєстрація">
-    <app-label for="phone" label="Телефон"></app-label>
-    <app-input
-      v-model="model.phone"
-      placeholder="Введіть номер телефону"
-      :mask="PHONE_MASK"
-      id="phone"
-    ></app-input>
-    <app-label for="name" label="Ім'я"></app-label>
-    <app-input
-      v-model="model.name"
-      label="Ім'я"
-      placeholder="Введіть ім'я"
-      id="name"
-    ></app-input>
-    <app-label for="surname" label="Прізвище"></app-label>
-    <app-input
-      v-model="model.surname"
-      label="Прізвище"
-      placeholder="Введіть прізвище"
-      id="surname"
-    ></app-input>
-    <app-label for="email" label="Пошта"></app-label>
-    <app-input
-      v-model="model.email"
-      label="Пошта"
-      placeholder="Введіть електронну пошту"
-      id="email"
-    ></app-input>
-    <app-label for="password" label="Пароль"></app-label>
-    <app-input
-      v-model="model.password"
-      label="Пароль"
-      placeholder="Введіть пароль"
-      type="password"
-      id="password"
-    ></app-input>
+    <div class="field">
+      <app-label for="phone" label="Телефон"></app-label>
+      <app-input
+        v-model="phoneModel.phone"
+        placeholder="Введіть номер телефону"
+        :mask="PHONE_MASK"
+        id="phone"
+      ></app-input>
+      <app-error-text :message="phoneErrors.phone" />
+    </div>
+    <div class="field">
+      <app-label for="name" label="Ім'я"></app-label>
+      <app-input
+        v-model="model.name"
+        label="Ім'я"
+        placeholder="Введіть ім'я"
+        id="name"
+      ></app-input>
+      <app-error-text :message="errors.name" />
+    </div>
+    <div class="field">
+      <app-label for="surname" label="Прізвище"></app-label>
+      <app-input
+        v-model="model.surname"
+        label="Прізвище"
+        placeholder="Введіть прізвище"
+        id="surname"
+      ></app-input>
+      <app-error-text :message="errors.surname" />
+    </div>
+    <div class="field">
+      <app-label for="email" label="Пошта"></app-label>
+      <app-input
+        v-model="model.email"
+        label="Пошта"
+        placeholder="Введіть електронну пошту"
+        id="email"
+      ></app-input>
+      <app-error-text :message="errors.email" />
+    </div>
+    <div class="field">
+      <app-label for="password" label="Пароль"></app-label>
+      <app-input
+        v-model="model.password"
+        label="Пароль"
+        placeholder="Введіть пароль"
+        type="password"
+        id="password"
+      ></app-input>
+      <app-error-text :message="errors.password" />
+    </div>
+    <div class="field">
+      <app-label for="passwordConfirm" label="Повторіть пароль"></app-label>
+      <app-input
+        v-model="model.passwordConfirm"
+        label="Повторіть пароль"
+        placeholder="Повторіть пароль"
+        type="password"
+        id="passwordConfirm"
+      ></app-input>
+      <app-error-text :message="errors.passwordConfirm" />
+    </div>
     <app-button @click="registrate()">Зареєструватись</app-button>
     <router-link :to="{ name: ROUTES.login }">
       <app-button type="text">Вхід</app-button>
@@ -96,4 +114,9 @@
   </base-auth-page>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .field {
+    margin-bottom: 12px;
+    width: 100%;
+  }
+</style>

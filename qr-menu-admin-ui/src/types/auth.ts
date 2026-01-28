@@ -18,3 +18,19 @@ export interface RegistrationReq {
 export interface RegistrationResp {
   userId: number;
 }
+
+export interface RegistrationFormFields {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
+
+export interface RegistrationFormErrors {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
