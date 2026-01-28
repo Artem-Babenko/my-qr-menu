@@ -2,7 +2,7 @@
 
 namespace QrMenuAPI.Admin.Models.Invitation;
 
-public class UserInvatationModel
+public class UserInvitationModel
 {
     public Guid Id { get; set; }
     public int RoleId { get; set; }
@@ -14,4 +14,7 @@ public class UserInvatationModel
     public InvitationStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ExpiredAt { get; set; }
+    public string Name { get; set; } = null!;
+    public string Surname { get; set; } = null!;
+    public string Phone { get; set; } = null!;
 }

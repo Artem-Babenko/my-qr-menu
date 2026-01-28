@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Mappings;
@@ -68,6 +69,7 @@ public class InvitationsController(
         return Success(models);
     }
 
+    [AllowAnonymous]
     [HttpGet("{invitationId:Guid}")]
     public async Task<IActionResult> GetInvitation([FromRoute] Guid invitationId)
     {
@@ -76,9 +78,11 @@ public class InvitationsController(
 
         var invitation = await db.Invitations
             .Include(inv => inv.TargetUser)
+            .Include(inv => inv.Role)
+            .Include(inv => inv.Establishment)
             .FirstOrDefaultAsync(inv => inv.Id == invitationId);
 
-        return Success(invitation?.MapToModel());
+        return Success(invitation?.MapToUserModel());
     }
 
     [HttpGet("by-current-user")]
@@ -97,6 +101,7 @@ public class InvitationsController(
         var invitations = await db.Invitations
             .Include(inv => inv.Role)
             .Include(inv => inv.Establishment)
+            .Include(inv => inv.TargetUser)
             .Where(inv =>
                 (inv.TargetUserId == userId) ||
                 (inv.Phone == user.Phone)

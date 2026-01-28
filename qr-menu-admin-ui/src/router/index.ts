@@ -2,6 +2,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import UserLoaderGate from '@/layouts/UserLoaderGate.vue';
 import LoginPage from '@/pages/auth/LoginPage.vue';
+import RegByInvitationPage from '@/pages/auth/RegByInvitationPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
 import UsersPage from '@/pages/main/UsersPage.vue';
@@ -17,6 +18,7 @@ import {
 export const ROUTES = {
   login: 'login',
   registration: 'registration',
+  regByInvitation: 'reg-by-invitation',
   onboarding: 'onboarding',
   createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
@@ -38,6 +40,11 @@ const routes: RouteRecordRaw[] = [
         name: ROUTES.registration,
         path: ROUTES.registration,
         component: RegistrationPage,
+      },
+      {
+        name: ROUTES.regByInvitation,
+        path: `${ROUTES.regByInvitation}/:invitationId`,
+        component: RegByInvitationPage,
       },
     ],
   },

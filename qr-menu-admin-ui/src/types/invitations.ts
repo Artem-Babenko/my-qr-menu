@@ -29,6 +29,9 @@ export interface UserInvitation {
   status: InvitationStatus;
   createdAt: string;
   expiredAt: string;
+  phone: string;
+  name: string;
+  surname: string;
 }
 
 export interface InvitationRequest {

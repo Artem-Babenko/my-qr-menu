@@ -28,13 +28,13 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 20px;
+      width: 300px;
 
       .page-title {
         margin-bottom: 20px;
       }
 
       :deep(.app-input) {
-        width: 300px;
         margin-bottom: 15px;
       }
       :deep(.app-button) {

@@ -24,4 +24,6 @@ export const invitationApi = {
     apiClient.post<{ networkId: number }>(
       `/invitations/${invitationId}/accept`,
     ),
+  get: (invitationId: string) =>
+    apiClient.get<UserInvitation | null>(`/invitations/${invitationId}`),
 };
