@@ -1,4 +1,4 @@
-﻿namespace QrMenuAPI.Admin.Consts;
+namespace QrMenuAPI.Admin.Consts;
 
 public static class ErrorCodes
 {
@@ -9,4 +9,8 @@ public static class ErrorCodes
     public const string UserNotFound = "user_not_found";
     public const string DuplicateEstablishment = "duplicate_establishment";
     public const string NetworkNotFound = "network_not_found";
+    public const string RoleNotFound = "role_not_found";
+    public const string RoleDuplicateName = "role_duplicate_name";
+    public const string RoleHasUsers = "role_has_users";
+    public const string RoleDeleteForbidden = "role_delete_forbidden";
 }

@@ -2,6 +2,8 @@
   import { DotsButton } from '../buttons';
   import { AppButton, AppDropdown, AppIcon, type IconName } from '../shared';
 
+  const emit = defineEmits<{ edit: []; delete: [] }>();
+
   interface ActionButton {
     icon: IconName;
     title: string;
@@ -9,8 +11,8 @@
   }
 
   const buttons: ActionButton[] = [
-    { icon: 'Pencil', title: 'Редагувати', click: () => {} },
-    { icon: 'Trash', title: 'Видалити', click: () => {} },
+    { icon: 'Pencil', title: 'Редагувати', click: () => emit('edit') },
+    { icon: 'Trash', title: 'Видалити', click: () => emit('delete') },
   ];
 </script>
 

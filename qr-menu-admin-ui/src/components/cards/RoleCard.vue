@@ -3,7 +3,12 @@
   import { AppCard, AppFlex, AppIcon, AppText } from '../shared';
   import { CardDropdown } from '../dropdowns';
 
-  defineProps<{ role: RoleView }>();
+  const props = defineProps<{ role: RoleView }>();
+  const emit = defineEmits<{ edit: [role: RoleView] }>();
+
+  const handleEdit = () => {
+    emit('edit', props.role);
+  };
 </script>
 
 <template>
@@ -23,7 +28,7 @@
           </app-text>
         </app-flex>
       </app-flex>
-      <card-dropdown></card-dropdown>
+      <card-dropdown @edit="handleEdit"></card-dropdown>
     </app-flex>
     <app-text class="description" color="secondary">
       {{ role.description }}

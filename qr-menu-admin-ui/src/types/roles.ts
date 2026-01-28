@@ -7,3 +7,15 @@ export interface RoleView {
   numberOfUsers: number;
   permissions: PermissionType[];
 }
+
+export interface RoleRequest {
+  name: string;
+  description?: string | null;
+  networkId: number;
+  permissions: PermissionType[];
+}
+
+export interface PermissionGroup {
+  name: string;
+  permissions: PermissionType[];
+}
