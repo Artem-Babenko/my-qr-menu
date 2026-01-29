@@ -4,7 +4,10 @@
   import { useNetworkStore } from '@/store/network';
   import { toRef } from 'vue';
   import { usersApi } from '@/api/usersApi';
+  import type { User } from '@/types/user';
   import BaseCardList from './BaseCardList.vue';
+
+  const emit = defineEmits<{ edit: [user: User] }>();
 
   const networkStore = useNetworkStore();
   const networkId = toRef(() => networkStore.network?.id);
@@ -26,6 +29,7 @@
       v-for="user in loader.data.value"
       :key="user.id"
       :user="user"
+      @edit="emit('edit', user)"
     ></user-card>
   </base-card-list>
 </template>

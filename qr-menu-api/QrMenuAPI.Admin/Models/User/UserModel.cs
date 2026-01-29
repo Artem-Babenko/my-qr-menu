@@ -1,4 +1,4 @@
-﻿namespace QrMenuAPI.Admin.Models.User;
+namespace QrMenuAPI.Admin.Models.User;
 
 public class UserModel
 {
@@ -8,4 +8,6 @@ public class UserModel
     public string Phone { get; set; } = null!;
     public string Email { get; set; } = null!;
     public int? NetworkId { get; set; }
+
+    public List<UserEstablishmentAccessModel> Accesses { get; set; } = [];
 }

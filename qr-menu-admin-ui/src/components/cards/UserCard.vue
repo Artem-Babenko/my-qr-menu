@@ -3,21 +3,27 @@
   import type { User } from '@/types/user';
   import { UserInitials } from '../other';
   import { CardDropdown } from '../dropdowns';
+  import { computed } from 'vue';
 
-  defineProps<{ user: User }>();
+  const { user } = defineProps<{ user: User }>();
+  const emit = defineEmits<{ edit: [user: User] }>();
+
+  const establishmentsCount = computed(() => user.accesses?.length ?? 0);
+
+  const onEdit = () => emit('edit', user);
 </script>
 
 <template>
   <app-card class="user-card">
     <div class="head">
       <user-initials v-bind="user"></user-initials>
-      <card-dropdown></card-dropdown>
+      <card-dropdown @edit="onEdit"></card-dropdown>
     </div>
     <div class="info">
       <app-text>{{ user.name }} {{ user.surname }}</app-text>
       <app-text>{{ user.email }}</app-text>
       <app-text>{{ user.phone }}</app-text>
-      <app-text>3 ресторани</app-text>
+      <app-text>{{ establishmentsCount }} ресторани</app-text>
     </div>
     <div class="footer">
       <app-text>Остання активність: 5 год тому</app-text>
