@@ -6,6 +6,9 @@ import RegByInvitationPage from '@/pages/auth/RegByInvitationPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
 import UsersPage from '@/pages/main/UsersPage.vue';
+import UsersTabInvitations from '@/pages/main/users/UsersTabInvitations.vue';
+import UsersTabRoles from '@/pages/main/users/UsersTabRoles.vue';
+import UsersTabUsers from '@/pages/main/users/UsersTabUsers.vue';
 import CreateEstablishmentPage from '@/pages/onboarding/CreateEstablishmentPage.vue';
 import OnboardingPage from '@/pages/onboarding/OnboardingPage.vue';
 import { useAuthStore } from '@/store/auth';
@@ -23,6 +26,8 @@ export const ROUTES = {
   createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
   users: 'users',
+  usersRoles: 'users-roles',
+  usersInvitations: 'users-invitations',
 };
 
 const routes: RouteRecordRaw[] = [
@@ -75,8 +80,24 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: ROUTES.users,
-            name: ROUTES.users,
             component: UsersPage,
+            children: [
+              {
+                path: '',
+                name: ROUTES.users,
+                component: UsersTabUsers,
+              },
+              {
+                path: 'roles',
+                name: ROUTES.usersRoles,
+                component: UsersTabRoles,
+              },
+              {
+                path: 'invitations',
+                name: ROUTES.usersInvitations,
+                component: UsersTabInvitations,
+              },
+            ],
           },
         ],
       },

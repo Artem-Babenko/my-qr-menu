@@ -1,26 +1,42 @@
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { computed, ref, useTemplateRef } from 'vue';
   import { UsersPageHeader } from '@/components/headers';
-  import {
-    UserList,
-    RoleList,
-    NetworkInvitationList,
-  } from '@/components/lists';
   import { UserPageTab } from '@/consts/tabs';
-  import { reactive } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { ROUTES } from '@/router';
+
+  const route = useRoute();
+  const router = useRouter();
+
+  const activeTabRef = useTemplateRef<{ onAddClick?: () => unknown }>(
+    'activeTabRef',
+  );
 
   const searchWord = ref('');
-  const selectedTab = ref(UserPageTab.users);
 
-  const modalShowed = reactive({
-    invitation: false,
-    role: false,
+  const routeToTabMap: Record<string, UserPageTab> = {
+    [ROUTES.users]: UserPageTab.users,
+    [ROUTES.usersRoles]: UserPageTab.roles,
+    [ROUTES.usersInvitations]: UserPageTab.invites,
+  };
+
+  const tabToRouteMap: Record<UserPageTab, string> = {
+    [UserPageTab.users]: ROUTES.users,
+    [UserPageTab.roles]: ROUTES.usersRoles,
+    [UserPageTab.invites]: ROUTES.usersInvitations,
+  };
+
+  const selectedTab = computed<UserPageTab>({
+    get() {
+      return routeToTabMap[route.name as string] ?? UserPageTab.users;
+    },
+    set(tab) {
+      router.push({ name: tabToRouteMap[tab] });
+    },
   });
 
-  const addButtonEvents: Record<UserPageTab, () => void> = {
-    [UserPageTab.users]: () => {},
-    [UserPageTab.roles]: () => (modalShowed.role = true),
-    [UserPageTab.invites]: () => (modalShowed.invitation = true),
+  const onAddButtonClick = () => {
+    activeTabRef.value?.onAddClick?.();
   };
 </script>
 
@@ -29,18 +45,12 @@
     <users-page-header
       v-model:search="searchWord"
       v-model:selected-tab="selectedTab"
-      @add-button-click="addButtonEvents[selectedTab]()"
+      @add-button-click="onAddButtonClick"
     ></users-page-header>
     <div class="main">
-      <user-list v-if="selectedTab === UserPageTab.users"></user-list>
-      <role-list
-        v-else-if="selectedTab === UserPageTab.roles"
-        v-model:showed="modalShowed.role"
-      ></role-list>
-      <network-invitation-list
-        v-else-if="selectedTab === UserPageTab.invites"
-        v-model:modal-showed="modalShowed.invitation"
-      ></network-invitation-list>
+      <router-view v-slot="{ Component }">
+        <component :is="Component" ref="activeTabRef"></component>
+      </router-view>
     </div>
   </div>
 </template>

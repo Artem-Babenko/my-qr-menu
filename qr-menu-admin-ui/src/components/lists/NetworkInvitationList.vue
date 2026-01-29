@@ -5,9 +5,7 @@
   import { toRef } from 'vue';
   import { invitationApi } from '@/api/invitationApi';
   import { InvitationCard } from '../cards';
-  import { InvitationModal } from '../modals';
 
-  const modalShowed = defineModel<boolean>('modalShowed', { required: true });
   const networkStore = useNetworkStore();
   const networkId = toRef(() => networkStore.network?.id);
 
@@ -28,6 +26,8 @@
     if (!resp.success) throw new Error('Error while deliting invation');
     invitations.value = invitations.value.filter((inv) => inv.id !== id);
   };
+
+  defineExpose({ refetch });
 </script>
 
 <template>
@@ -38,10 +38,5 @@
       :invitation="inv"
       @delete="deleteInvitation(inv.id)"
     ></invitation-card>
-
-    <invitation-modal
-      v-model:showed="modalShowed"
-      @save="refetch()"
-    ></invitation-modal>
   </base-card-list>
 </template>

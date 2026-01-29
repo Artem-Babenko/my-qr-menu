@@ -29,5 +29,3 @@
     ></user-card>
   </base-card-list>
 </template>
-
-<style scoped></style>

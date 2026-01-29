@@ -23,7 +23,7 @@
   ];
 
   const buttonTitles: Record<UserPageTab, string> = {
-    [UserPageTab.users]: 'Додати користувача',
+    [UserPageTab.users]: 'Запросити користувача',
     [UserPageTab.roles]: 'Додати роль',
     [UserPageTab.invites]: 'Створити запрошення',
   };
