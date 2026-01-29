@@ -7,7 +7,9 @@ const errorMessages: Record<string, string> = {
     'Запрошення не знайдено або воно більше не дійсне',
   [errorCodes.userNotFound]: 'Користувача не знайдено',
   [errorCodes.duplicateEstablishment]: 'Заклад з такою назвою вже існує',
+  [errorCodes.duplicateNetwork]: 'Мережа з такою назвою вже існує',
   [errorCodes.networkNotFound]: 'Мережу не знайдено',
+  [errorCodes.establishmentNotFound]: 'Заклад не знайдено',
 };
 
 const DEFAULT_ERROR = 'Сталася невідома помилка';

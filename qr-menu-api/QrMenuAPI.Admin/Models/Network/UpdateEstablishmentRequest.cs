@@ -1,12 +1,12 @@
 namespace QrMenuAPI.Admin.Models.Network;
 
-public class CreateEstablishmentRequest
+public class UpdateEstablishmentRequest
 {
     public string Name { get; set; } = null!;
     public string Address { get; set; } = null!;
-    public string? NetworkName { get; set; }
 
     public bool IsValid() =>
         !string.IsNullOrWhiteSpace(Name) &&
         !string.IsNullOrWhiteSpace(Address);
 }
+

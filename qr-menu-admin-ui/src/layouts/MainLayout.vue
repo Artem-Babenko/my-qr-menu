@@ -16,16 +16,17 @@
     icon: IconName;
     name: string;
     routeName: string;
+    disabled?: boolean;
   }
 
   const pageButtons: PageButton[] = [
     { icon: 'LayoutDashboard', name: 'Головна', routeName: ROUTES.dashboard },
     { icon: 'UtensilsCrossed', name: 'Меню', routeName: '' },
-    { icon: 'ShoppingBag', name: 'Замовлення', routeName: '' },
-    { icon: 'BarChart3', name: 'Аналітика', routeName: '' },
-    { icon: 'Store', name: 'Заклади', routeName: '' },
+    { icon: 'ShoppingBag', name: 'Замовлення', routeName: '', disabled: true },
+    { icon: 'BarChart3', name: 'Аналітика', routeName: '', disabled: true },
+    { icon: 'Store', name: 'Заклади', routeName: ROUTES.establishments },
     { icon: 'Users', name: 'Користувачі', routeName: ROUTES.users },
-    { icon: 'Settings', name: 'Налаштування', routeName: '' },
+    { icon: 'Settings', name: 'Налаштування', routeName: '', disabled: true },
   ];
 
   const userStore = useUserStore();
@@ -62,8 +63,9 @@
           :key="btn.name"
           :label="btn.name"
           :icon="btn.icon"
+          :disabled="!!btn.disabled"
           :selected="router.currentRoute.value.name === btn.routeName"
-          @click="goToPage(btn.routeName)"
+          @click="!btn.disabled && goToPage(btn.routeName)"
         ></nav-button>
       </div>
       <nav-user-info></nav-user-info>

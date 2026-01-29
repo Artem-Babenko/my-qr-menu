@@ -1,6 +1,7 @@
 export interface CreateEstablishmentReq {
   name: string;
   address: string;
+  networkName?: string | null;
 }
 
 export interface CreateEstablishmentResp {
@@ -18,4 +19,5 @@ export interface Establishment {
   id: number;
   name: string;
   address: string;
+  usersCount: number;
 }

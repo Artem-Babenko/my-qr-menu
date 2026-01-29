@@ -1,3 +1,6 @@
 export { default as UserModal } from './UserModal.vue';
 export { default as InvitationModal } from './InvitationModal.vue';
 export { default as RoleModal } from './RoleModal.vue';
+export { default as NetworkModal } from './NetworkModal.vue';
+export { default as EstablishmentModal } from './EstablishmentModal.vue';
+export { default as CreateEstablishmentModal } from './CreateEstablishmentModal.vue';

@@ -5,6 +5,7 @@ import LoginPage from '@/pages/auth/LoginPage.vue';
 import RegByInvitationPage from '@/pages/auth/RegByInvitationPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
+import EstablishmentsPage from '@/pages/main/EstablishmentsPage.vue';
 import UsersPage from '@/pages/main/UsersPage.vue';
 import UsersTabInvitations from '@/pages/main/users/UsersTabInvitations.vue';
 import UsersTabRoles from '@/pages/main/users/UsersTabRoles.vue';
@@ -25,6 +26,7 @@ export const ROUTES = {
   onboarding: 'onboarding',
   createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
+  establishments: 'establishments',
   users: 'users',
   usersRoles: 'users-roles',
   usersInvitations: 'users-invitations',
@@ -77,6 +79,11 @@ const routes: RouteRecordRaw[] = [
             path: ROUTES.dashboard,
             name: ROUTES.dashboard,
             component: DashboardPage,
+          },
+          {
+            path: ROUTES.establishments,
+            name: ROUTES.establishments,
+            component: EstablishmentsPage,
           },
           {
             path: ROUTES.users,

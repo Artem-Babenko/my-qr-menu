@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Network;
@@ -11,6 +11,40 @@ namespace QrMenuAPI.Admin.Controllers;
 [Route("network")]
 public class NetworkController(AppDbContext db) : BaseApiController
 {
+    [HttpPut("{networkId:int}")]
+    public async Task<IActionResult> UpdateNetwork(
+        [FromRoute] int networkId,
+        [FromBody] UpdateNetworkRequest req)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (networkId <= 0 || req == null || !req.IsValid())
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var user = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var network = await db.Networks.FirstOrDefaultAsync(n => n.Id == networkId);
+        if (network == null)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var newName = req.Name.Trim();
+        if (await db.Networks.AnyAsync(n => n.Name == newName && n.Id != networkId))
+            return Conflict(ErrorCodes.DuplicateNetwork);
+
+        network.Name = newName;
+        await db.SaveChangesAsync();
+
+        return Success();
+    }
+
     [HttpPost("establishment")]
     public async Task<IActionResult> CreateEstablishment([FromBody] CreateEstablishmentRequest req)
     {
@@ -21,10 +55,30 @@ public class NetworkController(AppDbContext db) : BaseApiController
         if (user == null)
             return NotFound(ErrorCodes.UserNotFound);
 
+        if (req == null || !req.IsValid())
+            return BadRequest(ErrorCodes.InvalidRequest);
+
         if (await db.Establishments.AnyAsync(x => x.Name == req.Name))
             return Conflict(ErrorCodes.DuplicateEstablishment);
 
-        var network = await GetOrCreateNetwork(user, req.Name);
+        var isCreatingNetwork = user.NetworkId == null;
+        var requestedNetworkName = (req.NetworkName ?? req.Name).Trim();
+        if (isCreatingNetwork)
+        {
+            if (await db.Networks.AnyAsync(n => n.Name == requestedNetworkName))
+                return Conflict(ErrorCodes.DuplicateNetwork);
+        }
+
+        var network = await GetOrCreateNetwork(user, requestedNetworkName);
+
+        if (!string.IsNullOrWhiteSpace(req.NetworkName) && user.NetworkId != null)
+        {
+            var newName = req.NetworkName.Trim();
+            if (await db.Networks.AnyAsync(n => n.Name == newName && n.Id != network.Id))
+                return Conflict(ErrorCodes.DuplicateNetwork);
+            network.Name = newName;
+        }
+
         var establishment = CreateEstablishment(req.Name, req.Address, network, userId);
 
         await db.SaveChangesAsync();
@@ -99,6 +153,17 @@ public class NetworkController(AppDbContext db) : BaseApiController
         if (network == null)
             return NotFound(ErrorCodes.NetworkNotFound);
 
+        var establishmentIds = network.Establishments
+            .Select(e => e.Id)
+            .ToList();
+
+        var usersCountByEstablishmentId = await db.UserEstablishments
+            .AsNoTracking()
+            .Where(ue => establishmentIds.Contains(ue.EstablishmentId))
+            .GroupBy(ue => ue.EstablishmentId)
+            .Select(g => new { EstablishmentId = g.Key, UsersCount = g.Count() })
+            .ToDictionaryAsync(x => x.EstablishmentId, x => x.UsersCount);
+
         var response = new NetworkResponse()
         {
             Id = network.Id,
@@ -107,7 +172,8 @@ public class NetworkController(AppDbContext db) : BaseApiController
             {
                 Id = x.Id,
                 Name = x.Name,
-                Address = x.Address
+                Address = x.Address,
+                UsersCount = usersCountByEstablishmentId.GetValueOrDefault(x.Id, 0)
             })
         };
 
