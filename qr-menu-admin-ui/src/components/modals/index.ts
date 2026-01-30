@@ -4,3 +4,5 @@ export { default as RoleModal } from './RoleModal.vue';
 export { default as NetworkModal } from './NetworkModal.vue';
 export { default as EstablishmentModal } from './EstablishmentModal.vue';
 export { default as CreateEstablishmentModal } from './CreateEstablishmentModal.vue';
+export { default as TablesModal } from './TablesModal.vue';
+export { default as TableModal } from './TableModal.vue';

@@ -8,10 +8,12 @@
   const props = defineProps<{ establishment: Establishment }>();
   const emit = defineEmits<{
     edit: [establishment: Establishment];
+    tables: [establishment: Establishment];
     delete: [establishment: Establishment];
   }>();
 
   const handleEdit = () => emit('edit', props.establishment);
+  const handleTables = () => emit('tables', props.establishment);
   const handleDelete = () => emit('delete', props.establishment);
 
   const buttons = computed<ActionButton[]>(() => [
@@ -19,6 +21,11 @@
       icon: 'Pencil',
       title: 'Редагувати',
       click: handleEdit,
+    },
+    {
+      icon: 'Table',
+      title: 'Столи',
+      click: handleTables,
     },
     {
       icon: 'Trash',

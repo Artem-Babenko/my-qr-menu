@@ -8,4 +8,6 @@ export const errorCodes = {
   duplicateNetwork: 'duplicate_network',
   networkNotFound: 'network_not_found',
   establishmentNotFound: 'establishment_not_found',
+  tableNotFound: 'table_not_found',
+  duplicateTableNumber: 'duplicate_table_number',
 } as const;

@@ -7,6 +7,7 @@
 
   const emit = defineEmits<{
     edit: [establishment: Establishment];
+    tables: [establishment: Establishment];
     delete: [establishment: Establishment];
   }>();
 </script>
@@ -18,6 +19,7 @@
       :key="est.id"
       :establishment="est"
       @edit="emit('edit', est)"
+      @tables="emit('tables', est)"
       @delete="emit('delete', est)"
     ></establishment-card>
   </base-card-list>

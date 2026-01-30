@@ -15,4 +15,7 @@ public static class ErrorCodes
     public const string RoleDuplicateName = "role_duplicate_name";
     public const string RoleHasUsers = "role_has_users";
     public const string RoleDeleteForbidden = "role_delete_forbidden";
+
+    public const string TableNotFound = "table_not_found";
+    public const string DuplicateTableNumber = "duplicate_table_number";
 }

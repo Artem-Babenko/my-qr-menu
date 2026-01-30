@@ -10,6 +10,9 @@ const errorMessages: Record<string, string> = {
   [errorCodes.duplicateNetwork]: 'Мережа з такою назвою вже існує',
   [errorCodes.networkNotFound]: 'Мережу не знайдено',
   [errorCodes.establishmentNotFound]: 'Заклад не знайдено',
+  [errorCodes.tableNotFound]: 'Стіл не знайдено',
+  [errorCodes.duplicateTableNumber]:
+    'Стіл з таким номером вже існує у цьому закладі',
 };
 
 const DEFAULT_ERROR = 'Сталася невідома помилка';

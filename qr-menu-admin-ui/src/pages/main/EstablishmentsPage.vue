@@ -1,17 +1,21 @@
 <script setup lang="ts">
   import { networkApi } from '@/api/networkApi';
+  import { tablesApi } from '@/api/tablesApi';
   import { AppButton, AppFlex, AppText } from '@/components/shared';
   import { EstablishmentList } from '@/components/lists';
   import {
     CreateEstablishmentModal,
     EstablishmentModal,
     NetworkModal,
+    TableModal,
+    TablesModal,
   } from '@/components/modals';
   import { getErrorMessage } from '@/consts/errorMessages';
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { Establishment } from '@/types/network';
-  import { computed, ref } from 'vue';
+  import type { TableView } from '@/types/tables';
+  import { computed, ref, watch } from 'vue';
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
@@ -20,6 +24,13 @@
   const networkModalShowed = ref(false);
   const establishmentModalShowed = ref(false);
   const editingEstablishment = ref<Establishment | null>(null);
+
+  const tablesModalShowed = ref(false);
+  const tableModalShowed = ref(false);
+  const selectedEstablishment = ref<Establishment | null>(null);
+  const editingTable = ref<TableView | null>(null);
+  const tables = ref<TableView[]>([]);
+  const tablesLoading = ref(false);
 
   const hasNetwork = computed(() => !!networkStore.network);
   const establishments = computed(
@@ -46,6 +57,57 @@
     establishmentModalShowed.value = true;
   };
 
+  const loadTables = async () => {
+    const establishmentId = selectedEstablishment.value?.id;
+    if (!establishmentId) return;
+
+    tablesLoading.value = true;
+    try {
+      const resp = await tablesApi.byEstablishment(establishmentId);
+      if (!resp.success) {
+        toasts.error(getErrorMessage(resp.errorCode));
+        tables.value = [];
+        return;
+      }
+      tables.value = resp.data ?? [];
+    } finally {
+      tablesLoading.value = false;
+    }
+  };
+
+  const onTables = async (est: Establishment) => {
+    selectedEstablishment.value = est;
+    tablesModalShowed.value = true;
+    await loadTables();
+  };
+
+  const openCreateTable = () => {
+    editingTable.value = null;
+    tableModalShowed.value = true;
+  };
+
+  const openEditTable = (table: TableView) => {
+    editingTable.value = table;
+    tableModalShowed.value = true;
+  };
+
+  const onDeleteTable = async (table: TableView) => {
+    const confirmed = window.confirm(`Видалити стіл №${table.number}?`);
+    if (!confirmed) return;
+
+    const resp = await tablesApi.delete(table.id);
+    if (!resp.success) {
+      toasts.error(getErrorMessage(resp.errorCode));
+      return;
+    }
+
+    await loadTables();
+  };
+
+  const onTableSaved = async () => {
+    await loadTables();
+  };
+
   const onDelete = async (est: Establishment) => {
     const confirmed = window.confirm(`Видалити заклад "${est.name}"?`);
     if (!confirmed) return;
@@ -61,6 +123,15 @@
   const onSaved = async () => {
     await reloadNetwork();
   };
+
+  watch(tablesModalShowed, (newValue) => {
+    if (newValue) return;
+    tableModalShowed.value = false;
+    editingTable.value = null;
+    tables.value = [];
+    tablesLoading.value = false;
+    selectedEstablishment.value = null;
+  });
 </script>
 
 <template>
@@ -82,6 +153,7 @@
       <establishment-list
         :establishments="establishments"
         @edit="onEdit"
+        @tables="onTables"
         @delete="onDelete"
       ></establishment-list>
     </div>
@@ -108,6 +180,7 @@
         <establishment-list
           :establishments="establishments"
           @edit="onEdit"
+          @tables="onTables"
           @delete="onDelete"
         ></establishment-list>
       </div>
@@ -129,6 +202,23 @@
       :establishment="editingEstablishment"
       @saved="onSaved"
     ></establishment-modal>
+
+    <tables-modal
+      v-model:showed="tablesModalShowed"
+      :establishment="selectedEstablishment"
+      :tables="tables"
+      :loading="tablesLoading"
+      @add="openCreateTable"
+      @edit="openEditTable"
+      @delete="onDeleteTable"
+    ></tables-modal>
+
+    <table-modal
+      v-model:showed="tableModalShowed"
+      :establishment-id="selectedEstablishment?.id ?? null"
+      :table="editingTable"
+      @saved="onTableSaved"
+    ></table-modal>
   </div>
 </template>
 
