@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<UserEstablishmentEntity> UserEstablishments { get; set; }
     public DbSet<UserSessionEntity> UserSessions { get; set; }
     public DbSet<InvitationEntity> Invitations { get; set; }
+    public DbSet<TableEntity> Tables { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
     : base(options)
@@ -29,6 +30,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserEstablishmentConfig());
         modelBuilder.ApplyConfiguration(new UserSessionConfig());
         modelBuilder.ApplyConfiguration(new InvitationConfig());
+        modelBuilder.ApplyConfiguration(new TableConfig());
         base.OnModelCreating(modelBuilder);
     }
 }
