@@ -22,9 +22,6 @@ internal class ProductConfig : IEntityTypeConfiguration<ProductEntity>
         builder.Property(p => p.Description)
             .HasMaxLength(1000);
 
-        builder.Property(p => p.IsActive)
-            .IsRequired();
-
         builder.HasOne(p => p.Network)
             .WithMany()
             .HasForeignKey(p => p.NetworkId)

@@ -42,7 +42,6 @@ namespace QrMenuAPI.Core.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false),
                     network_id = table.Column<int>(type: "integer", nullable: false),
                     category_id = table.Column<int>(type: "integer", nullable: false)
                 },

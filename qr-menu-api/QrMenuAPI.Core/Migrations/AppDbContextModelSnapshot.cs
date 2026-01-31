@@ -219,10 +219,6 @@ namespace QrMenuAPI.Core.Migrations
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)

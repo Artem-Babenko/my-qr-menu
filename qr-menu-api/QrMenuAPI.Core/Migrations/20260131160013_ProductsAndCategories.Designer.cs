@@ -12,7 +12,7 @@ using QrMenuAPI.Core;
 namespace QrMenuAPI.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260131150716_ProductsAndCategories")]
+    [Migration("20260131160013_ProductsAndCategories")]
     partial class ProductsAndCategories
     {
         /// <inheritdoc />
@@ -221,10 +221,6 @@ namespace QrMenuAPI.Core.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("description");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_active");
 
                     b.Property<string>("Name")
                         .IsRequired()
