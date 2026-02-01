@@ -3,3 +3,8 @@ export enum UserPageTab {
   roles,
   invites,
 }
+
+export enum MenuPageTab {
+  products = 1,
+  categories,
+}

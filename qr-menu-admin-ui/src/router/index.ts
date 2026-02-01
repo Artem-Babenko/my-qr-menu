@@ -6,7 +6,10 @@ import RegByInvitationPage from '@/pages/auth/RegByInvitationPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
 import EstablishmentsPage from '@/pages/main/EstablishmentsPage.vue';
+import MenuPage from '@/pages/main/MenuPage.vue';
 import UsersPage from '@/pages/main/UsersPage.vue';
+import MenuTabCategories from '@/pages/main/menu/MenuTabCategories.vue';
+import MenuTabProducts from '@/pages/main/menu/MenuTabProducts.vue';
 import UsersTabInvitations from '@/pages/main/users/UsersTabInvitations.vue';
 import UsersTabRoles from '@/pages/main/users/UsersTabRoles.vue';
 import UsersTabUsers from '@/pages/main/users/UsersTabUsers.vue';
@@ -26,6 +29,9 @@ export const ROUTES = {
   onboarding: 'onboarding',
   createEstablishment: 'create-establishment',
   dashboard: 'dashboard',
+  menu: 'menu',
+  menuProducts: 'menu-products',
+  menuCategories: 'menu-categories',
   establishments: 'establishments',
   users: 'users',
   usersRoles: 'users-roles',
@@ -79,6 +85,26 @@ const routes: RouteRecordRaw[] = [
             path: ROUTES.dashboard,
             name: ROUTES.dashboard,
             component: DashboardPage,
+          },
+          {
+            path: ROUTES.menu,
+            component: MenuPage,
+            children: [
+              {
+                path: '',
+                redirect: { name: ROUTES.menuProducts },
+              },
+              {
+                path: 'products',
+                name: ROUTES.menuProducts,
+                component: MenuTabProducts,
+              },
+              {
+                path: 'categories',
+                name: ROUTES.menuCategories,
+                component: MenuTabCategories,
+              },
+            ],
           },
           {
             path: ROUTES.establishments,

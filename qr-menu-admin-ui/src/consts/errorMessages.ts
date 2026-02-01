@@ -13,6 +13,12 @@ const errorMessages: Record<string, string> = {
   [errorCodes.tableNotFound]: 'Стіл не знайдено',
   [errorCodes.duplicateTableNumber]:
     'Стіл з таким номером вже існує у цьому закладі',
+  [errorCodes.categoryNotFound]: 'Категорію не знайдено',
+  [errorCodes.duplicateCategoryName]: 'Категорія з такою назвою вже існує',
+  [errorCodes.categoryDeleteForbidden]:
+    'Неможливо видалити категорію, якщо в ній є страви',
+  [errorCodes.productNotFound]: 'Страву не знайдено',
+  [errorCodes.duplicateProductName]: 'Страва з такою назвою вже існує',
 };
 
 const DEFAULT_ERROR = 'Сталася невідома помилка';

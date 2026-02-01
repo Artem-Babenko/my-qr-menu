@@ -6,3 +6,5 @@ export { default as EstablishmentModal } from './EstablishmentModal.vue';
 export { default as CreateEstablishmentModal } from './CreateEstablishmentModal.vue';
 export { default as TablesModal } from './TablesModal.vue';
 export { default as TableModal } from './TableModal.vue';
+export { default as CategoryModal } from './CategoryModal.vue';
+export { default as ProductModal } from './ProductModal.vue';

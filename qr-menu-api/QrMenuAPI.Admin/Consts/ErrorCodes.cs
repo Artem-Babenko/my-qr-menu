@@ -18,4 +18,11 @@ public static class ErrorCodes
 
     public const string TableNotFound = "table_not_found";
     public const string DuplicateTableNumber = "duplicate_table_number";
+
+    public const string CategoryNotFound = "category_not_found";
+    public const string DuplicateCategoryName = "duplicate_category_name";
+    public const string CategoryDeleteForbidden = "category_delete_forbidden";
+
+    public const string ProductNotFound = "product_not_found";
+    public const string DuplicateProductName = "duplicate_product_name";
 }

@@ -10,4 +10,9 @@ export const errorCodes = {
   establishmentNotFound: 'establishment_not_found',
   tableNotFound: 'table_not_found',
   duplicateTableNumber: 'duplicate_table_number',
+  categoryNotFound: 'category_not_found',
+  duplicateCategoryName: 'duplicate_category_name',
+  categoryDeleteForbidden: 'category_delete_forbidden',
+  productNotFound: 'product_not_found',
+  duplicateProductName: 'duplicate_product_name',
 } as const;
