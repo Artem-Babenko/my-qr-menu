@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Api;
@@ -37,4 +37,7 @@ public abstract class BaseApiController : ControllerBase
 
     public IActionResult Conflict(string errorCode, object? data = null) =>
         Conflict(new ApiResponse(errorCode, data));
+
+    public IActionResult Forbidden(string errorCode, object? data = null) =>
+        StatusCode(StatusCodes.Status403Forbidden, new ApiResponse(errorCode, data));
 }

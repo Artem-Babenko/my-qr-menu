@@ -7,6 +7,7 @@ public static class ErrorCodes
     public const string DuplicatePhone = "duplicate_phone";
     public const string InvitationNotFound = "invitation_not_found";
     public const string UserNotFound = "user_not_found";
+    public const string PermissionDenied = "permission_denied";
     public const string DuplicateEstablishment = "duplicate_establishment";
     public const string DuplicateNetwork = "duplicate_network";
     public const string NetworkNotFound = "network_not_found";
@@ -25,4 +26,10 @@ public static class ErrorCodes
 
     public const string ProductNotFound = "product_not_found";
     public const string DuplicateProductName = "duplicate_product_name";
+
+    public const string OrderNotFound = "order_not_found";
+    public const string OrderInvalidStatus = "order_invalid_status";
+    public const string OrderItemsRequired = "order_items_required";
+    public const string OrderDeleteForbidden = "order_delete_forbidden";
+    public const string ProductNotAvailable = "product_not_available";
 }

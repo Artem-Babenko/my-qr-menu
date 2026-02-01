@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { DotsButton } from '../buttons';
   import { AppButton, AppDropdown, AppIcon } from '../shared';
   import type { ActionButton } from './types';
@@ -9,6 +9,8 @@
   });
 
   const emit = defineEmits<{ edit: []; delete: [] }>();
+
+  const showed = ref(false);
 
   const defaultButtons: ActionButton[] = [
     { icon: 'Pencil', title: 'Редагувати', click: () => emit('edit') },
@@ -26,10 +28,16 @@
     }
     return button.disabled;
   };
+
+  const onClick = (btn: ActionButton) => {
+    if (isButtonDisabled(btn)) return;
+    btn.click();
+    showed.value = false;
+  };
 </script>
 
 <template>
-  <app-dropdown anchor="bottom right" self="top right">
+  <app-dropdown v-model:open="showed" anchor="bottom right" self="top right">
     <template #target>
       <dots-button></dots-button>
     </template>
@@ -40,7 +48,7 @@
           v-for="btn in buttons"
           :key="btn.title"
           :disabled="isButtonDisabled(btn)"
-          @click="!isButtonDisabled(btn) && btn.click()"
+          @click="onClick(btn)"
         >
           <app-icon :name="btn.icon" :size="14"></app-icon>
           {{ btn.title }}

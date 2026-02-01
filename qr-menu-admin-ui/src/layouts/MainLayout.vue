@@ -21,8 +21,8 @@
 
   const pageButtons: PageButton[] = [
     { icon: 'LayoutDashboard', name: 'Головна', routeName: ROUTES.dashboard },
-    { icon: 'UtensilsCrossed', name: 'Меню', routeName: ROUTES.menu },
-    { icon: 'ShoppingBag', name: 'Замовлення', routeName: '', disabled: true },
+    { icon: 'UtensilsCrossed', name: 'Меню', routeName: ROUTES.menuProducts },
+    { icon: 'ShoppingBag', name: 'Замовлення', routeName: ROUTES.orders },
     { icon: 'BarChart3', name: 'Аналітика', routeName: '', disabled: true },
     { icon: 'Store', name: 'Заклади', routeName: ROUTES.establishments },
     { icon: 'Users', name: 'Користувачі', routeName: ROUTES.users },

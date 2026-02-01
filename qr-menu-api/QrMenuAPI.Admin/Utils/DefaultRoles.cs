@@ -1,4 +1,4 @@
-﻿using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Entities;
 using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Utils;
@@ -30,9 +30,7 @@ public static class DefaultRoles
                 new() { PermissionType = PermissionType.UsersEdit },
                 new() { PermissionType = PermissionType.UsersInvite },
                 new() { PermissionType = PermissionType.UsersRolesEdit },
-                new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersEdit },
-                new() { PermissionType = PermissionType.OrdersChangeStatus },
                 new() { PermissionType = PermissionType.MenuView },
                 new() { PermissionType = PermissionType.MenuEdit },
                 new() { PermissionType = PermissionType.AnalyticsView },
@@ -47,8 +45,16 @@ public static class DefaultRoles
             Description = "Керує роботою окремого закладу та звітами.",
             Permissions =
             [
-                new() { PermissionType = PermissionType.OrdersView },
-                new() { PermissionType = PermissionType.OrdersChangeStatus },
+                new() { PermissionType = PermissionType.OrdersCreate },
+                new() { PermissionType = PermissionType.OrdersEdit },
+                new() { PermissionType = PermissionType.OrdersTakeInWork },
+                new() { PermissionType = PermissionType.OrdersSendToKitchen },
+                new() { PermissionType = PermissionType.OrdersStartCooking },
+                new() { PermissionType = PermissionType.OrdersMarkReady },
+                new() { PermissionType = PermissionType.OrdersReturn },
+                new() { PermissionType = PermissionType.OrdersComplete },
+                new() { PermissionType = PermissionType.OrdersCancel },
+                new() { PermissionType = PermissionType.OrdersDelete },
                 new() { PermissionType = PermissionType.AnalyticsView },
                 new() { PermissionType = PermissionType.MenuView },
             ]
@@ -60,8 +66,9 @@ public static class DefaultRoles
             Description = "Готує страви, бачить замовлення кухні.",
             Permissions =
             [
-                new() { PermissionType = PermissionType.OrdersView },
-                new() { PermissionType = PermissionType.OrdersChangeStatus },
+                new() { PermissionType = PermissionType.OrdersStartCooking },
+                new() { PermissionType = PermissionType.OrdersMarkReady },
+                new() { PermissionType = PermissionType.OrdersReturn },
             ]
         };
 
@@ -72,9 +79,12 @@ public static class DefaultRoles
             Permissions =
             [
                 new() { PermissionType = PermissionType.MenuView },
-                new() { PermissionType = PermissionType.OrdersView },
+                new() { PermissionType = PermissionType.OrdersCreate },
                 new() { PermissionType = PermissionType.OrdersEdit },
-                new() { PermissionType = PermissionType.OrdersChangeStatus },
+                new() { PermissionType = PermissionType.OrdersTakeInWork },
+                new() { PermissionType = PermissionType.OrdersSendToKitchen },
+                new() { PermissionType = PermissionType.OrdersComplete },
+                new() { PermissionType = PermissionType.OrdersCancel },
             ]
         };
 

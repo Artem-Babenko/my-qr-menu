@@ -4,6 +4,7 @@ export const errorCodes = {
   duplicatePhone: 'duplicate_phone',
   invitationNotFound: 'invitation_not_found',
   userNotFound: 'user_not_found',
+  permissionDenied: 'permission_denied',
   duplicateEstablishment: 'duplicate_establishment',
   duplicateNetwork: 'duplicate_network',
   networkNotFound: 'network_not_found',
@@ -15,4 +16,9 @@ export const errorCodes = {
   categoryDeleteForbidden: 'category_delete_forbidden',
   productNotFound: 'product_not_found',
   duplicateProductName: 'duplicate_product_name',
+  productNotAvailable: 'product_not_available',
+  orderNotFound: 'order_not_found',
+  orderInvalidStatus: 'order_invalid_status',
+  orderItemsRequired: 'order_items_required',
+  orderDeleteForbidden: 'order_delete_forbidden',
 } as const;

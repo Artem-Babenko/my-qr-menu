@@ -1,12 +1,9 @@
-﻿namespace QrMenuAPI.Core.Enums;
+namespace QrMenuAPI.Core.Enums;
 
 public enum PermissionType
 {
     MenuView = 1,
     MenuEdit,
-    OrdersView,
-    OrdersEdit,
-    OrdersChangeStatus,
     AnalyticsView,
     EstablishmentsView,
     EstablishmentsEdit,
@@ -16,4 +13,14 @@ public enum PermissionType
     UsersRolesEdit,
     SettingsView,
     SettingsEdit,
+    OrdersCreate,
+    OrdersEdit,
+    OrdersTakeInWork,
+    OrdersSendToKitchen,
+    OrdersStartCooking,
+    OrdersMarkReady,
+    OrdersReturn,
+    OrdersComplete,
+    OrdersCancel,
+    OrdersDelete,
 }

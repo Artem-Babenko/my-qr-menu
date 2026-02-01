@@ -8,3 +8,6 @@ export { default as TablesModal } from './TablesModal.vue';
 export { default as TableModal } from './TableModal.vue';
 export { default as CategoryModal } from './CategoryModal.vue';
 export { default as ProductModal } from './ProductModal.vue';
+export { default as OrderCreateModal } from './OrderCreateModal.vue';
+export { default as OrderModal } from './OrderModal.vue';
+export { default as ProductPickerModal } from './ProductPickerModal.vue';

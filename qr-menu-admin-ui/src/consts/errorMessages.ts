@@ -6,6 +6,7 @@ const errorMessages: Record<string, string> = {
   [errorCodes.invitationNotFound]:
     'Запрошення не знайдено або воно більше не дійсне',
   [errorCodes.userNotFound]: 'Користувача не знайдено',
+  [errorCodes.permissionDenied]: 'Недостатньо прав для виконання цієї дії',
   [errorCodes.duplicateEstablishment]: 'Заклад з такою назвою вже існує',
   [errorCodes.duplicateNetwork]: 'Мережа з такою назвою вже існує',
   [errorCodes.networkNotFound]: 'Мережу не знайдено',
@@ -19,6 +20,13 @@ const errorMessages: Record<string, string> = {
     'Неможливо видалити категорію, якщо в ній є страви',
   [errorCodes.productNotFound]: 'Страву не знайдено',
   [errorCodes.duplicateProductName]: 'Страва з такою назвою вже існує',
+  [errorCodes.productNotAvailable]:
+    'Деякі страви недоступні для обраного закладу',
+  [errorCodes.orderNotFound]: 'Замовлення не знайдено',
+  [errorCodes.orderInvalidStatus]: 'Дію неможливо виконати для цього статусу',
+  [errorCodes.orderItemsRequired]: 'Додайте хоча б одну страву до замовлення',
+  [errorCodes.orderDeleteForbidden]:
+    'Видаляти можна лише скасовані замовлення',
 };
 
 const DEFAULT_ERROR = 'Сталася невідома помилка';

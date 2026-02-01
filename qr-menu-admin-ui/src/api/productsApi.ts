@@ -9,6 +9,12 @@ export const productsApi = {
   byNetwork: (networkId: number) =>
     apiClient.get<ProductView[]>(`products/by-network/${networkId}`),
 
+  lookup: (establishmentId: number, q: string) =>
+    apiClient.get<{ id: number; name: string; categoryName: string; price: number }[]>(
+      `products/lookup`,
+      { params: { establishmentId, q } },
+    ),
+
   create: (payload: CreateProductRequest) =>
     apiClient.post<ProductView>('products/create', payload),
 

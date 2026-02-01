@@ -10,6 +10,70 @@ namespace QrMenuAPI.Admin.Controllers;
 [Route("products")]
 public class ProductsController(AppDbContext db) : BaseApiController
 {
+    [HttpGet("lookup")]
+    public async Task<IActionResult> Lookup([FromQuery] int establishmentId, [FromQuery] string q)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (establishmentId <= 0)
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+            return Success(Array.Empty<ProductLookupItem>());
+
+        var user = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!user.NetworkId.HasValue)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var networkId = user.NetworkId.Value;
+
+        var establishmentExists = await db.Establishments
+            .AsNoTracking()
+            .AnyAsync(e => e.Id == establishmentId && e.NetworkId == networkId);
+        if (!establishmentExists)
+            return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        static string EscapeLike(string input)
+        {
+            // Escape LIKE wildcards for ILIKE, using '\' as escape character
+            return input
+                .Replace("\\", "\\\\")
+                .Replace("%", "\\%")
+                .Replace("_", "\\_");
+        }
+
+        var query = EscapeLike(q.Trim());
+        var pattern = $"%{query}%";
+
+        var items = await (
+                from p in db.Products.AsNoTracking()
+                join c in db.Categories.AsNoTracking() on p.CategoryId equals c.Id
+                join pp in db.Prices.AsNoTracking()
+                    on new { ProductId = p.Id, EstablishmentId = establishmentId }
+                    equals new { pp.ProductId, pp.EstablishmentId }
+                where p.NetworkId == networkId
+                      && pp.IsActive
+                      && EF.Functions.ILike(p.Name, pattern, "\\")
+                orderby p.Name
+                select new ProductLookupItem
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    CategoryName = c.Name,
+                    Price = pp.Price
+                })
+            .Take(10)
+            .ToListAsync();
+
+        return Success(items);
+    }
+
     [HttpGet("by-network/{networkId:int}")]
     public async Task<IActionResult> ByNetwork([FromRoute] int networkId)
     {

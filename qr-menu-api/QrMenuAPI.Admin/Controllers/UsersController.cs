@@ -17,7 +17,10 @@ public class UsersController(AppDbContext db) : BaseApiController
         if (!TryGetUserId(out var userId))
             return Unauthorized(ErrorCodes.UserNotFound);
 
-        var user = await db.Users.FindAsync(userId);
+        var user = await db.Users
+            .AsNoTracking()
+            .Include(u => u.UserEstablishment)
+            .FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
             return Unauthorized(ErrorCodes.UserNotFound);
 
