@@ -15,4 +15,7 @@ public class UserEntity
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
     public ICollection<UserSessionEntity> Sessions { get; set; } = [];
     public ICollection<InvitationEntity> Invitations { get; set; } = [];
+    public ICollection<OrderEntity> OrdersCreated { get; set; } = [];
+    public ICollection<OrderStaffEntity> AssignedOrders { get; set; } = [];
+    public ICollection<OrderStatusHistoryEntity> StatusChanges { get; set; } = [];
 }

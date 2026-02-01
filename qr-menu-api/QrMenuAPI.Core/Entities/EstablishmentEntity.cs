@@ -13,4 +13,5 @@ public class EstablishmentEntity
     public ICollection<UserEstablishmentEntity> UserEstablishment { get; set; } = [];
     public ICollection<InvitationEntity> Invitations { get; set; } = [];
     public ICollection<TableEntity> Tables { get; set; } = [];
+    public ICollection<OrderEntity> Orders { get; set; } = [];
 }

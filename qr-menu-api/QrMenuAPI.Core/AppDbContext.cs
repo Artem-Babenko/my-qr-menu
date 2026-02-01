@@ -18,6 +18,10 @@ public class AppDbContext : DbContext
     public DbSet<ProductEntity> Products { get; set; }
     public DbSet<ProductPriceEntity> Prices { get; set; }
     public DbSet<CategoryEntity> Categories { get; set; }
+    public DbSet<OrderEntity> Orders { get; set; }
+    public DbSet<OrderItemEntity> OrderItems { get; set; }
+    public DbSet<OrderStaffEntity> OrderStaffs { get; set; }
+    public DbSet<OrderStatusHistoryEntity> OrderStatusHistories { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
     : base(options)
@@ -37,6 +41,10 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ProductConfig());
         modelBuilder.ApplyConfiguration(new ProductPriceConfig());
         modelBuilder.ApplyConfiguration(new CategoryConfig());
+        modelBuilder.ApplyConfiguration(new OrderConfig());
+        modelBuilder.ApplyConfiguration(new OrderItemConfig());
+        modelBuilder.ApplyConfiguration(new OrderStaffConfig());
+        modelBuilder.ApplyConfiguration(new OrderStatusHistoryConfig());
         base.OnModelCreating(modelBuilder);
     }
 }

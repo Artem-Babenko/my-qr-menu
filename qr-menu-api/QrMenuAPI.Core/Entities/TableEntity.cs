@@ -7,4 +7,6 @@ public class TableEntity
 
     public int EstablishmentId { get; set; }
     public EstablishmentEntity Establishment { get; set; } = null!;
+
+    public ICollection<OrderEntity> Orders { get; set; } = [];
 }
