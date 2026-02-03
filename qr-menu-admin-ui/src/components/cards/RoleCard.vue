@@ -4,12 +4,16 @@
   import { AppCard, AppFlex, AppIcon, AppText } from '../shared';
   import { CardDropdown } from '../dropdowns';
   import type { ActionButton } from '../dropdowns';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const props = defineProps<{ role: RoleView }>();
   const emit = defineEmits<{
     edit: [role: RoleView];
     delete: [role: RoleView];
   }>();
+
+  const { hasAny } = usePermissions();
 
   const handleEdit = () => {
     emit('edit', props.role);
@@ -24,12 +28,14 @@
       icon: 'Pencil',
       title: 'Редагувати',
       click: handleEdit,
+      disabled: () => !hasAny(PermissionType.rolesCreate),
     },
     {
       icon: 'Trash',
       title: 'Видалити',
       click: handleDelete,
-      disabled: () => props.role.numberOfUsers > 0,
+      disabled: () =>
+        props.role.numberOfUsers > 0 || !hasAny(PermissionType.rolesDelete),
     },
   ]);
 </script>

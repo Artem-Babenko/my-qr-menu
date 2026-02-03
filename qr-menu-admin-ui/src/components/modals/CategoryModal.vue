@@ -14,6 +14,8 @@
     AppModal,
     AppText,
   } from '../shared';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const props = defineProps<{ category?: CategoryView | null }>();
@@ -21,6 +23,7 @@
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+  const { hasAny } = usePermissions();
 
   const name = ref('');
   const description = ref<string | null>(null);
@@ -31,6 +34,7 @@
   const modalTitle = computed(() =>
     isEditMode.value ? 'Редагувати категорію' : 'Додати категорію',
   );
+  const canEdit = computed(() => hasAny(PermissionType.categoriesEdit));
 
   const saveDisabled = computed(() => {
     if (!name.value.trim()) return true;
@@ -53,6 +57,7 @@
 
   const save = async () => {
     if (saveDisabled.value) return;
+    if (!canEdit.value) return;
 
     const networkId = networkStore.network?.id;
     if (!networkId && !props.category) return;
@@ -86,7 +91,11 @@
     <div class="form">
       <div class="input-block">
         <app-label label="Назва" for="categoryName" />
-        <app-input v-model="name" id="categoryName" placeholder="Введіть назву" />
+        <app-input
+          v-model="name"
+          id="categoryName"
+          placeholder="Введіть назву"
+        ></app-input>
       </div>
 
       <div class="input-block">
@@ -104,7 +113,7 @@
           v-model="sortOrder"
           id="categorySortOrder"
           placeholder="0"
-        />
+        ></app-input>
       </div>
 
       <app-flex align="center" gap="10" class="active-row">
@@ -115,7 +124,7 @@
 
     <app-flex class="form-buttons" justify="flex-end" gap="10">
       <app-button type="outline" @click="close">Скасувати</app-button>
-      <app-button :disabled="saveDisabled" @click="save">
+      <app-button :disabled="saveDisabled || !canEdit" @click="save">
         {{ isEditMode ? 'Зберегти зміни' : 'Створити категорію' }}
       </app-button>
     </app-flex>
@@ -138,4 +147,3 @@
     margin-top: 20px;
   }
 </style>
-

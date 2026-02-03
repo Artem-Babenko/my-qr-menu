@@ -4,6 +4,8 @@
   import { AppCard, AppFlex, AppIcon, AppText } from '../shared';
   import { CardDropdown } from '../dropdowns';
   import type { ActionButton } from '../dropdowns';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const props = defineProps<{ establishment: Establishment }>();
   const emit = defineEmits<{
@@ -15,23 +17,37 @@
   const handleEdit = () => emit('edit', props.establishment);
   const handleTables = () => emit('tables', props.establishment);
   const handleDelete = () => emit('delete', props.establishment);
+  const { has } = usePermissions();
+
+  const canUpdate = computed(() =>
+    has(PermissionType.establishmentsUpdate, props.establishment.id),
+  );
+  const canDelete = computed(() =>
+    has(PermissionType.establishmentsDelete, props.establishment.id),
+  );
+  const canTables = computed(() =>
+    has(PermissionType.tablesView, props.establishment.id),
+  );
 
   const buttons = computed<ActionButton[]>(() => [
     {
       icon: 'Pencil',
       title: 'Редагувати',
       click: handleEdit,
+      disabled: () => !canUpdate.value,
     },
     {
       icon: 'Table',
       title: 'Столи',
       click: handleTables,
+      disabled: () => !canTables.value,
     },
     {
       icon: 'Trash',
       title: 'Видалити',
       click: handleDelete,
-      disabled: () => (props.establishment.usersCount ?? 0) > 0,
+      disabled: () =>
+        (props.establishment.usersCount ?? 0) > 0 || !canDelete.value,
     },
   ]);
 </script>

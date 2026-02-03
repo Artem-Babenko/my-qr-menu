@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Products;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -38,6 +40,14 @@ public class ProductsController(AppDbContext db) : BaseApiController
             .AnyAsync(e => e.Id == establishmentId && e.NetworkId == networkId);
         if (!establishmentExists)
             return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canLookup = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            establishmentId,
+            [PermissionType.ProductsView]);
+        if (!canLookup)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         static string EscapeLike(string input)
         {
@@ -92,6 +102,23 @@ public class ProductsController(AppDbContext db) : BaseApiController
         if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
             return NotFound(ErrorCodes.NetworkNotFound);
 
+        var canView = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            networkId,
+            [
+                PermissionType.ProductsView,
+                PermissionType.ProductsCreate,
+                PermissionType.ProductsEdit,
+                PermissionType.ProductsDelete,
+                PermissionType.CategoriesView,
+                PermissionType.CategoriesCreate,
+                PermissionType.CategoriesEdit,
+                PermissionType.CategoriesDelete,
+            ]);
+        if (!canView)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
         var products = await db.Products
             .AsNoTracking()
             .Where(p => p.NetworkId == networkId)
@@ -136,6 +163,14 @@ public class ProductsController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue || user.NetworkId.Value != req.NetworkId)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            req.NetworkId,
+            [PermissionType.ProductsCreate]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var categoryExists = await db.Categories
             .AsNoTracking()
@@ -216,6 +251,14 @@ public class ProductsController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            user.NetworkId.Value,
+            [PermissionType.ProductsEdit]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var product = await db.Products
             .FirstOrDefaultAsync(p => p.Id == productId && p.NetworkId == user.NetworkId.Value);
@@ -319,6 +362,14 @@ public class ProductsController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            user.NetworkId.Value,
+            [PermissionType.ProductsDelete]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var product = await db.Products
             .FirstOrDefaultAsync(p => p.Id == productId && p.NetworkId == user.NetworkId.Value);

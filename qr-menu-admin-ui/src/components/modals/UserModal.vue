@@ -15,6 +15,10 @@
   import type { RoleView } from '@/types/roles';
   import type { User, UserEstablishmentAccess } from '@/types/user';
   import { computed, ref, watch } from 'vue';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
+  import { getErrorMessage } from '@/consts/errorMessages';
+  import { useToastsStore } from '@/store/toasts';
 
   interface EstablishmentRow {
     establishmentId: number;
@@ -29,6 +33,8 @@
 
   const networkStore = useNetworkStore();
   const rolesStore = useRolesStore();
+  const toasts = useToastsStore();
+  const { hasAny } = usePermissions();
 
   const name = ref<string | null>(null);
   const surname = ref<string | null>(null);
@@ -85,6 +91,7 @@
 
   const save = async () => {
     if (!props.user || saveDisabled.value) return;
+    if (!hasAny(PermissionType.usersEdit)) return;
 
     saving.value = true;
     const payload = {
@@ -97,7 +104,10 @@
     const resp = await usersApi.updateEstablishments(props.user.id, payload);
     saving.value = false;
 
-    if (!resp.success) return;
+    if (!resp.success) {
+      toasts.error(getErrorMessage(resp.errorCode));
+      return;
+    }
     showed.value = false;
     emit('saved');
   };
@@ -159,7 +169,12 @@
 
       <app-flex class="buttons" justify="flex-end" gap="10">
         <app-button type="outline" @click="close">Скасувати</app-button>
-        <app-button :disabled="saveDisabled" @click="save">Зберегти</app-button>
+        <app-button
+          :disabled="saveDisabled || !hasAny(PermissionType.usersEdit)"
+          @click="save"
+        >
+          Зберегти
+        </app-button>
       </app-flex>
     </div>
   </app-modal>

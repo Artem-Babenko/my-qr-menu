@@ -11,11 +11,14 @@
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { OrderStatusGroup } from '@/types/orders';
-  import { computed, ref, toRef } from 'vue';
+  import { computed, ref, toRef, watch } from 'vue';
   import { OrderList } from '@/components/lists';
   import { OrderCreateModal, OrderModal } from '@/components/modals';
-  import { useLoader } from '@/composables';
+  import { useLoader, usePermissions } from '@/composables';
   import { OrderStatus } from '@/consts/orders';
+  import { PermissionType } from '@/consts/roles';
+  import { ROUTES } from '@/router';
+  import { useRouter } from 'vue-router';
 
   interface OrderStatusGroupView {
     id: OrderStatusGroup;
@@ -25,6 +28,8 @@
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+  const router = useRouter();
+  const { hasAnyOf } = usePermissions();
 
   const search = ref('');
   const selectedGroup = ref<OrderStatusGroup | null>(null);
@@ -33,6 +38,22 @@
   const selectedOrderId = ref<number | null>(null);
   const loading = ref(false);
   const networkId = toRef(() => networkStore.network?.id);
+
+  const canViewOrders = computed(() =>
+    hasAnyOf([
+      PermissionType.ordersView,
+      PermissionType.ordersCreate,
+      PermissionType.ordersEdit,
+      PermissionType.ordersTakeInWork,
+      PermissionType.ordersSendToKitchen,
+      PermissionType.ordersStartCooking,
+      PermissionType.ordersMarkReady,
+      PermissionType.ordersReturn,
+      PermissionType.ordersComplete,
+      PermissionType.ordersCancel,
+      PermissionType.ordersDelete,
+    ]),
+  );
 
   const groups: OrderStatusGroupView[] = [
     { id: 'new', title: 'Нові', icon: 'Clock' },
@@ -77,17 +98,28 @@
   const { data: orders, refetch } = useLoader({
     keys: ['orders', networkId],
     fn: load,
-    enabled: () => !!networkId.value,
+    enabled: () => !!networkId.value && canViewOrders.value,
   });
 
   const openCreate = () => {
+    if (!canViewOrders.value) return;
     createShowed.value = true;
   };
 
   const openDetails = (orderId: number) => {
+    if (!canViewOrders.value) return;
     selectedOrderId.value = orderId;
     detailsShowed.value = true;
   };
+
+  watch(
+    canViewOrders,
+    (v) => {
+      if (v) return;
+      router.replace({ name: ROUTES.dashboard });
+    },
+    { immediate: true },
+  );
 
   const filtered = computed(() => {
     if (!orders.value) return [];
@@ -132,7 +164,7 @@
 </script>
 
 <template>
-  <div class="page">
+  <div v-if="canViewOrders" class="page">
     <div class="header">
       <app-text size="xxl" weight="600">Замовлення</app-text>
       <app-text color="secondary">Перегляд та управління замовленнями</app-text>
@@ -184,6 +216,11 @@
       :order-id="selectedOrderId"
       @saved="refetch"
     ></order-modal>
+  </div>
+  <div v-else>
+    <app-text color="secondary">
+      Недостатньо прав для перегляду замовлень
+    </app-text>
   </div>
 </template>
 

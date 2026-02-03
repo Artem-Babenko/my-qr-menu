@@ -9,6 +9,7 @@
   const props = defineProps<{
     product: ProductView;
     establishments?: Establishment[];
+    readonly?: boolean;
   }>();
   const emit = defineEmits<{
     edit: [product: ProductView];
@@ -39,11 +40,13 @@
       icon: 'Pencil',
       title: 'Редагувати',
       click: () => emit('edit', props.product),
+      disabled: () => !!props.readonly,
     },
     {
       icon: 'Trash',
       title: 'Видалити',
       click: () => emit('delete', props.product),
+      disabled: () => !!props.readonly,
     },
   ]);
 </script>
@@ -101,4 +104,3 @@
     padding-top: 10px;
   }
 </style>
-

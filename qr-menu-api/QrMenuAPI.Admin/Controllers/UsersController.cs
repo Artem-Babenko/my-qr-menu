@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Mappings;
 using QrMenuAPI.Admin.Models.User;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -31,8 +33,30 @@ public class UsersController(AppDbContext db) : BaseApiController
     [HttpGet("search")]
     public async Task<IActionResult> SearchUser([FromQuery] string phone)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (string.IsNullOrWhiteSpace(phone) || phone.Length < 2)
             return Success(null);
+
+        var currentUser = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canSearch = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            currentUserId,
+            currentUser.NetworkId.Value,
+            [
+                PermissionType.InvitationsCreate,
+                PermissionType.InvitationsView,
+            ]);
+        if (!canSearch)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var normalizedQuery = phone.Trim();
 
@@ -46,6 +70,29 @@ public class UsersController(AppDbContext db) : BaseApiController
     [HttpGet("by-network/{networkId:int}")]
     public async Task<IActionResult> GetByNetwork(int networkId)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (networkId <= 0)
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var currentUser = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!currentUser.NetworkId.HasValue || currentUser.NetworkId.Value != networkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canView = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            currentUserId,
+            networkId,
+            [PermissionType.UsersView]);
+        if (!canView)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
         var users = await db.Users
             .AsNoTracking()
             .Include(u => u.UserEstablishment)
@@ -87,6 +134,14 @@ public class UsersController(AppDbContext db) : BaseApiController
             return NotFound(ErrorCodes.NetworkNotFound);
 
         var networkId = currentUser.NetworkId.Value;
+
+        var canEditUsers = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            currentUserId,
+            networkId,
+            [PermissionType.UsersEdit]);
+        if (!canEditUsers)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var user = await db.Users
             .Include(u => u.UserEstablishment)

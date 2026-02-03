@@ -17,11 +17,13 @@
       establishment?: Establishment | null;
       tables?: TableView[];
       loading?: boolean;
+      readonly?: boolean;
     }>(),
     {
       establishment: null,
       tables: () => [],
       loading: false,
+      readonly: false,
     },
   );
 
@@ -40,7 +42,7 @@
       <app-text v-if="establishment" color="secondary" line="m">
         {{ establishment.name }}
       </app-text>
-      <app-button @click="emit('add')">
+      <app-button :disabled="readonly" @click="!readonly && emit('add')">
         <app-icon name="Plus" :size="16" :stroke-width="2.5"></app-icon>
         Додати стіл
       </app-button>
@@ -63,10 +65,18 @@
           <app-text weight="500">Стіл №{{ table.number }}</app-text>
 
           <app-flex class="icons" gap="10" align="center">
-            <app-icon name="Pencil" @click="emit('edit', table)"></app-icon>
+            <app-icon
+              name="Pencil"
+              :class="{ disabled: readonly }"
+              @click="!readonly && emit('edit', table)"
+            ></app-icon>
             <app-icon name="Copy" @click="noop"></app-icon>
             <app-icon name="QrCode" @click="noop"></app-icon>
-            <app-icon name="Trash" @click="emit('delete', table)"></app-icon>
+            <app-icon
+              name="Trash"
+              :class="{ disabled: readonly }"
+              @click="!readonly && emit('delete', table)"
+            ></app-icon>
           </app-flex>
         </app-flex>
       </app-card>
@@ -98,5 +108,10 @@
     &:hover {
       color: var(--primary-text);
     }
+  }
+  .icons .app-icon.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
   }
 </style>

@@ -8,6 +8,13 @@
   } from '@/components/shared';
   import { UserPageTab } from '@/consts/tabs';
   import type { AppTab } from '@/types/components';
+  import { computed } from 'vue';
+
+  const props = defineProps<{
+    tabs?: AppTab[];
+    addDisabled?: boolean;
+    hideAddButton?: boolean;
+  }>();
 
   const selectedTab = defineModel<UserPageTab>('selectedTab', {
     required: true,
@@ -16,11 +23,13 @@
 
   const emit = defineEmits<{ addButtonClick: [] }>();
 
-  const tabs: AppTab[] = [
+  const defaultTabs: AppTab[] = [
     { id: UserPageTab.users, title: 'Користувачі' },
     { id: UserPageTab.roles, title: 'Ролі' },
     { id: UserPageTab.invites, title: 'Запрошення' },
   ];
+
+  const tabs = computed(() => props.tabs ?? defaultTabs);
 
   const buttonTitles: Record<UserPageTab, string> = {
     [UserPageTab.users]: 'Запросити користувача',
@@ -49,7 +58,11 @@
         v-model="search"
         :placeholder="placeholders[selectedTab]"
       ></app-search-input>
-      <app-button @click="emit('addButtonClick')">
+      <app-button
+        v-if="!hideAddButton"
+        :disabled="addDisabled"
+        @click="emit('addButtonClick')"
+      >
         <app-icon name="Plus" :size="15"></app-icon>
         {{ buttonTitles[selectedTab] }}
       </app-button>

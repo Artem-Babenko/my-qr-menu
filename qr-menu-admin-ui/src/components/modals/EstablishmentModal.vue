@@ -5,12 +5,20 @@
   import { computed, ref, watch } from 'vue';
   import { AppButton, AppFlex, AppInput, AppLabel, AppModal } from '../shared';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const props = defineProps<{ establishment: Establishment | null }>();
   const emit = defineEmits<{ saved: [] }>();
 
   const toasts = useToastsStore();
+  const { has } = usePermissions();
+
+  const canEdit = computed(() => {
+    const id = props.establishment?.id;
+    return id ? has(PermissionType.establishmentsUpdate, id) : false;
+  });
 
   const name = ref<string | null>(null);
   const address = ref<string | null>(null);
@@ -34,6 +42,7 @@
 
   const save = async () => {
     if (!props.establishment || saveDisabled.value) return;
+    if (!canEdit.value) return;
     saving.value = true;
     const resp = await networkApi.updateEstablishment(props.establishment.id, {
       name: name.value!.trim(),
@@ -74,7 +83,9 @@
 
       <app-flex class="buttons" justify="flex-end" gap="10">
         <app-button type="outline" @click="close">Скасувати</app-button>
-        <app-button :disabled="saveDisabled" @click="save">Зберегти</app-button>
+        <app-button :disabled="saveDisabled || !canEdit" @click="save">
+          Зберегти
+        </app-button>
       </app-flex>
     </div>
   </app-modal>

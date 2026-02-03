@@ -35,5 +35,22 @@ export function usePermissions() {
     return set.has(permission);
   };
 
-  return { has, permissionsByEstablishmentId };
+  const hasAny = (permission: PermissionType) => {
+    for (const set of permissionsByEstablishmentId.value.values()) {
+      if (set.has(permission)) return true;
+    }
+    return false;
+  };
+
+  const hasAnyOf = (permissions: PermissionType[]) => {
+    if (!permissions.length) return false;
+    for (const set of permissionsByEstablishmentId.value.values()) {
+      for (const p of permissions) {
+        if (set.has(p)) return true;
+      }
+    }
+    return false;
+  };
+
+  return { has, hasAny, hasAnyOf, permissionsByEstablishmentId };
 }

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Network;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -35,6 +37,14 @@ public class EstablishmentsController(AppDbContext db) : BaseApiController
                 e.NetworkId == user.NetworkId.Value);
         if (establishment == null)
             return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            establishmentId,
+            [PermissionType.EstablishmentsUpdate]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var newName = req.Name.Trim();
         if (await db.Establishments.AnyAsync(e =>
@@ -73,6 +83,14 @@ public class EstablishmentsController(AppDbContext db) : BaseApiController
                 e.NetworkId == user.NetworkId.Value);
         if (establishment == null)
             return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canDelete = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            establishmentId,
+            [PermissionType.EstablishmentsDelete]);
+        if (!canDelete)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         db.Establishments.Remove(establishment);
         await db.SaveChangesAsync();

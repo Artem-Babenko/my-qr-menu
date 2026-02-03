@@ -24,18 +24,32 @@ public static class DefaultRoles
             Description = "Керує закладами та персоналом, не фінансами мережі.",
             Permissions =
             [
-                new() { PermissionType = PermissionType.EstablishmentsView },
-                new() { PermissionType = PermissionType.EstablishmentsEdit },
+                new() { PermissionType = PermissionType.EstablishmentsCreate },
+                new() { PermissionType = PermissionType.EstablishmentsUpdate },
+                new() { PermissionType = PermissionType.EstablishmentsDelete },
+                new() { PermissionType = PermissionType.NetworkEdit },
+                new() { PermissionType = PermissionType.TablesView },
+                new() { PermissionType = PermissionType.TablesCreate },
+                new() { PermissionType = PermissionType.TablesEdit },
+                new() { PermissionType = PermissionType.TablesDelete },
                 new() { PermissionType = PermissionType.UsersView },
                 new() { PermissionType = PermissionType.UsersEdit },
-                new() { PermissionType = PermissionType.UsersInvite },
-                new() { PermissionType = PermissionType.UsersRolesEdit },
+                new() { PermissionType = PermissionType.InvitationsView },
+                new() { PermissionType = PermissionType.InvitationsCreate },
+                new() { PermissionType = PermissionType.InvitationsDelete },
+                new() { PermissionType = PermissionType.RolesView },
+                new() { PermissionType = PermissionType.RolesCreate },
+                new() { PermissionType = PermissionType.RolesDelete },
+                new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersEdit },
-                new() { PermissionType = PermissionType.MenuView },
-                new() { PermissionType = PermissionType.MenuEdit },
-                new() { PermissionType = PermissionType.AnalyticsView },
-                new() { PermissionType = PermissionType.SettingsView },
-                new() { PermissionType = PermissionType.SettingsEdit },
+                new() { PermissionType = PermissionType.ProductsView },
+                new() { PermissionType = PermissionType.ProductsCreate },
+                new() { PermissionType = PermissionType.ProductsEdit },
+                new() { PermissionType = PermissionType.ProductsDelete },
+                new() { PermissionType = PermissionType.CategoriesView },
+                new() { PermissionType = PermissionType.CategoriesCreate },
+                new() { PermissionType = PermissionType.CategoriesEdit },
+                new() { PermissionType = PermissionType.CategoriesDelete },
             ]
         };
 
@@ -45,6 +59,7 @@ public static class DefaultRoles
             Description = "Керує роботою окремого закладу та звітами.",
             Permissions =
             [
+                new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersCreate },
                 new() { PermissionType = PermissionType.OrdersEdit },
                 new() { PermissionType = PermissionType.OrdersTakeInWork },
@@ -55,8 +70,9 @@ public static class DefaultRoles
                 new() { PermissionType = PermissionType.OrdersComplete },
                 new() { PermissionType = PermissionType.OrdersCancel },
                 new() { PermissionType = PermissionType.OrdersDelete },
-                new() { PermissionType = PermissionType.AnalyticsView },
-                new() { PermissionType = PermissionType.MenuView },
+                new() { PermissionType = PermissionType.TablesView },
+                new() { PermissionType = PermissionType.ProductsView },
+                new() { PermissionType = PermissionType.CategoriesView },
             ]
         };
 
@@ -66,6 +82,7 @@ public static class DefaultRoles
             Description = "Готує страви, бачить замовлення кухні.",
             Permissions =
             [
+                new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersStartCooking },
                 new() { PermissionType = PermissionType.OrdersMarkReady },
                 new() { PermissionType = PermissionType.OrdersReturn },
@@ -78,7 +95,10 @@ public static class DefaultRoles
             Description = "Приймає замовлення та обслуговує клієнтів.",
             Permissions =
             [
-                new() { PermissionType = PermissionType.MenuView },
+                new() { PermissionType = PermissionType.ProductsView },
+                new() { PermissionType = PermissionType.CategoriesView },
+                new() { PermissionType = PermissionType.TablesView },
+                new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersCreate },
                 new() { PermissionType = PermissionType.OrdersEdit },
                 new() { PermissionType = PermissionType.OrdersTakeInWork },

@@ -6,12 +6,15 @@
   import { useNetworkStore } from '@/store/network';
   import { expiresAt } from '@/utils/dates';
   import { ROUTES } from '@/router';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const props = defineProps<{ invitation: Invitation }>();
   const emit = defineEmits<{ delete: [] }>();
 
   const roleStore = useRolesStore();
   const networkStore = useNetworkStore();
+  const { hasAny } = usePermissions();
 
   const roleName = computed(
     () =>
@@ -31,6 +34,14 @@
   });
 
   const expiresIn = computed(() => expiresAt(props.invitation.expiredAt));
+
+  const canDelete = computed(() => hasAny(PermissionType.invitationsDelete));
+
+  const canCopy = computed(
+    () =>
+      hasAny(PermissionType.invitationsView) ||
+      hasAny(PermissionType.invitationsCreate),
+  );
 
   const copyInvitationLink = async () => {
     const link = new URL(
@@ -82,11 +93,16 @@
       </app-flex>
 
       <app-flex class="icons" gap="10">
-        <app-icon name="Trash" @click="emit('delete')"></app-icon>
+        <app-icon
+          name="Trash"
+          :class="{ disabled: !canDelete }"
+          @click="canDelete && emit('delete')"
+        ></app-icon>
         <app-icon
           v-if="!invitation.targetUserId"
           name="Copy"
-          @click="copyInvitationLink"
+          :class="{ disabled: !canCopy }"
+          @click="canCopy && copyInvitationLink()"
         ></app-icon>
       </app-flex>
     </app-flex>
@@ -111,5 +127,10 @@
     &:hover {
       color: var(--primary-text);
     }
+  }
+  .icons .app-icon.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
   }
 </style>

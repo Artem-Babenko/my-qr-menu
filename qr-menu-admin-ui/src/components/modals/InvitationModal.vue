@@ -15,9 +15,16 @@
   import { InvitationForm } from '../forms';
   import { usersApi } from '@/api/usersApi';
   import { invitationApi } from '@/api/invitationApi';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
+  import { getErrorMessage } from '@/consts/errorMessages';
+  import { useToastsStore } from '@/store/toasts';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const emit = defineEmits<{ save: [] }>();
+
+  const { hasAny } = usePermissions();
+  const toasts = useToastsStore();
 
   const phone = ref('');
   const invitation = ref<NewInvitation>(createNewInvitation());
@@ -58,7 +65,13 @@
 
   const findUser = async () => {
     if (!phone.value || form.showed) return;
-    const { data: user } = await usersApi.search(phone.value);
+    if (!hasAny(PermissionType.invitationsCreate)) return;
+    const resp = await usersApi.search(phone.value);
+    if (!resp.success) {
+      toasts.error(getErrorMessage(resp.errorCode));
+      return;
+    }
+    const user = resp.data;
     if (user) {
       invitation.value.targetUserId = user.id;
       invitation.value.name = user.name;
@@ -73,6 +86,7 @@
 
   const sendInvitation = async () => {
     if (sendDisabled.value) return;
+    if (!hasAny(PermissionType.invitationsCreate)) return;
     const inv = invitation.value;
     const resp = inv.targetUserId
       ? await invitationApi.createForExistingUser({

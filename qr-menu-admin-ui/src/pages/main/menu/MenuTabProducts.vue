@@ -11,6 +11,8 @@
     AppText,
   } from '@/components/shared';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { CategoryView } from '@/types/categories';
@@ -19,16 +21,20 @@
 
   const toasts = useToastsStore();
   const networkStore = useNetworkStore();
-  const search = ref('');
+  const { hasAny } = usePermissions();
 
+  const search = ref('');
   const categories = ref<CategoryView[]>([]);
   const products = ref<ProductView[]>([]);
   const loading = ref(false);
-
   const modalShowed = ref(false);
   const editingProduct = ref<ProductView | null>(null);
 
   const networkId = computed(() => networkStore.network?.id ?? null);
+  const canView = computed(() => hasAny(PermissionType.productsView));
+  const canCreate = computed(() => hasAny(PermissionType.productsCreate));
+  const canEdit = computed(() => hasAny(PermissionType.productsEdit));
+  const canDelete = computed(() => hasAny(PermissionType.productsDelete));
 
   const categoriesSorted = computed(() =>
     categories.value.slice().sort((a, b) => a.sortOrder - b.sortOrder),
@@ -62,6 +68,7 @@
   const loadData = async () => {
     const id = networkId.value;
     if (!id) return;
+    if (!canView.value) return;
     loading.value = true;
     try {
       const [cats, prods] = await Promise.all([
@@ -95,16 +102,19 @@
   );
 
   const openCreate = () => {
+    if (!canCreate.value) return;
     editingProduct.value = null;
     modalShowed.value = true;
   };
 
   const openEdit = (product: ProductView) => {
+    if (!canEdit.value) return;
     editingProduct.value = product;
     modalShowed.value = true;
   };
 
   const onDelete = async (product: ProductView) => {
+    if (!canDelete.value) return;
     const confirmed = window.confirm(`Видалити страву "${product.name}"?`);
     if (!confirmed) return;
     const resp = await productsApi.delete(product.id);
@@ -122,59 +132,74 @@
 
 <template>
   <div class="tab">
-    <app-flex class="controls" align="center" gap="20">
-      <div class="search">
-        <app-search-input v-model="search" placeholder="Пошук страв..." />
-      </div>
-      <app-button class="add-btn" :disabled="!networkId" @click="openCreate">
-        Додати страву
-      </app-button>
-    </app-flex>
-
-    <app-text v-if="loading" color="secondary">Завантаження...</app-text>
-
-    <div v-else class="groups">
-      <div
-        v-for="cat in categoriesSorted"
-        :key="cat.id"
-        class="group"
-        v-show="(productsByCategory.get(cat.id)?.length ?? 0) > 0"
-      >
-        <app-flex
-          direction="column"
-          align="flex-start"
-          :gap="6"
-          class="group-head"
+    <app-text v-if="!canView" color="secondary">
+      Недостатньо прав для перегляду меню
+    </app-text>
+    <template v-else>
+      <app-flex class="controls" align="center" gap="20">
+        <div class="search">
+          <app-search-input v-model="search" placeholder="Пошук страв..." />
+        </div>
+        <app-button
+          class="add-btn"
+          :disabled="!networkId || !canCreate"
+          @click="openCreate"
         >
-          <app-text weight="600">{{ cat.name }}</app-text>
-          <app-text v-if="cat.description" color="secondary" size="xs" line="m">
-            {{ cat.description }}
-          </app-text>
-        </app-flex>
+          Додати страву
+        </app-button>
+      </app-flex>
 
-        <base-card-list>
-          <product-card
-            v-for="p in productsByCategory.get(cat.id) ?? []"
-            :key="p.id"
-            :product="p"
-            :establishments="networkStore.network?.establishments ?? []"
-            @edit="openEdit"
-            @delete="onDelete"
-          ></product-card>
-        </base-card-list>
+      <app-text v-if="loading" color="secondary">Завантаження...</app-text>
+
+      <div v-else class="groups">
+        <div
+          v-for="cat in categoriesSorted"
+          :key="cat.id"
+          class="group"
+          v-show="(productsByCategory.get(cat.id)?.length ?? 0) > 0"
+        >
+          <app-flex
+            direction="column"
+            align="flex-start"
+            :gap="6"
+            class="group-head"
+          >
+            <app-text weight="600">{{ cat.name }}</app-text>
+            <app-text
+              v-if="cat.description"
+              color="secondary"
+              size="xs"
+              line="m"
+            >
+              {{ cat.description }}
+            </app-text>
+          </app-flex>
+
+          <base-card-list>
+            <product-card
+              v-for="p in productsByCategory.get(cat.id) ?? []"
+              :key="p.id"
+              :product="p"
+              :establishments="networkStore.network?.establishments ?? []"
+              :readonly="!canEdit"
+              @edit="openEdit"
+              @delete="onDelete"
+            ></product-card>
+          </base-card-list>
+        </div>
+
+        <app-text v-if="filteredProducts.length === 0" color="secondary">
+          Нічого не знайдено
+        </app-text>
       </div>
 
-      <app-text v-if="filteredProducts.length === 0" color="secondary">
-        Нічого не знайдено
-      </app-text>
-    </div>
-
-    <product-modal
-      v-model:showed="modalShowed"
-      :product="editingProduct"
-      :categories="categoriesSorted"
-      @saved="onSaved"
-    ></product-modal>
+      <product-modal
+        v-model:showed="modalShowed"
+        :product="editingProduct"
+        :categories="categoriesSorted"
+        @saved="onSaved"
+      ></product-modal>
+    </template>
   </div>
 </template>
 

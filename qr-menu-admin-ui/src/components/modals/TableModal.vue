@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { tablesApi } from '@/api/tablesApi';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
   import { useToastsStore } from '@/store/toasts';
   import type { TableView } from '@/types/tables';
   import { computed, ref, watch } from 'vue';
@@ -14,6 +16,7 @@
   const emit = defineEmits<{ saved: [] }>();
 
   const toasts = useToastsStore();
+  const { has } = usePermissions();
 
   const number = ref('');
 
@@ -22,6 +25,12 @@
     isEditMode.value ? 'Редагувати стіл' : 'Додати стіл',
   );
   const saveDisabled = computed(() => !number.value.trim());
+  const canEdit = computed(() => {
+    const estId = props.establishmentId ?? props.table?.establishmentId ?? null;
+    if (!estId) return false;
+    if (!props.table) return has(PermissionType.tablesCreate, estId);
+    return has(PermissionType.tablesEdit, estId);
+  });
 
   watch(showed, (newValue) => {
     if (!newValue) return;
@@ -34,6 +43,7 @@
 
   const save = async () => {
     if (saveDisabled.value) return;
+    if (!canEdit.value) return;
 
     const trimmed = number.value.trim();
 
@@ -73,7 +83,7 @@
 
     <app-flex class="form-buttons" justify="flex-end" gap="10">
       <app-button type="outline" @click="close">Скасувати</app-button>
-      <app-button :disabled="saveDisabled" @click="save">
+      <app-button :disabled="saveDisabled || !canEdit" @click="save">
         {{ isEditMode ? 'Зберегти зміни' : 'Створити стіл' }}
       </app-button>
     </app-flex>

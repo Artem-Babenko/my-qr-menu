@@ -5,7 +5,7 @@
   import { CardDropdown } from '../dropdowns';
   import type { ActionButton } from '../dropdowns';
 
-  const props = defineProps<{ category: CategoryView }>();
+  const props = defineProps<{ category: CategoryView; readonly?: boolean }>();
   const emit = defineEmits<{
     edit: [category: CategoryView];
     delete: [category: CategoryView];
@@ -16,11 +16,13 @@
       icon: 'Pencil',
       title: 'Редагувати',
       click: () => emit('edit', props.category),
+      disabled: () => !!props.readonly,
     },
     {
       icon: 'Trash',
       title: 'Видалити',
       click: () => emit('delete', props.category),
+      disabled: () => !!props.readonly,
     },
   ]);
 </script>
@@ -36,7 +38,12 @@
           </app-text>
         </app-text>
 
-        <app-text v-if="category.description" color="secondary" size="xs" line="m">
+        <app-text
+          v-if="category.description"
+          color="secondary"
+          size="xs"
+          line="m"
+        >
           {{ category.description }}
         </app-text>
       </app-flex>
@@ -64,4 +71,3 @@
     text-overflow: ellipsis;
   }
 </style>
-

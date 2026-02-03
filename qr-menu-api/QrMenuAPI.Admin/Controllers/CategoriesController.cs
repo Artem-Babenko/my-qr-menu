@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Categories;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -27,6 +29,23 @@ public class CategoriesController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canView = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            networkId,
+            [
+                PermissionType.CategoriesView,
+                PermissionType.CategoriesCreate,
+                PermissionType.CategoriesEdit,
+                PermissionType.CategoriesDelete,
+                PermissionType.ProductsView,
+                PermissionType.ProductsCreate,
+                PermissionType.ProductsEdit,
+                PermissionType.ProductsDelete,
+            ]);
+        if (!canView)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var categories = await db.Categories
             .AsNoTracking()
@@ -64,6 +83,14 @@ public class CategoriesController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue || user.NetworkId.Value != req.NetworkId)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            req.NetworkId,
+            [PermissionType.CategoriesCreate]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var name = req.Name.Trim();
         if (await db.Categories.AnyAsync(c => c.NetworkId == req.NetworkId && c.Name == name))
@@ -109,6 +136,14 @@ public class CategoriesController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            user.NetworkId.Value,
+            [PermissionType.CategoriesEdit]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var category = await db.Categories
             .FirstOrDefaultAsync(c => c.Id == categoryId && c.NetworkId == user.NetworkId.Value);
@@ -157,6 +192,14 @@ public class CategoriesController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            user.NetworkId.Value,
+            [PermissionType.CategoriesDelete]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var category = await db.Categories
             .FirstOrDefaultAsync(c => c.Id == categoryId && c.NetworkId == user.NetworkId.Value);

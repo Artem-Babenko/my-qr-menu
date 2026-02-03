@@ -18,6 +18,9 @@
   import { rolesApi } from '@/api/rolesApi';
   import { useRolesStore } from '@/store/roles';
   import { useNetworkStore } from '@/store/network';
+  import { usePermissions } from '@/composables';
+  import { getErrorMessage } from '@/consts/errorMessages';
+  import { useToastsStore } from '@/store/toasts';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const props = defineProps<{ role?: RoleView | null }>();
@@ -25,6 +28,8 @@
 
   const rolesStore = useRolesStore();
   const networkStore = useNetworkStore();
+  const toasts = useToastsStore();
+  const { hasAny } = usePermissions();
 
   const name = ref('');
   const description = ref('');
@@ -35,6 +40,7 @@
   const modalTitle = computed(() =>
     isEditMode.value ? 'Редагувати роль' : 'Створити роль',
   );
+  const canEdit = computed(() => hasAny(PermissionType.rolesCreate));
 
   const isPermissionSelected = (permission: PermissionType) => {
     return selectedPermissions.value.includes(permission);
@@ -66,6 +72,13 @@
     }
   };
 
+  const setPermission = (permission: PermissionType, enabled: boolean) => {
+    const index = selectedPermissions.value.indexOf(permission);
+    const has = index > -1;
+    if (enabled && !has) selectedPermissions.value.push(permission);
+    if (!enabled && has) selectedPermissions.value.splice(index, 1);
+  };
+
   const close = () => {
     showed.value = false;
   };
@@ -76,6 +89,7 @@
 
   const save = async () => {
     if (saveDisabled.value || !networkStore.network?.id) return;
+    if (!canEdit.value) return;
 
     const payload: RoleRequest = {
       name: name.value.trim(),
@@ -91,7 +105,10 @@
       response = await rolesApi.create(payload);
     }
 
-    if (!response.success || !response.data) return;
+    if (!response.success || !response.data) {
+      toasts.error(getErrorMessage(response.errorCode));
+      return;
+    }
 
     if (isEditMode.value) {
       rolesStore.updateRole(response.data);
@@ -141,10 +158,14 @@
                 v-for="permission in group.permissions"
                 :key="permission"
                 class="permission-item"
-                @click="togglePermission(permission)"
+                @click="canEdit && togglePermission(permission)"
               >
                 <app-checkbox
+                  :disabled="!canEdit"
                   :model-value="isPermissionSelected(permission)"
+                  @update:model-value="
+                    (v: boolean) => setPermission(permission, v)
+                  "
                   @click.stop
                 ></app-checkbox>
                 <app-text size="s">
@@ -159,7 +180,7 @@
 
     <app-flex class="form-buttons" justify="flex-end" gap="10">
       <app-button type="outline" @click="close">Скасувати</app-button>
-      <app-button :disabled="saveDisabled" @click="save">
+      <app-button :disabled="saveDisabled || !canEdit" @click="save">
         {{ isEditMode ? 'Зберегти зміни' : 'Створити роль' }}
       </app-button>
     </app-flex>

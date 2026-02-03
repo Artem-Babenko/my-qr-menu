@@ -11,14 +11,20 @@
     TablesModal,
   } from '@/components/modals';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { Establishment } from '@/types/network';
   import type { TableView } from '@/types/tables';
   import { computed, ref, watch } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { ROUTES } from '@/router';
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+  const router = useRouter();
+  const { hasAnyOf, hasAny } = usePermissions();
 
   const createModalShowed = ref(false);
   const networkModalShowed = ref(false);
@@ -40,8 +46,42 @@
   const isSingle = computed(() => establishments.value.length === 1);
   const isMultiple = computed(() => establishments.value.length >= 2);
 
-  const openCreate = () => (createModalShowed.value = true);
-  const openNetworkSettings = () => (networkModalShowed.value = true);
+  const canView = computed(() =>
+    hasAnyOf([
+      PermissionType.establishmentsCreate,
+      PermissionType.establishmentsUpdate,
+      PermissionType.establishmentsDelete,
+      PermissionType.networkEdit,
+      PermissionType.tablesView,
+      PermissionType.tablesCreate,
+      PermissionType.tablesEdit,
+      PermissionType.tablesDelete,
+    ]),
+  );
+
+  const canCreateEstablishment = computed(() =>
+    hasAny(PermissionType.establishmentsCreate),
+  );
+  const canEditEstablishment = computed(() =>
+    hasAny(PermissionType.establishmentsUpdate),
+  );
+  const canDeleteEstablishment = computed(() =>
+    hasAny(PermissionType.establishmentsDelete),
+  );
+
+  const canEditNetwork = computed(() => hasAny(PermissionType.networkEdit));
+  const canViewTables = computed(() => hasAny(PermissionType.tablesView));
+  const canEditTables = computed(() => hasAny(PermissionType.tablesEdit));
+
+  const openCreate = () => {
+    if (!canCreateEstablishment.value) return;
+    createModalShowed.value = true;
+  };
+
+  const openNetworkSettings = () => {
+    if (!canEditNetwork.value) return;
+    networkModalShowed.value = true;
+  };
 
   const reloadNetwork = async () => {
     const id = networkStore.network?.id;
@@ -53,6 +93,7 @@
   };
 
   const onEdit = (est: Establishment) => {
+    if (!canEditEstablishment.value) return;
     editingEstablishment.value = est;
     establishmentModalShowed.value = true;
   };
@@ -76,22 +117,26 @@
   };
 
   const onTables = async (est: Establishment) => {
+    if (!canViewTables.value) return;
     selectedEstablishment.value = est;
     tablesModalShowed.value = true;
     await loadTables();
   };
 
   const openCreateTable = () => {
+    if (!canEditTables.value) return;
     editingTable.value = null;
     tableModalShowed.value = true;
   };
 
   const openEditTable = (table: TableView) => {
+    if (!canEditTables.value) return;
     editingTable.value = table;
     tableModalShowed.value = true;
   };
 
   const onDeleteTable = async (table: TableView) => {
+    if (!canEditTables.value) return;
     const confirmed = window.confirm(`Видалити стіл №${table.number}?`);
     if (!confirmed) return;
 
@@ -109,6 +154,7 @@
   };
 
   const onDelete = async (est: Establishment) => {
+    if (!canDeleteEstablishment.value) return;
     const confirmed = window.confirm(`Видалити заклад "${est.name}"?`);
     if (!confirmed) return;
 
@@ -132,18 +178,34 @@
     tablesLoading.value = false;
     selectedEstablishment.value = null;
   });
+
+  watch(
+    canView,
+    (v) => {
+      if (v) return;
+      router.replace({ name: ROUTES.dashboard });
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
-  <div v-if="hasNetwork" class="page">
+  <div v-if="hasNetwork && canView" class="page">
     <app-flex justify="space-between" align="center" class="page-head">
       <div>
         <app-text weight="600" size="l">Заклади харчування</app-text>
         <app-text color="secondary" v-if="isMultiple">
-          Управління закладами та мережею
+          Управління закладами харчування та мережею
+        </app-text>
+        <app-text color="secondary" v-else>
+          Управління закладами харчування
         </app-text>
       </div>
-      <app-button v-if="!isMultiple" @click="openCreate">
+      <app-button
+        v-if="!isMultiple"
+        :disabled="!canCreateEstablishment"
+        @click="openCreate"
+      >
         Додати заклад
       </app-button>
     </app-flex>
@@ -170,10 +232,16 @@
           </app-text>
         </div>
         <app-flex gap="10">
-          <app-button type="outline" @click="openNetworkSettings">
+          <app-button
+            type="outline"
+            :disabled="!canEditNetwork"
+            @click="openNetworkSettings"
+          >
             Налаштування мережі
           </app-button>
-          <app-button @click="openCreate">Додати заклад</app-button>
+          <app-button :disabled="!canCreateEstablishment" @click="openCreate"
+            >Додати заклад</app-button
+          >
         </app-flex>
       </app-flex>
       <div class="content">
@@ -208,6 +276,7 @@
       :establishment="selectedEstablishment"
       :tables="tables"
       :loading="tablesLoading"
+      :readonly="!canEditTables"
       @add="openCreateTable"
       @edit="openEditTable"
       @delete="onDeleteTable"
@@ -219,6 +288,11 @@
       :table="editingTable"
       @saved="onTableSaved"
     ></table-modal>
+  </div>
+  <div v-else-if="hasNetwork && !canView">
+    <app-text color="secondary">
+      Недостатньо прав для перегляду закладів
+    </app-text>
   </div>
 </template>
 

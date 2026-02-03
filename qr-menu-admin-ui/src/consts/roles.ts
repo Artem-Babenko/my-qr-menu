@@ -1,17 +1,7 @@
 import type { PermissionGroup } from '@/types/roles';
 
 export enum PermissionType {
-  menuView = 1,
-  menuEdit,
-  analyticsView,
-  establishmentsView,
-  establishmentsEdit,
-  usersView,
-  usersEdit,
-  usersInvite,
-  usersRolesEdit,
-  settingsView,
-  settingsEdit,
+  ordersView = 1,
   ordersCreate,
   ordersEdit,
   ordersTakeInWork,
@@ -22,16 +12,59 @@ export enum PermissionType {
   ordersComplete,
   ordersCancel,
   ordersDelete,
+
+  usersView,
+  usersEdit,
+  usersDelete,
+
+  invitationsView,
+  invitationsCreate,
+  invitationsDelete,
+
+  rolesView,
+  rolesCreate,
+  rolesDelete,
+
+  establishmentsCreate,
+  establishmentsUpdate,
+  establishmentsDelete,
+
+  networkEdit,
+
+  tablesView,
+  tablesCreate,
+  tablesEdit,
+  tablesDelete,
+
+  productsView,
+  productsCreate,
+  productsEdit,
+  productsDelete,
+
+  categoriesView,
+  categoriesCreate,
+  categoriesEdit,
+  categoriesDelete,
 }
 
 export const PERMISSION_GROUPS: PermissionGroup[] = [
   {
     name: 'Меню',
-    permissions: [PermissionType.menuView, PermissionType.menuEdit],
+    permissions: [
+      PermissionType.productsView,
+      PermissionType.productsCreate,
+      PermissionType.productsEdit,
+      PermissionType.productsDelete,
+      PermissionType.categoriesView,
+      PermissionType.categoriesCreate,
+      PermissionType.categoriesEdit,
+      PermissionType.categoriesDelete,
+    ],
   },
   {
     name: 'Замовлення',
     permissions: [
+      PermissionType.ordersView,
       PermissionType.ordersCreate,
       PermissionType.ordersEdit,
       PermissionType.ordersTakeInWork,
@@ -45,14 +78,16 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
     ],
   },
   {
-    name: 'Аналітика',
-    permissions: [PermissionType.analyticsView],
-  },
-  {
     name: 'Заклади',
     permissions: [
-      PermissionType.establishmentsView,
-      PermissionType.establishmentsEdit,
+      PermissionType.establishmentsCreate,
+      PermissionType.establishmentsUpdate,
+      PermissionType.establishmentsDelete,
+      PermissionType.networkEdit,
+      PermissionType.tablesView,
+      PermissionType.tablesCreate,
+      PermissionType.tablesEdit,
+      PermissionType.tablesDelete,
     ],
   },
   {
@@ -60,19 +95,27 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
     permissions: [
       PermissionType.usersView,
       PermissionType.usersEdit,
-      PermissionType.usersInvite,
-      PermissionType.usersRolesEdit,
+      PermissionType.usersDelete,
+      PermissionType.invitationsView,
+      PermissionType.invitationsCreate,
+      PermissionType.invitationsDelete,
+      PermissionType.rolesView,
+      PermissionType.rolesCreate,
+      PermissionType.rolesDelete,
     ],
-  },
-  {
-    name: 'Налаштування',
-    permissions: [PermissionType.settingsView, PermissionType.settingsEdit],
   },
 ];
 
 export const PERMISSION_LABELS: Record<PermissionType, string> = {
-  [PermissionType.menuView]: 'Перегляд меню',
-  [PermissionType.menuEdit]: 'Редагування меню',
+  [PermissionType.productsView]: 'Перегляд меню',
+  [PermissionType.productsCreate]: 'Створення страв',
+  [PermissionType.productsEdit]: 'Редагування страв',
+  [PermissionType.productsDelete]: 'Видалення страв',
+  [PermissionType.categoriesView]: 'Перегляд категорій',
+  [PermissionType.categoriesCreate]: 'Створення категорій',
+  [PermissionType.categoriesEdit]: 'Редагування категорій',
+  [PermissionType.categoriesDelete]: 'Видалення категорій',
+  [PermissionType.ordersView]: 'Перегляд замовлень',
   [PermissionType.ordersCreate]: 'Створення замовлення',
   [PermissionType.ordersEdit]: 'Редагування замовлень',
   [PermissionType.ordersTakeInWork]: 'Взяти у роботу',
@@ -83,13 +126,21 @@ export const PERMISSION_LABELS: Record<PermissionType, string> = {
   [PermissionType.ordersComplete]: 'Завершити замовлення',
   [PermissionType.ordersCancel]: 'Скасувати замовлення',
   [PermissionType.ordersDelete]: 'Видалити замовлення',
-  [PermissionType.analyticsView]: 'Перегляд аналітики',
-  [PermissionType.establishmentsView]: 'Перегляд закладів',
-  [PermissionType.establishmentsEdit]: 'Редагування закладів',
+  [PermissionType.establishmentsCreate]: 'Додавання закладів',
+  [PermissionType.establishmentsUpdate]: 'Редагування закладів',
+  [PermissionType.establishmentsDelete]: 'Видалення закладів',
+  [PermissionType.networkEdit]: 'Редагування мережі',
+  [PermissionType.tablesView]: 'Перегляд столів',
+  [PermissionType.tablesCreate]: 'Додавання столів',
+  [PermissionType.tablesEdit]: 'Редагування столів',
+  [PermissionType.tablesDelete]: 'Видалення столів',
   [PermissionType.usersView]: 'Перегляд користувачів',
   [PermissionType.usersEdit]: 'Редагування користувачів',
-  [PermissionType.usersInvite]: 'Запрошення користувачів',
-  [PermissionType.usersRolesEdit]: 'Редагування ролей користувачів',
-  [PermissionType.settingsView]: 'Перегляд налаштувань',
-  [PermissionType.settingsEdit]: 'Редагування налаштувань',
+  [PermissionType.usersDelete]: 'Видалення користувачів',
+  [PermissionType.invitationsView]: 'Перегляд запрошень',
+  [PermissionType.invitationsCreate]: 'Створення запрошень',
+  [PermissionType.invitationsDelete]: 'Видалення запрошень',
+  [PermissionType.rolesView]: 'Перегляд ролей',
+  [PermissionType.rolesCreate]: 'Створення ролей',
+  [PermissionType.rolesDelete]: 'Видалення ролей',
 };

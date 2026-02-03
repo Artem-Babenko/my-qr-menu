@@ -18,7 +18,7 @@
 <style scoped>
   .user-img {
     border-radius: 50%;
-    width: 40px;
+    min-width: 40px;
     height: 40px;
     background-color: var(--hover-on-secondary);
     display: flex;

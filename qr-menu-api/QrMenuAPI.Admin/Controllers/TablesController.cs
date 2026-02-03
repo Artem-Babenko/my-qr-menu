@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Models.Tables;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -33,6 +35,17 @@ public class TablesController(AppDbContext db) : BaseApiController
             .AnyAsync(e => e.Id == establishmentId && e.NetworkId == user.NetworkId.Value);
         if (!hasAccess)
             return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canViewTables = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            establishmentId,
+            [
+                PermissionType.TablesView,
+                PermissionType.OrdersView,
+            ]);
+        if (!canViewTables)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var tables = await db.Tables
             .AsNoTracking()
@@ -71,6 +84,14 @@ public class TablesController(AppDbContext db) : BaseApiController
             .FirstOrDefaultAsync(e => e.Id == req.EstablishmentId && e.NetworkId == user.NetworkId.Value);
         if (establishment == null)
             return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canCreateTables = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            req.EstablishmentId,
+            [PermissionType.TablesCreate]);
+        if (!canCreateTables)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var number = req.Number.Trim();
         var duplicate = await db.Tables.AnyAsync(t =>
@@ -122,6 +143,14 @@ public class TablesController(AppDbContext db) : BaseApiController
         if (table == null)
             return NotFound(ErrorCodes.TableNotFound);
 
+        var canEditTables = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            table.EstablishmentId,
+            [PermissionType.TablesEdit]);
+        if (!canEditTables)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
         var number = req.Number.Trim();
         var duplicate = await db.Tables.AnyAsync(t =>
             t.EstablishmentId == table.EstablishmentId &&
@@ -166,6 +195,14 @@ public class TablesController(AppDbContext db) : BaseApiController
                 t.Establishment.NetworkId == user.NetworkId.Value);
         if (table == null)
             return NotFound(ErrorCodes.TableNotFound);
+
+        var canDeleteTables = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            table.EstablishmentId,
+            [PermissionType.TablesDelete]);
+        if (!canDeleteTables)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         db.Tables.Remove(table);
         await db.SaveChangesAsync();

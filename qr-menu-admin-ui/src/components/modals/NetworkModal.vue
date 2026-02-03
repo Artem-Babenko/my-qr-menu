@@ -5,12 +5,17 @@
   import { computed, ref, watch } from 'vue';
   import { AppButton, AppFlex, AppInput, AppLabel, AppModal } from '../shared';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const emit = defineEmits<{ saved: [] }>();
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+
+  const { hasAny } = usePermissions();
+  const canEdit = computed(() => hasAny(PermissionType.networkEdit));
 
   const name = ref<string | null>(null);
   const saving = ref(false);
@@ -31,6 +36,7 @@
 
   const save = async () => {
     if (!networkStore.network?.id || saveDisabled.value) return;
+    if (!canEdit.value) return;
     saving.value = true;
     const resp = await networkApi.updateNetworkName(networkStore.network.id, {
       name: name.value!.trim(),
@@ -61,7 +67,9 @@
 
       <app-flex class="buttons" justify="flex-end" gap="10">
         <app-button type="outline" @click="close">Скасувати</app-button>
-        <app-button :disabled="saveDisabled" @click="save">Зберегти</app-button>
+        <app-button :disabled="saveDisabled || !canEdit" @click="save">
+          Зберегти
+        </app-button>
       </app-flex>
     </div>
   </app-modal>

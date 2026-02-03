@@ -9,6 +9,8 @@
     AppText,
   } from '@/components/shared';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { CategoryView } from '@/types/categories';
@@ -16,15 +18,27 @@
 
   const toasts = useToastsStore();
   const networkStore = useNetworkStore();
-  const search = ref('');
+  const { hasAnyOf, hasAny } = usePermissions();
 
+  const search = ref('');
   const categories = ref<CategoryView[]>([]);
   const loading = ref(false);
-
   const modalShowed = ref(false);
   const editingCategory = ref<CategoryView | null>(null);
 
   const networkId = computed(() => networkStore.network?.id ?? null);
+
+  const canView = computed(() =>
+    hasAnyOf([
+      PermissionType.categoriesView,
+      PermissionType.categoriesCreate,
+      PermissionType.categoriesEdit,
+      PermissionType.categoriesDelete,
+    ]),
+  );
+  const canCreate = computed(() => hasAny(PermissionType.categoriesCreate));
+  const canEdit = computed(() => hasAny(PermissionType.categoriesEdit));
+  const canDelete = computed(() => hasAny(PermissionType.categoriesDelete));
 
   const filtered = computed(() => {
     const q = search.value.trim().toLowerCase();
@@ -41,6 +55,7 @@
   const loadCategories = async () => {
     const id = networkId.value;
     if (!id) return;
+    if (!canView.value) return;
 
     loading.value = true;
     try {
@@ -57,16 +72,19 @@
   };
 
   const openCreate = async () => {
+    if (!canCreate.value) return;
     editingCategory.value = null;
     modalShowed.value = true;
   };
 
   const openEdit = (category: CategoryView) => {
+    if (!canEdit.value) return;
     editingCategory.value = category;
     modalShowed.value = true;
   };
 
   const onDelete = async (category: CategoryView) => {
+    if (!canDelete.value) return;
     const confirmed = window.confirm(`Видалити категорію "${category.name}"?`);
     if (!confirmed) return;
     const resp = await categoriesApi.delete(category.id);
@@ -93,35 +111,45 @@
 
 <template>
   <div class="tab">
-    <app-flex class="controls" align="center" gap="20">
-      <div class="search">
-        <app-search-input v-model="search" placeholder="Пошук категорій..." />
+    <app-text v-if="!canView" color="secondary">
+      Недостатньо прав для перегляду категорій
+    </app-text>
+    <template v-else>
+      <app-flex class="controls" align="center" gap="20">
+        <div class="search">
+          <app-search-input v-model="search" placeholder="Пошук категорій..." />
+        </div>
+        <app-button
+          class="add-btn"
+          :disabled="!networkId || !canCreate"
+          @click="openCreate"
+        >
+          Додати категорію
+        </app-button>
+      </app-flex>
+
+      <app-text v-if="loading" color="secondary">Завантаження...</app-text>
+
+      <div v-else class="list">
+        <category-card
+          v-for="cat in filtered"
+          :key="cat.id"
+          :category="cat"
+          :readonly="!canEdit"
+          @edit="openEdit"
+          @delete="onDelete"
+        ></category-card>
+        <app-text v-if="filtered.length === 0" color="secondary">
+          Нічого не знайдено
+        </app-text>
       </div>
-      <app-button class="add-btn" :disabled="!networkId" @click="openCreate">
-        Додати категорію
-      </app-button>
-    </app-flex>
 
-    <app-text v-if="loading" color="secondary">Завантаження...</app-text>
-
-    <div v-else class="list">
-      <category-card
-        v-for="cat in filtered"
-        :key="cat.id"
-        :category="cat"
-        @edit="openEdit"
-        @delete="onDelete"
-      ></category-card>
-      <app-text v-if="filtered.length === 0" color="secondary">
-        Нічого не знайдено
-      </app-text>
-    </div>
-
-    <category-modal
-      v-model:showed="modalShowed"
-      :category="editingCategory"
-      @saved="onSaved"
-    ></category-modal>
+      <category-modal
+        v-model:showed="modalShowed"
+        :category="editingCategory"
+        @saved="onSaved"
+      ></category-modal>
+    </template>
   </div>
 </template>
 

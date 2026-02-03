@@ -4,11 +4,17 @@
   import { UserInitials } from '../other';
   import { CardDropdown } from '../dropdowns';
   import { computed } from 'vue';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const { user } = defineProps<{ user: User }>();
   const emit = defineEmits<{ edit: [user: User] }>();
 
+  const { hasAny } = usePermissions();
+
   const establishmentsCount = computed(() => user.accesses?.length ?? 0);
+
+  const canEdit = computed(() => hasAny(PermissionType.usersEdit));
 
   const onEdit = () => emit('edit', user);
 </script>
@@ -17,7 +23,16 @@
   <app-card class="user-card">
     <div class="head">
       <user-initials v-bind="user"></user-initials>
-      <card-dropdown @edit="onEdit"></card-dropdown>
+      <card-dropdown
+        :buttons="[
+          {
+            icon: 'Pencil',
+            title: 'Редагувати',
+            click: onEdit,
+            disabled: () => !canEdit,
+          },
+        ]"
+      ></card-dropdown>
     </div>
     <div class="info">
       <app-text>{{ user.name }} {{ user.surname }}</app-text>

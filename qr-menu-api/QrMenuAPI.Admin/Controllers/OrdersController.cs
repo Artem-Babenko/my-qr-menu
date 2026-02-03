@@ -12,6 +12,21 @@ namespace QrMenuAPI.Admin.Controllers;
 [Route("orders")]
 public class OrdersController(AppDbContext db) : BaseApiController
 {
+    private static readonly PermissionType[] OrdersAnyAccessPermissions =
+    [
+        PermissionType.OrdersView,
+        PermissionType.OrdersCreate,
+        PermissionType.OrdersEdit,
+        PermissionType.OrdersTakeInWork,
+        PermissionType.OrdersSendToKitchen,
+        PermissionType.OrdersStartCooking,
+        PermissionType.OrdersMarkReady,
+        PermissionType.OrdersReturn,
+        PermissionType.OrdersComplete,
+        PermissionType.OrdersCancel,
+        PermissionType.OrdersDelete,
+    ];
+
     [HttpGet("by-network/{networkId:int}")]
     public async Task<IActionResult> ByNetwork([FromRoute] int networkId)
     {
@@ -28,6 +43,17 @@ public class OrdersController(AppDbContext db) : BaseApiController
         if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
             return NotFound(ErrorCodes.NetworkNotFound);
 
+        var allowedEstablishmentIds = await db.UserEstablishments
+            .AsNoTracking()
+            .Where(ue => ue.UserId == userId && ue.Establishment.NetworkId == networkId)
+            .Where(ue => ue.Role.Permissions.Any(p => OrdersAnyAccessPermissions.Contains(p.PermissionType)))
+            .Select(ue => ue.EstablishmentId)
+            .Distinct()
+            .ToListAsync();
+
+        if (allowedEstablishmentIds.Count == 0)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
         var orders = await db.Orders
             .AsNoTracking()
             .Include(o => o.Establishment)
@@ -35,7 +61,7 @@ public class OrdersController(AppDbContext db) : BaseApiController
             .Include(o => o.Items)
             .Include(o => o.Staff)
                 .ThenInclude(s => s.User)
-            .Where(o => o.Establishment.NetworkId == networkId)
+            .Where(o => o.Establishment.NetworkId == networkId && allowedEstablishmentIds.Contains(o.EstablishmentId))
             .OrderByDescending(o => o.CreatedAt)
             .ToListAsync();
 
@@ -94,6 +120,14 @@ public class OrdersController(AppDbContext db) : BaseApiController
 
         if (order == null)
             return NotFound(ErrorCodes.OrderNotFound);
+
+        var canView = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            userId,
+            order.EstablishmentId,
+            OrdersAnyAccessPermissions);
+        if (!canView)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var model = new OrderDetailsResponse
         {

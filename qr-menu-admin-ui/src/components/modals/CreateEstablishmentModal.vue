@@ -12,6 +12,8 @@
     AppText,
   } from '../shared';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   const showed = defineModel<boolean>('showed', { required: true });
   const props = defineProps<{ currentCount: number }>();
@@ -19,6 +21,7 @@
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+  const { hasAny } = usePermissions();
 
   const model = reactive({
     networkName: '',
@@ -29,6 +32,8 @@
   const saving = ref(false);
 
   const isSecond = computed(() => props.currentCount === 1);
+
+  const canCreate = computed(() => hasAny(PermissionType.establishmentsCreate));
 
   const saveDisabled = computed(() => {
     if (saving.value) return true;
@@ -49,6 +54,7 @@
 
   const save = async () => {
     if (saveDisabled.value) return;
+    if (!canCreate.value && !!networkStore.network?.id) return;
     saving.value = true;
     const payload = {
       name: model.name.trim(),
@@ -105,7 +111,12 @@
 
       <app-flex class="buttons" justify="flex-end" gap="10">
         <app-button type="outline" @click="close">Скасувати</app-button>
-        <app-button :disabled="saveDisabled" @click="save">Зберегти</app-button>
+        <app-button
+          :disabled="saveDisabled || (!canCreate && !!networkStore.network?.id)"
+          @click="save"
+        >
+          Зберегти
+        </app-button>
       </app-flex>
     </div>
   </app-modal>

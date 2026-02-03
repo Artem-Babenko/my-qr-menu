@@ -17,6 +17,8 @@
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import { getErrorMessage } from '@/consts/errorMessages';
+  import { usePermissions } from '@/composables';
+  import { PermissionType } from '@/consts/roles';
 
   interface PriceRow {
     establishmentId: number;
@@ -34,6 +36,9 @@
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
+  const { hasAny } = usePermissions();
+
+  const canEdit = computed(() => hasAny(PermissionType.productsEdit));
 
   const name = ref('');
   const description = ref('');
@@ -124,6 +129,7 @@
   const save = async () => {
     if (saveDisabled.value) return;
     if (!selectedCategory.value) return;
+    if (!canEdit.value) return;
 
     const payloadCommon = {
       name: name.value.trim(),
@@ -207,7 +213,7 @@
 
     <app-flex class="form-buttons" justify="flex-end" gap="10">
       <app-button type="outline" @click="close">Скасувати</app-button>
-      <app-button :disabled="saveDisabled" @click="save">
+      <app-button :disabled="saveDisabled || !canEdit" @click="save">
         {{ isEditMode ? 'Зберегти зміни' : 'Створити страву' }}
       </app-button>
     </app-flex>

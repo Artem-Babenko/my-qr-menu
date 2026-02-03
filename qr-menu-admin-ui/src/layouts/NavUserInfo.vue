@@ -1,17 +1,15 @@
 <script setup lang="ts">
   import { UserInitials } from '@/components/other';
   import { AppText } from '@/components/shared';
+  import { useUserStore } from '@/store/user';
+  import { storeToRefs } from 'pinia';
 
-  const user = {
-    initials: 'АД',
-    name: 'Артем',
-    surname: 'Бабенко',
-    email: 'admin@restaurant.com',
-  };
+  const userStore = useUserStore();
+  const { user } = storeToRefs(userStore);
 </script>
 
 <template>
-  <div class="nav-user-info">
+  <div class="nav-user-info" v-if="user">
     <user-initials :name="user.name" :surname="user.surname"></user-initials>
     <div class="info-inner">
       <app-text weight="500">{{ user.name }} {{ user.surname }}</app-text>
@@ -27,10 +25,16 @@
     gap: 15px;
     padding: 15px;
     border-top: 1px solid var(--border);
+    overflow: hidden;
   }
   .info-inner {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
+  }
+  .app-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

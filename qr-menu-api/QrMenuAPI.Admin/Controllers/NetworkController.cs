@@ -5,6 +5,7 @@ using QrMenuAPI.Admin.Models.Network;
 using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Entities;
+using QrMenuAPI.Core.Enums;
 
 namespace QrMenuAPI.Admin.Controllers;
 
@@ -30,6 +31,14 @@ public class NetworkController(AppDbContext db) : BaseApiController
 
         if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
             return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            networkId,
+            [PermissionType.NetworkEdit]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var network = await db.Networks.FirstOrDefaultAsync(n => n.Id == networkId);
         if (network == null)
@@ -67,6 +76,16 @@ public class NetworkController(AppDbContext db) : BaseApiController
         {
             if (await db.Networks.AnyAsync(n => n.Name == requestedNetworkName))
                 return Conflict(ErrorCodes.DuplicateNetwork);
+        }
+        else
+        {
+            var canCreate = await PermissionUtils.HasAnyNetworkPermission(
+                db,
+                userId,
+                user.NetworkId.Value,
+                [PermissionType.EstablishmentsCreate]);
+            if (!canCreate)
+                return Forbidden(ErrorCodes.PermissionDenied);
         }
 
         var network = await GetOrCreateNetwork(user, requestedNetworkName);
@@ -144,8 +163,18 @@ public class NetworkController(AppDbContext db) : BaseApiController
     [HttpGet("{networkId:int}")]
     public async Task<IActionResult> GetNetwork([FromRoute] int networkId)
     {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (networkId <= 0)
             return BadRequest(ErrorCodes.InvalidRequest);
+
+        var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
 
         var network = await db.Networks
             .Include(x => x.Establishments)

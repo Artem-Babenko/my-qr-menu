@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Admin.Consts;
 using QrMenuAPI.Admin.Mappings;
 using QrMenuAPI.Admin.Models.Invitation;
 using QrMenuAPI.Admin.Services.Invitations;
+using QrMenuAPI.Admin.Utils;
 using QrMenuAPI.Core;
 using QrMenuAPI.Core.Enums;
 
@@ -18,8 +19,37 @@ public class InvitationsController(
     [HttpPost("for-existing-user")]
     public async Task<IActionResult> ForExistingUser([FromBody] InvitationForExisting payload)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (payload == null || !payload.IsValid())
             return BadRequest(ErrorCodes.InvalidRequest);
+
+        var currentUser = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var establishment = await db.Establishments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == payload.EstablishmentId && e.NetworkId == currentUser.NetworkId.Value);
+        if (establishment == null)
+            return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canInvite = await PermissionUtils.HasEstablishmentPermission(
+            db,
+            currentUserId,
+            payload.EstablishmentId,
+            PermissionType.InvitationsCreate);
+        if (!canInvite)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
+        var roleExists = await db.Roles
+            .AsNoTracking()
+            .AnyAsync(r => r.Id == payload.RoleId && r.NetworkId == currentUser.NetworkId.Value);
+        if (!roleExists)
+            return NotFound(ErrorCodes.RoleNotFound);
 
         var user = await db.Users.FindAsync(payload.TargetUserId);
         if (user == null || user.NetworkId.HasValue)
@@ -37,8 +67,37 @@ public class InvitationsController(
     [HttpPost("for-new-user")]
     public async Task<IActionResult> ForNewUser([FromBody] InvitationForNew payload)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (payload == null || !payload.IsValid())
             return BadRequest(ErrorCodes.InvalidRequest);
+
+        var currentUser = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var establishment = await db.Establishments
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Id == payload.EstablishmentId && e.NetworkId == currentUser.NetworkId.Value);
+        if (establishment == null)
+            return NotFound(ErrorCodes.EstablishmentNotFound);
+
+        var canInvite = await PermissionUtils.HasEstablishmentPermission(
+            db,
+            currentUserId,
+            payload.EstablishmentId,
+            PermissionType.InvitationsCreate);
+        if (!canInvite)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
+        var roleExists = await db.Roles
+            .AsNoTracking()
+            .AnyAsync(r => r.Id == payload.RoleId && r.NetworkId == currentUser.NetworkId.Value);
+        if (!roleExists)
+            return NotFound(ErrorCodes.RoleNotFound);
 
         var invitation = InvitationMapper.MapToEntity(payload);
         invitation.Phone = payload.Phone;
@@ -54,8 +113,25 @@ public class InvitationsController(
     [HttpGet("by-network/{networkId:int}")]
     public async Task<IActionResult> GetByNetwork([FromRoute] int networkId)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (networkId <= 0)
             return BadRequest(ErrorCodes.InvalidRequest);
+
+        var currentUser = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue || currentUser.NetworkId.Value != networkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canViewInv = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            currentUserId,
+            networkId,
+            [PermissionType.InvitationsView]);
+        if (!canViewInv)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         var invitations = await db.Invitations
             .Include(inv => inv.TargetUser)
@@ -162,12 +238,31 @@ public class InvitationsController(
     [HttpDelete("{invitationId:Guid}")]
     public async Task<IActionResult> DeleteInvitation([FromRoute] Guid invitationId)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (invitationId == Guid.Empty)
             return BadRequest(ErrorCodes.InvalidRequest);
 
-        var invitation = await db.Invitations.FindAsync(invitationId);
+        var invitation = await db.Invitations
+            .Include(i => i.Establishment)
+            .FirstOrDefaultAsync(i => i.Id == invitationId);
         if (invitation == null)
             return NotFound(ErrorCodes.InvitationNotFound);
+
+        var currentUser = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue || currentUser.NetworkId.Value != invitation.Establishment.NetworkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canDelete = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            currentUserId,
+            invitation.EstablishmentId,
+            [PermissionType.InvitationsDelete]);
+        if (!canDelete)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         db.Invitations.Remove(invitation);
         await db.SaveChangesAsync();
@@ -178,12 +273,31 @@ public class InvitationsController(
     [HttpPut("{invitationId:Guid}/cancel")]
     public async Task<IActionResult> CancelInvation([FromRoute] Guid invitationId)
     {
+        if (!TryGetUserId(out var currentUserId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
         if (invitationId == Guid.Empty)
             return BadRequest(ErrorCodes.InvalidRequest);
 
-        var invitation = await db.Invitations.FindAsync(invitationId);
+        var invitation = await db.Invitations
+            .Include(i => i.Establishment)
+            .FirstOrDefaultAsync(i => i.Id == invitationId);
         if (invitation == null)
             return NotFound(ErrorCodes.InvitationNotFound);
+
+        var currentUser = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+        if (currentUser == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+        if (!currentUser.NetworkId.HasValue || currentUser.NetworkId.Value != invitation.Establishment.NetworkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canCancel = await PermissionUtils.HasAnyEstablishmentPermission(
+            db,
+            currentUserId,
+            invitation.EstablishmentId,
+            [PermissionType.InvitationsDelete]);
+        if (!canCancel)
+            return Forbidden(ErrorCodes.PermissionDenied);
 
         invitation.Status = InvitationStatus.Canceled;
         db.Invitations.Update(invitation);
