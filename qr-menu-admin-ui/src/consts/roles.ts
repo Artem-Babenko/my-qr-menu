@@ -23,6 +23,7 @@ export enum PermissionType {
 
   rolesView,
   rolesCreate,
+  rolesUpdate,
   rolesDelete,
 
   establishmentsCreate,
@@ -100,6 +101,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       PermissionType.invitationsCreate,
       PermissionType.invitationsDelete,
       PermissionType.rolesView,
+      PermissionType.rolesUpdate,
       PermissionType.rolesCreate,
       PermissionType.rolesDelete,
     ],
@@ -141,6 +143,7 @@ export const PERMISSION_LABELS: Record<PermissionType, string> = {
   [PermissionType.invitationsCreate]: 'Створення запрошень',
   [PermissionType.invitationsDelete]: 'Видалення запрошень',
   [PermissionType.rolesView]: 'Перегляд ролей',
+  [PermissionType.rolesUpdate]: 'Редагування ролей',
   [PermissionType.rolesCreate]: 'Створення ролей',
   [PermissionType.rolesDelete]: 'Видалення ролей',
 };

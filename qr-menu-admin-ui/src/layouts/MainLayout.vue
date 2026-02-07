@@ -65,6 +65,7 @@
       PermissionType.invitationsCreate,
       PermissionType.invitationsDelete,
       PermissionType.rolesView,
+      PermissionType.rolesUpdate,
       PermissionType.rolesCreate,
       PermissionType.rolesDelete,
     ]),

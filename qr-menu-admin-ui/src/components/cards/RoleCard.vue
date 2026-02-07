@@ -28,7 +28,7 @@
       icon: 'Pencil',
       title: 'Редагувати',
       click: handleEdit,
-      disabled: () => !hasAny(PermissionType.rolesCreate),
+      disabled: () => !hasAny(PermissionType.rolesUpdate),
     },
     {
       icon: 'Trash',

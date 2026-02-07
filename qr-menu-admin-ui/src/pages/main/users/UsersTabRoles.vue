@@ -12,7 +12,7 @@
   const editingRole = ref<RoleView | null>(null);
 
   const canCreate = () => hasAny(PermissionType.rolesCreate);
-  const canEdit = () => hasAny(PermissionType.rolesCreate);
+  const canEdit = () => hasAny(PermissionType.rolesUpdate);
 
   const onAddClick = () => {
     if (!canCreate()) return;

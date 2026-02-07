@@ -39,6 +39,7 @@ public static class DefaultRoles
                 new() { PermissionType = PermissionType.InvitationsDelete },
                 new() { PermissionType = PermissionType.RolesView },
                 new() { PermissionType = PermissionType.RolesCreate },
+                new() { PermissionType = PermissionType.RolesUpdate },
                 new() { PermissionType = PermissionType.RolesDelete },
                 new() { PermissionType = PermissionType.OrdersView },
                 new() { PermissionType = PermissionType.OrdersEdit },

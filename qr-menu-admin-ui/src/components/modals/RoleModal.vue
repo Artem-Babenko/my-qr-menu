@@ -40,7 +40,11 @@
   const modalTitle = computed(() =>
     isEditMode.value ? 'Редагувати роль' : 'Створити роль',
   );
-  const canEdit = computed(() => hasAny(PermissionType.rolesCreate));
+  const canEdit = computed(() =>
+    isEditMode.value
+      ? hasAny(PermissionType.rolesUpdate)
+      : hasAny(PermissionType.rolesCreate),
+  );
 
   const isPermissionSelected = (permission: PermissionType) => {
     return selectedPermissions.value.includes(permission);
