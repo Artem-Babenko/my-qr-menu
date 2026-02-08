@@ -1,11 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import '@/css/app.scss';
+  import { AppToastContainer } from '@/components/shared';
+  import { useToast } from '@/composables/useToast';
+
+  const { toasts, remove } = useToast();
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <router-view></router-view>
+  <app-toast-container :toasts="toasts" @close="remove" />
 </template>
-
-<style scoped></style>
