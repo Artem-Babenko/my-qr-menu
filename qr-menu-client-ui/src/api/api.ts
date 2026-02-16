@@ -2,7 +2,7 @@ import type { ApiResponse } from '@/types/api';
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
 const apiInstance = axios.create({
-  baseURL: 'http://localhost:5196',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5196',
 });
 
 async function wrap<T>(promise: Promise<any>): Promise<ApiResponse<T>> {

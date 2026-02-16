@@ -3,7 +3,7 @@ import { tokenStorage } from '@/utils/tokenStorage';
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios';
 
 const apiInstance = axios.create({
-  baseURL: 'http://localhost:5195',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5195',
 });
 
 export function initApi(onUnauthorized: () => void) {

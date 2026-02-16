@@ -3,7 +3,7 @@
   import { UserInvitaionCard } from '../cards';
   import { invitationApi } from '@/api/invitationApi';
   import { InvitationStatus } from '@/consts/invitations';
-  import { useLoader } from '@/composables';
+  import { useLoader, useUserLoader } from '@/composables';
   import { useUserStore } from '@/store/user';
   import { toRef } from 'vue';
   import { NoInvitationsCard } from '../cards';
@@ -11,6 +11,7 @@
   import { ROUTES } from '@/router';
 
   const userStore = useUserStore();
+  const userLoader = useUserLoader();
   const router = useRouter();
 
   const userId = toRef(() => userStore.user?.id);
@@ -27,8 +28,8 @@
   const acceptInvitation = async (id: string) => {
     const resp = await invitationApi.acceptByCurrentUser(id);
     if (!resp.success || !resp.data) throw resp.errorCode;
-    userStore.user!.networkId = resp.data.networkId;
-    router.replace({ name: ROUTES.dashboard });
+    await userLoader.loadUserData();
+    await router.replace({ name: ROUTES.dashboard });
   };
 
   const cancelInvitation = async (id: string) => {

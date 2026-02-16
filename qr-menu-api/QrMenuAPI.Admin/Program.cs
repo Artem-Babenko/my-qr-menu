@@ -14,8 +14,12 @@ var app = builder.Build();
 
 app.UseRouting();
 
+var corsOrigins = builder.Configuration["CorsOrigins"]?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? new[] { "http://localhost:5173" };
+
 app.UseCors(opt => opt
-    .WithOrigins("http://localhost:5173")
+    .WithOrigins(corsOrigins)
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
