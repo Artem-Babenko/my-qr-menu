@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Client + Admin",
+    "Projects": [
+      {
+        "Path": "QrMenuAPI.Admin\\QrMenuAPI.Admin.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "QrMenuAPI.Client\\QrMenuAPI.Client.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
