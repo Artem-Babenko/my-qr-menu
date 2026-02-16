@@ -2,7 +2,7 @@
   import { computed, watch } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTES } from '@/router';
-  import { AppIcon, AppText } from '@/components/shared';
+  import { AppIcon, AppText, type IconName } from '@/components/shared';
   import { useTableStore } from '@/store/table';
   import { useBasketStore } from '@/store/basket';
   import { clientApi } from '@/api/clientApi';
@@ -30,12 +30,14 @@
     { immediate: true },
   );
 
-  const tabs = computed(() => [
-    { name: ROUTES.home, label: 'Головна', icon: 'Home' as const },
-    { name: ROUTES.menu, label: 'Меню', icon: 'UtensilsCrossed' as const },
-    { name: ROUTES.basket, label: 'Кошик', icon: 'ShoppingCart' as const },
-    { name: ROUTES.orders, label: 'Замовлення', icon: 'ClipboardList' as const },
-  ]);
+  const tabs = computed<{ name: string; label: string; icon: IconName }[]>(
+    () => [
+      { name: ROUTES.home, label: 'Головна', icon: 'Home' },
+      { name: ROUTES.menu, label: 'Меню', icon: 'UtensilsCrossed' },
+      { name: ROUTES.basket, label: 'Кошик', icon: 'ShoppingCart' },
+      { name: ROUTES.orders, label: 'Замовлення', icon: 'ClipboardList' },
+    ],
+  );
 
   function navigate(routeName: string) {
     router.push({ name: routeName, params: { tableId: tableId.value } });
