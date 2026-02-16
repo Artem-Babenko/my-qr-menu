@@ -106,7 +106,8 @@
   }
 
   .circle-icon {
-    background-color: var(--hover-on-secondary);
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
     width: 40px;
     height: 40px;
     border-radius: 50%;

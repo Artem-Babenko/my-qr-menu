@@ -53,10 +53,11 @@
     z-index: 1000;
   }
   .modal {
-    background-color: #fff;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 15px 25px;
+    background-color: var(--surface-container-low);
+    color: var(--on-surface);
+    border-radius: 15px;
+    border: 1px solid var(--outline-variant);
+    padding: 20px 25px;
     min-width: 400px;
     max-width: 90%;
     max-height: 90%;
@@ -66,7 +67,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
   }
   .close-btn {
     height: 30px;

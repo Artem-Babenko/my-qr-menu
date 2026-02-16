@@ -56,11 +56,7 @@
   <app-card>
     <app-flex gap="16" align="flex-start">
       <app-flex class="user-icon" justify="center">
-        <app-icon
-          name="User"
-          :size="20"
-          color="var(--secondary-text)"
-        ></app-icon>
+        <app-icon name="User" :size="20"></app-icon>
       </app-flex>
 
       <app-flex direction="column" gap="6" align="flex-start">
@@ -113,20 +109,15 @@
   .user-icon {
     width: 40px;
     height: 40px;
-    background-color: var(--hover-on-secondary);
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
     border-radius: 10px;
   }
   .icons {
     margin-left: auto;
   }
   .icons .app-icon {
-    color: var(--secondary-text);
-    transition: all 0.2s ease;
     cursor: pointer;
-
-    &:hover {
-      color: var(--primary-text);
-    }
   }
   .icons .app-icon.disabled {
     opacity: 0.5;

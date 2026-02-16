@@ -132,7 +132,7 @@
 
 <style scoped>
   .items-block {
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 10px;
     padding: 12px;
     display: flex;
@@ -140,7 +140,7 @@
     gap: 10px;
   }
   .hint {
-    color: var(--text-secondary);
+    color: var(--on-surface-variant);
     font-size: 14px;
   }
   .items-list {
@@ -153,7 +153,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 10px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 10px;
   }
   .left {
@@ -162,7 +162,7 @@
     gap: 2px;
   }
   .cat {
-    color: var(--text-secondary);
+    color: var(--on-surface-variant);
     font-size: 13px;
   }
   .right {
@@ -173,20 +173,20 @@
   .price {
     min-width: 70px;
     text-align: right;
-    color: var(--text-secondary);
+    color: var(--on-surface-variant);
   }
   .qty {
     width: 90px;
     padding: 6px 8px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 8px;
-    background: var(--background);
-    color: var(--text);
+    background: var(--surface-container);
+    color: var(--on-surface);
   }
   .remove {
     border: none;
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--on-surface-variant);
     cursor: pointer;
     font-size: 16px;
     padding: 2px 6px;

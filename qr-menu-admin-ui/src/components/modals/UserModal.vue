@@ -217,10 +217,10 @@
   }
 
   .row {
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 8px;
     padding: 10px 12px;
-    background-color: var(--hover-on-secondary);
+    background-color: var(--surface-container);
   }
 
   .row-content {
@@ -235,7 +235,7 @@
   }
 
   .est-name.disabled {
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
   }
 
   .role {

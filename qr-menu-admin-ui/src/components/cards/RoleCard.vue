@@ -84,12 +84,13 @@
     line-height: 1.5;
   }
   .permissions {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
     padding-top: 10px;
   }
   .circle-icon,
   .circle-num {
-    background-color: var(--hover-on-secondary);
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
     width: 22px;
     height: 22px;
     border-radius: 50%;

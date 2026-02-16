@@ -100,7 +100,7 @@
   }
 
   .bottom {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
     padding-top: 10px;
   }
 </style>

@@ -76,11 +76,11 @@
 
 <style scoped>
   .app-select {
-    border: 1px solid var(--border);
-    border-radius: 5px;
+    border: 1px solid var(--outline-variant);
+    border-radius: 15px;
     cursor: pointer;
     width: 100%;
-    background: var(--background);
+    background: var(--surface-container-low);
     height: 36px;
   }
   .value {
@@ -92,7 +92,7 @@
     min-width: 0;
   }
   .value.placeholder {
-    color: var(--text-on-secondary);
+    color: var(--on-surface-variant);
   }
   .chevron {
     padding-right: 10px;

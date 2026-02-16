@@ -235,7 +235,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
     padding-top: 15px;
     margin-top: 5px;
   }

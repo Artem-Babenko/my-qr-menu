@@ -231,7 +231,7 @@
 
   .group-head {
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--outline-variant);
     margin-bottom: 12px;
   }
 </style>

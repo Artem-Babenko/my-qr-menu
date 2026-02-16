@@ -2,6 +2,6 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useThemeStore = defineStore('theme', () => {
-  const theme = ref<'light' | 'dark'>('dark');
+  const theme = ref<'light' | 'dark'>('light');
   return { theme };
 });

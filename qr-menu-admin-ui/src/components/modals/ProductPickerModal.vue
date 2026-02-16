@@ -143,7 +143,7 @@
     grid-template-columns: 28px 1fr auto;
     align-items: center;
     gap: 10px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 12px;
     padding: 10px 12px;
   }

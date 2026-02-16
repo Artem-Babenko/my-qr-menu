@@ -37,7 +37,7 @@
   }
 
   .app-checkbox.disabled {
-    opacity: 0.6;
+    opacity: 0.38;
     cursor: not-allowed;
   }
 
@@ -51,11 +51,13 @@
   .app-checkbox-mark {
     width: 18px;
     height: 18px;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    background-color: var(--secondary);
+    border: 2px solid var(--outline);
+    border-radius: 6px;
+    background-color: transparent;
     position: relative;
-    transition: all 0.2s ease;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
     flex-shrink: 0;
   }
 
@@ -71,27 +73,28 @@
   .app-checkbox-input:checked + .app-checkbox-mark::after {
     content: '';
     position: absolute;
-    left: 5px;
-    top: 2px;
+    top: 10%;
+    left: 30%;
+    transform: translate(-10%, -30%);
     width: 5px;
     height: 9px;
-    border: solid var(--text-on-primary);
+    border: solid var(--on-primary);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
 
-  .app-checkbox-input:focus + .app-checkbox-mark {
+  .app-checkbox-input:focus-visible + .app-checkbox-mark {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
 
-  .app-checkbox-label {
-    font: var(--font-s);
-    color: var(--text-on-secondary);
+  .app-checkbox-input:disabled + .app-checkbox-mark {
+    border-color: var(--outline-variant);
+    background-color: transparent;
   }
 
-  .app-checkbox-input:disabled + .app-checkbox-mark {
-    opacity: 0.6;
-    cursor: not-allowed;
+  .app-checkbox-label {
+    font: var(--font-s);
+    color: var(--on-surface);
   }
 </style>
