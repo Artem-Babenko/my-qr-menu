@@ -48,11 +48,12 @@
     height: clamp(38px, 9vmin, 44px);
     border-radius: var(--radius-sm);
     flex: 1;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     outline: 0;
     transition: 0.2s ease;
     font: var(--font-s);
-    background: #ffffff;
+    color: var(--on-surface);
+    background: var(--surface-container-lowest);
   }
   .app-input-inner.textarea {
     height: auto;
@@ -61,7 +62,7 @@
   }
   .app-input-inner::placeholder {
     font: var(--font-s);
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
   }
   .app-input-inner:hover:not(.disabled),
   .app-input-inner:focus {

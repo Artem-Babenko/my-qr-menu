@@ -65,7 +65,7 @@
     </div>
 
     <div v-else-if="!orders || orders.length === 0" class="empty">
-      <app-icon name="ClipboardList" :size="48" color="var(--border)" />
+      <app-icon name="ClipboardList" :size="48" color="var(--outline-variant)" />
       <app-text size="m" color="secondary">Замовлень ще немає</app-text>
     </div>
 
@@ -138,14 +138,14 @@
 
   .refresh-btn {
     background: transparent;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: var(--radius-sm);
     cursor: pointer;
     padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
     transition: all 0.2s ease;
     outline: none;
     flex-shrink: 0;
@@ -187,7 +187,7 @@
     font: var(--font-xxs);
     font-weight: 600;
     padding: 3px 8px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     border: 1px solid;
     white-space: nowrap;
   }
@@ -197,8 +197,8 @@
     flex-direction: column;
     gap: clamp(4px, 1vmin, 6px);
     padding: clamp(6px, 1.5vw, 10px) 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
+    border-bottom: 1px solid var(--outline-variant);
   }
 
   .order-item-row {
@@ -223,6 +223,6 @@
     flex-direction: column;
     gap: 2px;
     padding-top: clamp(4px, 1vmin, 6px);
-    border-top: 1px dashed var(--border);
+    border-top: 1px dashed var(--outline-variant);
   }
 </style>

@@ -54,7 +54,7 @@
     />
 
     <div v-if="basketStore.items.length === 0" class="empty">
-      <app-icon name="ShoppingCart" :size="48" color="var(--border)" />
+      <app-icon name="ShoppingCart" :size="48" color="var(--outline-variant)" />
       <app-text size="m" color="secondary">Кошик порожній</app-text>
       <app-text size="xs" color="secondary" line="m">
         Додайте страви з меню
@@ -78,7 +78,7 @@
               </app-text>
             </div>
             <button class="remove-btn" @click="basketStore.remove(item.productId)">
-              <app-icon name="X" :size="16" color="var(--secondary-text)" />
+              <app-icon name="X" :size="16" color="var(--on-surface-variant)" />
             </button>
           </div>
 
@@ -214,14 +214,30 @@
     width: clamp(30px, 7vmin, 36px);
     height: clamp(30px, 7vmin, 36px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: #ffffff;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .qty-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .qty-btn:hover::after {
+    opacity: 0.08;
   }
 
   .qty-btn:hover {
@@ -234,7 +250,7 @@
     align-items: center;
     padding: var(--gap) 0;
     margin-top: var(--gap);
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
   }
 
   .order-fields {
@@ -261,21 +277,21 @@
     width: clamp(40px, 10vmin, 48px);
     height: clamp(40px, 10vmin, 48px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: #ffffff;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
     outline: none;
     flex-shrink: 0;
   }
 
   .clear-btn:hover {
-    border-color: var(--error-text);
-    color: var(--error-text);
+    border-color: var(--error);
+    color: var(--error);
   }
 
   .order-btn {

@@ -96,8 +96,8 @@
     left: 0;
     right: 0;
     height: var(--bottom-nav-height);
-    background: #ffffff;
-    border-top: 1px solid var(--border);
+    background: var(--surface-container-lowest);
+    border-top: 1px solid var(--outline-variant);
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -115,13 +115,13 @@
     outline: none;
     cursor: pointer;
     padding: 6px 0;
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
     transition: color 0.2s ease;
     min-width: 60px;
   }
 
   .nav-tab.active {
-    color: var(--primary-text);
+    color: var(--on-surface);
   }
 
   .tab-icon-wrapper {
@@ -136,7 +136,7 @@
     top: -6px;
     right: -10px;
     background: var(--primary);
-    color: var(--text-on-primary);
+    color: var(--on-primary);
     font: var(--font-xxs);
     font-weight: 600;
     min-width: 16px;

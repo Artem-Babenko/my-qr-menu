@@ -21,11 +21,11 @@
     border: 1px solid transparent;
   }
   .white {
-    border-color: var(--border);
-    background-color: #ffffff;
+    border-color: var(--outline-variant);
+    background-color: var(--surface-container-lowest);
   }
   .yellow {
-    border-color: var(--accent);
-    background-color: var(--hover-on-accent);
+    border-color: var(--outline-variant);
+    background-color: var(--tertiary-container);
   }
 </style>

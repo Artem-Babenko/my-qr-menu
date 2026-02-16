@@ -55,9 +55,9 @@
   .line-s { line-height: 1; }
   .line-m { line-height: 1.5; }
 
-  .color-primary { color: var(--primary-text); }
-  .color-secondary { color: var(--secondary-text); }
-  .color-accent { color: var(--text-on-accent); }
-  .color-error { color: var(--error-text); }
-  .color-success { color: var(--success-text); }
+  .color-primary { color: var(--on-surface); }
+  .color-secondary { color: var(--on-surface-variant); }
+  .color-accent { color: var(--on-tertiary-container); }
+  .color-error { color: var(--error); }
+  .color-success { color: var(--success); }
 </style>

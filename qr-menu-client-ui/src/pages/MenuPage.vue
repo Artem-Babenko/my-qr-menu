@@ -173,8 +173,9 @@
     flex-shrink: 0;
     padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
     border-radius: 20px;
-    border: 1px solid var(--border);
-    background: #ffffff;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
     font: var(--font-xs);
     font-weight: 500;
     cursor: pointer;
@@ -186,7 +187,7 @@
   .category-chip.active,
   .category-chip:hover {
     background: var(--primary);
-    color: var(--text-on-primary);
+    color: var(--on-primary);
     border-color: var(--primary);
   }
 
@@ -245,21 +246,36 @@
     width: clamp(32px, 8vmin, 40px);
     height: clamp(32px, 8vmin, 40px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: #ffffff;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .qty-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .qty-btn:hover::after {
+    opacity: 0.08;
+  }
+  .qty-btn:active::after {
+    opacity: 0.12;
   }
 
   .qty-btn:hover {
     border-color: var(--primary);
-  }
-
-  .qty-btn:active {
-    background: var(--hover-on-secondary);
   }
 </style>

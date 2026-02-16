@@ -95,20 +95,36 @@
     align-items: flex-start;
     gap: clamp(4px, 1vmin, 8px);
     padding: var(--card-padding);
-    background: #ffffff;
-    border: 1px solid var(--border);
+    background: var(--surface-container-lowest);
+    border: 1px solid var(--outline-variant);
     border-radius: var(--radius);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
     text-align: left;
     outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .action-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .action-card:hover::after {
+    opacity: 0.08;
+  }
+  .action-card:active::after {
+    opacity: 0.12;
   }
 
   .action-card:hover {
     border-color: var(--primary);
-  }
-
-  .action-card:active {
-    background: var(--hover-on-secondary);
   }
 </style>
