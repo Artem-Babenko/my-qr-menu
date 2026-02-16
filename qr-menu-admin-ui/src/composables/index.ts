@@ -4,3 +4,4 @@ export { usePermissions } from './usePermissions';
 export { useRegistrationFormFields } from './useRegistrationFormFields';
 export { useRegistrationFlow } from './useRegistrationFlow';
 export { useToast } from './useToast';
+export { useUserLoader } from './useUserLoader';

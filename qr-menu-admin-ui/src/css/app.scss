@@ -12,31 +12,10 @@ body {
 }
 
 a {
-  text-decoration-color: var(--primary);
+  text-decoration-color: var(--on-surface);
 }
 
 :root {
-  --primary: #000000;
-  --text-on-primary: #ffffff;
-  --hover-on-primary: #222222;
-
-  --secondary: #ffffff;
-  --text-on-secondary: #666666;
-  --hover-on-secondary: #f2f2f2;
-  --hover-text-on-secondary: #000000;
-
-  --accent: #ffef79;
-  --text-on-accent: #b9ae5a;
-  --hover-on-accent: #fffce2;
-
-  --border: #dddddd;
-  --background: #ffffff;
-
-  --primary-text: #000000;
-  --secondary-text: #666666;
-  --error-text: #7b1b1b;
-  --success-text: #1b7b33;
-
   --font-xxs: 10px / 1 'Montserrat';
   --font-xs: 12px / 1 'Montserrat';
   --font-s: 14px / 1 'Montserrat';

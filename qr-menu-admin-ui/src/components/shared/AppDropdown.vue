@@ -96,10 +96,11 @@
   .app-dropdown {
     position: absolute;
     z-index: 1000;
-    background: #ffffff;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    padding: 5px;
-    box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.05);
+    background-color: var(--surface-container-low);
+    color: var(--on-surface);
+    border-radius: 15px;
+    border: 1px solid var(--outline-variant);
+    padding: 6px;
+    box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.1);
   }
 </style>

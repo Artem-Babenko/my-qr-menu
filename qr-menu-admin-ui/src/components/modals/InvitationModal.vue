@@ -130,11 +130,11 @@
       </app-flex>
     </div>
     <div v-if="form.showed" class="form">
-      <app-card v-if="!form.readonlyUser" class="accent-card" type="yellow">
-        <app-text color="accent">
+      <app-card v-if="!form.readonlyUser" class="accent-card">
+        <app-text color="tertiary">
           <app-icon name="User"></app-icon>
         </app-text>
-        <app-text color="accent" line="m">
+        <app-text color="tertiary" line="m">
           Користувача не знайдено. Заповніть форму для створення запрошення.
         </app-text>
       </app-card>

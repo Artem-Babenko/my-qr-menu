@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  type ButtonTypes = 'filled' | 'outline' | 'text';
+  export type ButtonType = 'filled' | 'outline' | 'text' | 'tonal';
 
   interface AppButtonProps {
-    type?: ButtonTypes;
+    type?: ButtonType;
     disabled?: boolean;
   }
 
@@ -25,44 +25,57 @@
     font: var(--font-s);
     font-weight: 600;
     padding: 0 12px;
-    border-radius: 6px;
+    border-radius: 12px;
     position: relative;
-    transition: all 0.2s ease;
-    display: flex;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+    display: inline-flex;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
     height: 36px;
     gap: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
   }
 
-  .app-button:hover:not(.disabled) {
-    cursor: pointer;
+  .app-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .app-button:hover:not(.disabled)::after {
+    opacity: 0.08;
+  }
+  .app-button:active:not(.disabled)::after {
+    opacity: 0.12;
   }
 
   .filled {
     background-color: var(--primary);
-    color: var(--text-on-primary);
+    color: var(--on-primary);
   }
-  .filled:hover:not(.disabled) {
-    background-color: var(--hover-on-primary);
+  .tonal {
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
   }
-
-  .outline,
-  .text {
-    background-color: var(--secondary);
-    color: var(--text-on-secondary);
-  }
-  .outline:hover:not(.disabled),
-  .text:hover:not(.disabled) {
-    background-color: var(--hover-on-secondary);
-    color: var(--hover-text-on-secondary);
-  }
-
   .outline {
-    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--outline);
+  }
+  .text {
+    background-color: transparent;
+    color: var(--primary);
   }
 
   .disabled {
-    opacity: 0.6;
+    opacity: 0.38;
+    pointer-events: none;
   }
 </style>
