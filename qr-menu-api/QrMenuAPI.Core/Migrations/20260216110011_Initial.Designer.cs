@@ -12,8 +12,8 @@ using QrMenuAPI.Core;
 namespace QrMenuAPI.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260131160013_ProductsAndCategories")]
-    partial class ProductsAndCategories
+    [Migration("20260216110011_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,6 +201,212 @@ namespace QrMenuAPI.Core.Migrations
                         .HasDatabaseName("ix_networks_name");
 
                     b.ToTable("networks", (string)null);
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("timestamp with time zone");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CustomerFullName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("customer_full_name");
+
+                    b.Property<int>("EstablishmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("establishment_id");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_paid");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_number");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer")
+                        .HasColumnName("source");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<int?>("TableId")
+                        .HasColumnType("integer")
+                        .HasColumnName("table_id");
+
+                    b.Property<decimal>("TotalSum")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_sum");
+
+                    b.HasKey("Id")
+                        .HasName("pk_orders");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_orders_created_by_user_id");
+
+                    b.HasIndex("EstablishmentId")
+                        .HasDatabaseName("ix_orders_establishment_id");
+
+                    b.HasIndex("TableId")
+                        .HasDatabaseName("ix_orders_table_id");
+
+                    b.ToTable("orders", (string)null);
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderItemEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CategoryNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("category_name_snapshot");
+
+                    b.Property<decimal>("LineTotal")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("line_total");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<decimal>("PriceSnapshot")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("price_snapshot");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<string>("ProductNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("product_name_snapshot");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_items");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_order_items_product_id");
+
+                    b.HasIndex("OrderId", "ProductId")
+                        .HasDatabaseName("ix_order_items_order_id_product_id");
+
+                    b.ToTable("order_items", (string)null);
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderStaffEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("assigned_at");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_staff");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_order_staff_user_id");
+
+                    b.HasIndex("OrderId", "UserId", "Role")
+                        .IsUnique()
+                        .HasDatabaseName("ix_order_staff_order_id_user_id_role");
+
+                    b.ToTable("order_staff", (string)null);
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderStatusHistoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("changed_at");
+
+                    b.Property<int>("ChangedByUserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("changed_by_user_id");
+
+                    b.Property<int>("FromStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("from_status");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<int>("ToStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("to_status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_order_status_history");
+
+                    b.HasIndex("ChangedByUserId")
+                        .HasDatabaseName("ix_order_status_history_changed_by_user_id");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("ix_order_status_history_order_id");
+
+                    b.ToTable("order_status_history", (string)null);
                 });
 
             modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductEntity", b =>
@@ -538,6 +744,96 @@ namespace QrMenuAPI.Core.Migrations
                     b.Navigation("TargetUser");
                 });
 
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderEntity", b =>
+                {
+                    b.HasOne("QrMenuAPI.Core.Entities.UserEntity", "CreatedByUser")
+                        .WithMany("OrdersCreated")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_orders_users_created_by_user_id");
+
+                    b.HasOne("QrMenuAPI.Core.Entities.EstablishmentEntity", "Establishment")
+                        .WithMany("Orders")
+                        .HasForeignKey("EstablishmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_orders_establishments_establishment_id");
+
+                    b.HasOne("QrMenuAPI.Core.Entities.TableEntity", "Table")
+                        .WithMany("Orders")
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_orders_tables_table_id");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("Establishment");
+
+                    b.Navigation("Table");
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderItemEntity", b =>
+                {
+                    b.HasOne("QrMenuAPI.Core.Entities.OrderEntity", "Order")
+                        .WithMany("Items")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_items_orders_order_id");
+
+                    b.HasOne("QrMenuAPI.Core.Entities.ProductEntity", "Product")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_order_items_products_product_id");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderStaffEntity", b =>
+                {
+                    b.HasOne("QrMenuAPI.Core.Entities.OrderEntity", "Order")
+                        .WithMany("Staff")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_staff_orders_order_id");
+
+                    b.HasOne("QrMenuAPI.Core.Entities.UserEntity", "User")
+                        .WithMany("AssignedOrders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_staff_users_user_id");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderStatusHistoryEntity", b =>
+                {
+                    b.HasOne("QrMenuAPI.Core.Entities.UserEntity", "ChangedByUser")
+                        .WithMany("StatusChanges")
+                        .HasForeignKey("ChangedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_status_history_users_changed_by_user_id");
+
+                    b.HasOne("QrMenuAPI.Core.Entities.OrderEntity", "Order")
+                        .WithMany("StatusHistory")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_order_status_history_orders_order_id");
+
+                    b.Navigation("ChangedByUser");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductEntity", b =>
                 {
                     b.HasOne("QrMenuAPI.Core.Entities.CategoryEntity", "Category")
@@ -673,6 +969,8 @@ namespace QrMenuAPI.Core.Migrations
                 {
                     b.Navigation("Invitations");
 
+                    b.Navigation("Orders");
+
                     b.Navigation("Tables");
 
                     b.Navigation("UserEstablishment");
@@ -687,6 +985,20 @@ namespace QrMenuAPI.Core.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("Items");
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("StatusHistory");
+                });
+
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductEntity", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
             modelBuilder.Entity("QrMenuAPI.Core.Entities.RoleEntity", b =>
                 {
                     b.Navigation("Invitations");
@@ -696,11 +1008,22 @@ namespace QrMenuAPI.Core.Migrations
                     b.Navigation("UserEstablishment");
                 });
 
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.TableEntity", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("QrMenuAPI.Core.Entities.UserEntity", b =>
                 {
+                    b.Navigation("AssignedOrders");
+
                     b.Navigation("Invitations");
 
+                    b.Navigation("OrdersCreated");
+
                     b.Navigation("Sessions");
+
+                    b.Navigation("StatusChanges");
 
                     b.Navigation("UserEstablishment");
                 });

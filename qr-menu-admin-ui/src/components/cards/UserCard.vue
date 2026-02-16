@@ -59,7 +59,7 @@
     margin: 10px 0;
   }
   .footer {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
     padding-top: 5px;
   }
 </style>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
   interface AppCardProps {
-    type?: 'white' | 'yellow';
+    type?: 'default' | 'outlined' | 'tonal' | 'elevated';
   }
 
   withDefaults(defineProps<AppCardProps>(), {
-    type: 'white',
+    type: 'default',
   });
 </script>
 
@@ -17,15 +17,22 @@
 <style scoped>
   .app-card {
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 16px;
+    background-color: var(--surface-container-low);
+    color: var(--on-surface);
     border: 1px solid transparent;
+    transition: all 0.2s ease;
   }
-  .white {
-    border-color: var(--border);
-    background-color: var(--background);
+  .outlined {
+    border: 1px solid var(--outline-variant);
+    background-color: var(--surface-container);
   }
-  .yellow {
-    border-color: var(--accent);
-    background-color: var(--hover-on-accent);
+  .tonal {
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
+  }
+  .elevated {
+    background-color: var(--surface-container-high);
+    color: var(--on-surface);
   }
 </style>

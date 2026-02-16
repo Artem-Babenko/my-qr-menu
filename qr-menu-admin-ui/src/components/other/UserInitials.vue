@@ -20,7 +20,8 @@
     border-radius: 50%;
     min-width: 40px;
     height: 40px;
-    background-color: var(--hover-on-secondary);
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
     display: flex;
     align-items: center;
     justify-content: center;

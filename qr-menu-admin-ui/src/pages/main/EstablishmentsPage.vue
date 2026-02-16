@@ -308,9 +308,8 @@
   }
 
   .network-wrapper {
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     border-radius: 10px;
-    background-color: var(--background);
     padding: 20px;
     display: flex;
     flex-direction: column;

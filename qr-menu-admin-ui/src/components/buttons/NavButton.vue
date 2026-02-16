@@ -1,10 +1,5 @@
 <script setup lang="ts">
-  import {
-    AppButton,
-    AppIcon,
-    AppText,
-    type IconName,
-  } from '@/components/shared';
+  import { AppButton, AppIcon, type IconName } from '@/components/shared';
 
   defineProps<{
     label: string;
@@ -18,23 +13,15 @@
   <app-button
     class="nav-button"
     :type="selected ? 'filled' : 'text'"
-    :class="{ disabled }"
+    :disabled="disabled"
   >
-    <div class="nav-button__inner">
-      <app-icon :name="icon" :size="20"></app-icon>
-      <app-text weight="600">{{ label }}</app-text>
-    </div>
+    <app-icon :name="icon" :size="20"></app-icon>
+    {{ label }}
   </app-button>
 </template>
 
 <style scoped>
-  .nav-button__inner {
-    display: flex;
-    align-items: center;
+  .nav-button {
     justify-content: start;
-    gap: 10px;
-  }
-  .nav-button.disabled {
-    opacity: 0.6;
   }
 </style>

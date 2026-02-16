@@ -121,8 +121,7 @@
           :mask="PHONE_MASK"
           id="phoneNumber"
           :disabled="form.showed"
-        >
-        </app-input>
+        ></app-input>
         <app-button @click="findUser" :disabled="form.showed">
           <app-icon name="Search" :size="16" :stroke-width="2.5"></app-icon>
           Знайти
@@ -130,11 +129,11 @@
       </app-flex>
     </div>
     <div v-if="form.showed" class="form">
-      <app-card v-if="!form.readonlyUser" class="accent-card" type="yellow">
-        <app-text color="accent">
+      <app-card v-if="!form.readonlyUser" class="accent-card">
+        <app-text>
           <app-icon name="User"></app-icon>
         </app-text>
-        <app-text color="accent" line="m">
+        <app-text line="m">
           Користувача не знайдено. Заповніть форму для створення запрошення.
         </app-text>
       </app-card>
@@ -166,6 +165,8 @@
     gap: 10px;
     padding: 10px 15px;
     margin-top: 20px;
+    background-color: var(--tertiary-container);
+    color: var(--on-tertiary-container);
   }
   .accent-card .app-icon {
     margin-top: 2px;

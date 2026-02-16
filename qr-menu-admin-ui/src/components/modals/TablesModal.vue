@@ -101,12 +101,12 @@
   }
 
   .icons .app-icon {
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
     transition: all 0.2s ease;
     cursor: pointer;
 
     &:hover {
-      color: var(--primary-text);
+      color: var(--on-surface);
     }
   }
   .icons .app-icon.disabled {

@@ -28,20 +28,22 @@
   .tab {
     text-align: center;
     padding: 7px 15px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--outline-variant);
     cursor: pointer;
     transition: 0.2s ease;
   }
   .selected {
     background-color: var(--primary);
-    color: var(--text-on-primary);
     border-color: var(--primary);
   }
+  .selected .app-text {
+    color: var(--on-primary);
+  }
   .tab:last-of-type {
-    border-radius: 0 5px 5px 0;
+    border-radius: 0 10px 10px 0;
   }
   .tab:first-of-type {
-    border-radius: 5px 0 0 5px;
+    border-radius: 10px 0 0 10px;
   }
   .tab + .tab {
     border-left: 0;

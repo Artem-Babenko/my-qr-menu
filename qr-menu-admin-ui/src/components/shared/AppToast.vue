@@ -15,9 +15,7 @@
   });
 
   const iconColor = computed(() => {
-    return props.type === 'success'
-      ? 'var(--success-text)'
-      : 'var(--error-text)';
+    return props.type === 'success' ? 'var(--tertiary)' : 'var(--error)';
   });
 </script>
 
@@ -54,6 +52,6 @@
     margin-left: 12px;
     display: flex;
     align-items: center;
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
   }
 </style>

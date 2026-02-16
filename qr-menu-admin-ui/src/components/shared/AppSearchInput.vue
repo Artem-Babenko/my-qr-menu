@@ -29,6 +29,6 @@
     width: 200px;
   }
   .icon {
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
   }
 </style>

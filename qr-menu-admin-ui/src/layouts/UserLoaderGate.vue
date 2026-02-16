@@ -1,40 +1,14 @@
 <script lang="ts" setup>
-import { usersApi } from '@/api/usersApi';
-import { ROUTES } from '@/router';
-import { useAuthStore } from '@/store/auth';
-import { useUserStore } from '@/store/user';
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+  import { useUserLoader } from '@/composables/useUserLoader';
+  import { onMounted } from 'vue';
 
-const authStore = useAuthStore();
-const userStore = useUserStore();
-const router = useRouter();
-const loaded = ref(false);
+  const loader = useUserLoader();
 
-const loadUser = async () => {
-  const resp = await usersApi.current();
-  return resp.data;
-};
-
-onMounted(async () => {
-  if (!authStore.authenticated) {
-    await router.replace({ name: ROUTES.login });
-    return;
-  }
-
-  userStore.user ??= await loadUser();
-
-  if (
-    !userStore.user!.networkId &&
-    router.currentRoute.value.name !== ROUTES.onboarding
-  ) {
-    await router.replace({ name: ROUTES.onboarding });
-  }
-
-  loaded.value = true;
-});
+  onMounted(async () => {
+    await loader.loadUserData();
+  });
 </script>
 
 <template>
-  <router-view v-if="loaded"></router-view>
+  <router-view v-if="loader.loaded.value"></router-view>
 </template>

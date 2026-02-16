@@ -58,7 +58,7 @@
 <style scoped>
   .property-block {
     gap: 5px !important;
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
     margin-bottom: 5px;
   }
   .est-name {

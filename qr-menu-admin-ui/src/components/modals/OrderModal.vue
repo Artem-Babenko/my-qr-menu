@@ -172,7 +172,7 @@
     gap: 12px;
   }
   .block {
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--outline-variant);
     padding-top: 12px;
     display: flex;
     flex-direction: column;

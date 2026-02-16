@@ -3,7 +3,7 @@
 
   type TextSize = 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
   type TextWeight = '400' | '500' | '600';
-  type TextColor = 'primary' | 'secondary' | 'accent' | 'error';
+  type TextColor = 'primary' | 'secondary' | 'tertiary' | 'error' | 'disabled';
   type LineHeight = 's' | 'm';
 
   interface AppTextProps {
@@ -19,6 +19,7 @@
     weight: '400',
     el: 'p',
     line: 's',
+    color: 'primary',
   });
 
   const classes = computed(() => [
@@ -80,15 +81,19 @@
   }
 
   .color-primary {
-    color: var(--primary-text);
+    color: var(--on-surface);
   }
   .color-secondary {
-    color: var(--secondary-text);
+    color: var(--on-surface-variant);
   }
-  .color-accent {
-    color: var(--text-on-accent);
+  .color-tertiary {
+    color: var(--tertiary);
   }
   .color-error {
-    color: var(--error-text);
+    color: var(--error);
+  }
+  .color-disabled {
+    color: var(--on-surface);
+    opacity: 0.38;
   }
 </style>

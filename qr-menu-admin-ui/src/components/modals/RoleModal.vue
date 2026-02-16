@@ -221,9 +221,9 @@
     flex-direction: column;
     gap: 10px;
     padding: 15px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background-color: var(--hover-on-secondary);
+    border: 1px solid var(--outline-variant);
+    border-radius: 15px;
+    background-color: var(--surface-container);
   }
 
   .group-title {
@@ -242,12 +242,13 @@
     gap: 10px;
     cursor: pointer;
     padding: 5px;
-    border-radius: 4px;
+    border-radius: 10px;
     transition: background-color 0.2s ease;
+    user-select: none;
   }
 
   .permission-item:hover {
-    background-color: var(--secondary);
+    background-color: var(--secondary-container);
   }
 
   .form-buttons {

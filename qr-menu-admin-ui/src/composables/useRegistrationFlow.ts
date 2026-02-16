@@ -16,7 +16,6 @@ interface RegistrationFlowOptions {
 export function useRegistrationFlow() {
   const toast = useToast();
   const authStore = useAuthStore();
-  const userStore = useUserStore();
   const router = useRouter();
 
   const register = async (
@@ -51,16 +50,9 @@ export function useRegistrationFlow() {
       ? await options.onSuccess(regResp.data.userId)
       : { networkId: null };
 
-    userStore.user = {
-      id: regResp.data.userId,
-      name: regReq.name,
-      surname: regReq.surname,
-      email: regReq.email,
-      phone: regReq.phone,
-      networkId: networkResult.networkId,
-    };
-
-    router.replace({ name: ROUTES.dashboard });
+    router.replace({
+      name: networkResult.networkId ? ROUTES.dashboard : ROUTES.onboarding,
+    });
     return true;
   };
 

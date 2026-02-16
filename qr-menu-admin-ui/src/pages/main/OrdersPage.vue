@@ -2,6 +2,7 @@
   import { ordersApi } from '@/api/ordersApi';
   import {
     AppButton,
+    AppCard,
     AppIcon,
     AppSearchInput,
     AppText,
@@ -19,6 +20,7 @@
   import { PermissionType } from '@/consts/roles';
   import { ROUTES } from '@/router';
   import { useRouter } from 'vue-router';
+  import { PageHeader } from '@/components/headers';
 
   interface OrderStatusGroupView {
     id: OrderStatusGroup;
@@ -165,30 +167,27 @@
 
 <template>
   <div v-if="canViewOrders" class="page">
-    <div class="header">
-      <app-text size="xxl" weight="600">Замовлення</app-text>
-      <app-text color="secondary">Перегляд та управління замовленнями</app-text>
-    </div>
+    <page-header section-name="Замовлення"></page-header>
 
     <div class="status-groups">
-      <div
+      <app-card
         v-for="g in groups"
         :key="g.id"
-        class="status-card"
-        :class="{ selected: selectedGroup === g.id }"
+        :type="selectedGroup === g.id ? 'outlined' : 'default'"
         @click="toggleGroup(g.id)"
+        class="status-card"
       >
         <div class="left">
-          <app-icon :name="g.icon" :size="18"></app-icon>
+          <app-icon :name="g.icon" :size="20"></app-icon>
         </div>
         <div class="right">
-          <app-text color="secondary">{{ g.title }}</app-text>
-          <app-text size="xl" weight="600">{{ counts[g.id] }}</app-text>
+          <app-text size="xs" color="secondary">{{ g.title }}</app-text>
+          <app-text size="l" weight="600">{{ counts[g.id] }}</app-text>
         </div>
-      </div>
+      </app-card>
     </div>
 
-    <div class="toolbar">
+    <app-card class="toolbar">
       <app-search-input
         v-model="search"
         placeholder="Пошук замовлень..."
@@ -197,7 +196,7 @@
         <app-icon name="Plus" :size="15"></app-icon>
         Створити замовлення
       </app-button>
-    </div>
+    </app-card>
 
     <order-list
       :orders="filtered"
@@ -231,47 +230,29 @@
     gap: 20px;
   }
 
-  .header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
   .status-groups {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 20px;
   }
-
   .status-card {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--background);
-    padding: 16px;
+    padding: 15px;
     display: flex;
     gap: 12px;
     cursor: pointer;
     user-select: none;
-    transition:
-      border-color 120ms ease,
-      box-shadow 120ms ease;
+    transition: all 0.2s ease;
   }
-
-  .status-card.selected {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
-  }
-
   .left {
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    border: 1px solid var(--border);
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .right {
     display: flex;
     flex-direction: column;
@@ -283,5 +264,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    padding: 15px;
   }
 </style>
