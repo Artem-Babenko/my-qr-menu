@@ -9,6 +9,7 @@
   import { UserPageTab } from '@/consts/tabs';
   import type { AppTab } from '@/types/components';
   import { computed } from 'vue';
+  import { PageHeader } from '.';
 
   const props = defineProps<{
     tabs?: AppTab[];
@@ -45,12 +46,7 @@
 </script>
 
 <template>
-  <div class="header">
-    <app-text size="xxl" weight="600">Користувачі та ролі</app-text>
-    <app-text color="secondary">
-      Управління користувачами, ролями та правами доступу
-    </app-text>
-  </div>
+  <page-header section-name="Користувачі"></page-header>
   <div class="navigation">
     <app-tabs v-model:selected="selectedTab" :tabs="tabs"></app-tabs>
     <div class="right">

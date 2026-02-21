@@ -7,6 +7,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { usePermissions } from '@/composables';
   import { PermissionType } from '@/consts/roles';
+  import { PageHeader } from '@/components/headers';
 
   const route = useRoute();
   const router = useRouter();
@@ -73,10 +74,7 @@
 
 <template>
   <div v-if="canView" class="page">
-    <div class="header">
-      <app-text size="xxl" weight="600">Меню</app-text>
-      <app-text color="secondary">Управління категоріями та стравами</app-text>
-    </div>
+    <page-header section-name="Меню"></page-header>
 
     <app-tabs v-model:selected="selectedTab" :tabs="tabs"></app-tabs>
 

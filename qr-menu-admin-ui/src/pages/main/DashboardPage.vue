@@ -1,5 +1,7 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import { PageHeader } from '@/components/headers';
+</script>
 
 <template>
-  <div>dashboard page</div>
+  <page-header section-name="Головна"></page-header>
 </template>

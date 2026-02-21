@@ -20,6 +20,7 @@
   import { computed, ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
   import { ROUTES } from '@/router';
+  import { PageHeader } from '@/components/headers';
 
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
@@ -191,16 +192,9 @@
 
 <template>
   <div v-if="hasNetwork && canView" class="page">
-    <app-flex justify="space-between" align="center" class="page-head">
-      <div>
-        <app-text weight="600" size="l">Заклади харчування</app-text>
-        <app-text color="secondary" v-if="isMultiple">
-          Управління закладами харчування та мережею
-        </app-text>
-        <app-text color="secondary" v-else>
-          Управління закладами харчування
-        </app-text>
-      </div>
+    <page-header section-name="Заклади харчування"></page-header>
+
+    <div>
       <app-button
         v-if="!isMultiple"
         :disabled="!canCreateEstablishment"
@@ -208,7 +202,7 @@
       >
         Додати заклад
       </app-button>
-    </app-flex>
+    </div>
 
     <!-- Single establishment: show only card list area (card component added later) -->
     <div v-if="isSingle" class="content">
@@ -301,10 +295,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-
-  .page-head {
-    gap: 10px;
   }
 
   .network-wrapper {
