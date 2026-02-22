@@ -30,7 +30,7 @@ services:
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__DefaultConnection: >-
         Host=db;Port=5432;Database=${POSTGRES_DB:-qr-menu};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
-      CorsOrigins: "http://localhost:3000,http://localhost,http://localhost:80"
+      CorsOrigins: "http://localhost:3000,http://localhost,http://localhost:80,http://${VM_IP}:3000"
       JwtSecret: ${JWT_SECRET:-sfjshdfksddferuogfyergfo34go34u5yg3oug3ty34ogyofds}
       JwtLifeTime: ${JWT_LIFETIME:-03:00:00}
     depends_on:
@@ -50,7 +50,7 @@ services:
       ASPNETCORE_HTTP_PORTS: "8080"
       ConnectionStrings__DefaultConnection: >-
         Host=db;Port=5432;Database=${POSTGRES_DB:-qr-menu};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
-      CorsOrigins: "http://localhost:3001,http://localhost,http://localhost:80"
+      CorsOrigins: "http://localhost:3001,http://localhost,http://localhost:80,http://${VM_IP}:3001"
     depends_on:
       db:
         condition: service_healthy
@@ -60,7 +60,7 @@ services:
     build:
       context: ./qr-menu-admin-ui
       args:
-        VITE_API_BASE_URL: http://localhost:5000
+        VITE_API_BASE_URL: http://${VM_IP}:5000
     restart: unless-stopped
     ports:
       - "3000:80"
@@ -72,7 +72,7 @@ services:
     build:
       context: ./qr-menu-client-ui
       args:
-        VITE_API_BASE_URL: http://localhost:5001
+        VITE_API_BASE_URL: http://${VM_IP}:5001
     restart: unless-stopped
     ports:
       - "3001:80"
