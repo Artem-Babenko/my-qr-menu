@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { onMounted, ref, useTemplateRef } from 'vue';
+  import { computed, onMounted, ref, useTemplateRef } from 'vue';
   import { NetworkInvitationList } from '@/components/lists';
   import { InvitationModal } from '@/components/modals';
   import { useRoute, useRouter } from 'vue-router';
   import { usePermissions } from '@/composables';
   import { PermissionType } from '@/consts/roles';
-  import { AppText } from '@/components/shared';
+  import { AppFlex, AppSearchInput, AppText } from '@/components/shared';
+  import { AddButton } from '@/components/buttons';
 
   const route = useRoute();
   const router = useRouter();
@@ -13,12 +14,15 @@
 
   const listRef = useTemplateRef<{ refetch: () => unknown }>('listRef');
   const modalShowed = ref(false);
+  const search = ref('');
 
-  const canViewInvites = () => hasAny(PermissionType.invitationsView);
-  const canCreateInvite = () => hasAny(PermissionType.invitationsView);
+  const canViewInvites = computed(() => hasAny(PermissionType.invitationsView));
+  const canCreateInvite = computed(() =>
+    hasAny(PermissionType.invitationsCreate),
+  );
 
   const onAddClick = () => {
-    if (!canCreateInvite()) return;
+    if (!canCreateInvite.value) return;
     modalShowed.value = true;
   };
 
@@ -27,25 +31,55 @@
   };
 
   onMounted(() => {
-    if (!canCreateInvite()) return;
+    if (!canCreateInvite.value) return;
     if (route.query.openInviteModal === '1') {
       modalShowed.value = true;
       router.replace({ query: {} });
     }
   });
-
-  defineExpose({ onAddClick });
 </script>
 
 <template>
-  <app-text v-if="!canViewInvites()" color="secondary">
+  <app-text v-if="!canViewInvites" color="secondary">
     Недостатньо прав для перегляду запрошень
   </app-text>
-  <template v-else>
-    <network-invitation-list ref="listRef"></network-invitation-list>
+  <div v-else class="tab">
+    <app-flex class="controls" align="center" gap="20">
+      <div class="search">
+        <app-search-input
+          v-model="search"
+          placeholder="Пошук запрошень..."
+        ></app-search-input>
+      </div>
+      <add-button :disabled="!canCreateInvite" @click="onAddClick">
+        Створити запрошення
+      </add-button>
+    </app-flex>
+
+    <network-invitation-list
+      ref="listRef"
+      :search="search"
+    ></network-invitation-list>
     <invitation-modal
       v-model:showed="modalShowed"
       @save="onSaved"
     ></invitation-modal>
-  </template>
+  </div>
 </template>
+
+<style scoped>
+  .tab {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .controls {
+    width: 100%;
+  }
+  .search {
+    flex: 1;
+  }
+  :deep(.search .app-search-input) {
+    width: 100%;
+  }
+</style>

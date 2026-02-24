@@ -1,35 +1,72 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import { RoleList } from '@/components/lists';
   import { RoleModal } from '@/components/modals';
   import type { RoleView } from '@/types/roles';
   import { usePermissions } from '@/composables';
   import { PermissionType } from '@/consts/roles';
+  import {
+    AppButton,
+    AppFlex,
+    AppSearchInput,
+    AppIcon,
+  } from '@/components/shared';
+  import { AddButton } from '@/components/buttons';
 
   const { hasAny } = usePermissions();
 
   const modalShowed = ref(false);
   const editingRole = ref<RoleView | null>(null);
+  const search = ref('');
 
-  const canCreate = () => hasAny(PermissionType.rolesCreate);
-  const canEdit = () => hasAny(PermissionType.rolesUpdate);
+  const canCreate = computed(() => hasAny(PermissionType.rolesCreate));
+  const canEdit = computed(() => hasAny(PermissionType.rolesUpdate));
 
   const onAddClick = () => {
-    if (!canCreate()) return;
+    if (!canCreate.value) return;
     editingRole.value = null;
     modalShowed.value = true;
   };
 
   const onEdit = (role: RoleView) => {
-    if (!canEdit()) return;
+    if (!canEdit.value) return;
     editingRole.value = role;
     modalShowed.value = true;
   };
-
-  defineExpose({ onAddClick });
 </script>
 
 <template>
-  <role-list @edit="onEdit"></role-list>
+  <div class="tab">
+    <app-flex class="controls" align="center" gap="20">
+      <div class="search">
+        <app-search-input
+          v-model="search"
+          placeholder="Пошук ролей..."
+        ></app-search-input>
+      </div>
+      <add-button :disabled="!canCreate" @click="onAddClick">
+        Додати роль
+      </add-button>
+    </app-flex>
+
+    <role-list :search="search" @edit="onEdit"></role-list>
+  </div>
   <role-modal v-model:showed="modalShowed" :role="editingRole"></role-modal>
 </template>
+
+<style scoped>
+  .tab {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .controls {
+    width: 100%;
+  }
+  .search {
+    flex: 1;
+  }
+  :deep(.search .app-search-input) {
+    width: 100%;
+  }
+</style>

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { useLoader } from '@/composables';
   import BaseCardList from './BaseCardList.vue';
   import { useNetworkStore } from '@/store/network';
@@ -8,8 +9,14 @@
   import { usePermissions } from '@/composables';
   import { PermissionType } from '@/consts/roles';
   import { AppText } from '@/components/shared';
+  import { useRolesStore } from '@/store/roles';
+
+  const props = withDefaults(defineProps<{ search?: string }>(), {
+    search: '',
+  });
 
   const networkStore = useNetworkStore();
+  const rolesStore = useRolesStore();
   const networkId = toRef(() => networkStore.network?.id);
 
   const { hasAny } = usePermissions();
@@ -35,6 +42,24 @@
     invitations.value = invitations.value.filter((inv) => inv.id !== id);
   };
 
+  const filteredInvitations = computed(() => {
+    const list = invitations.value ?? [];
+    const roles = rolesStore.roles ?? [];
+    const q = props.search.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((invitation) => {
+      const roleName =
+        roles.find((role) => role.id === invitation.roleId)?.name ?? '';
+      const establishmentName =
+        networkStore.network?.establishments.find(
+          (est) => est.id === invitation.establishmentId,
+        )?.name ?? '';
+      const hay =
+        `${invitation.name ?? ''} ${invitation.surname ?? ''} ${invitation.phone ?? ''} ${roleName} ${establishmentName}`.toLowerCase();
+      return hay.includes(q);
+    });
+  });
+
   defineExpose({ refetch });
 </script>
 
@@ -44,10 +69,16 @@
   </app-text>
   <base-card-list>
     <invitation-card
-      v-for="inv in invitations"
+      v-for="inv in filteredInvitations"
       :key="inv.id"
       :invitation="inv"
       @delete="deleteInvitation(inv.id)"
     ></invitation-card>
+    <app-text
+      v-if="canView() && filteredInvitations.length === 0"
+      color="secondary"
+    >
+      Нічого не знайдено
+    </app-text>
   </base-card-list>
 </template>

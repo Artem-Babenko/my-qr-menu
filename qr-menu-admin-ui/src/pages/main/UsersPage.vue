@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-  import { computed, onMounted, ref, useTemplateRef } from 'vue';
-  import { UsersPageHeader } from '@/components/headers';
+  import { computed, watch } from 'vue';
+  import { AppTabs, AppText } from '@/components/shared';
+  import { PageHeader } from '@/components/headers';
   import { UserPageTab } from '@/consts/tabs';
   import { useRoute, useRouter } from 'vue-router';
   import { ROUTES } from '@/router';
@@ -11,12 +12,6 @@
   const route = useRoute();
   const router = useRouter();
   const { hasAny } = usePermissions();
-
-  const activeTabRef = useTemplateRef<{ onAddClick?: () => unknown }>(
-    'activeTabRef',
-  );
-
-  const searchWord = ref('');
 
   const routeToTabMap: Record<string, UserPageTab> = {
     [ROUTES.users]: UserPageTab.users,
@@ -65,51 +60,52 @@
     },
   });
 
-  const addDisabled = computed(() => {
-    const canCreateInvite = hasAny(PermissionType.invitationsCreate);
-    const canCreateRole = hasAny(PermissionType.rolesCreate);
-    if (selectedTab.value === UserPageTab.users) return !canCreateInvite;
-    if (selectedTab.value === UserPageTab.invites) return !canCreateInvite;
-    if (selectedTab.value === UserPageTab.roles) return !canCreateRole;
-    return true;
-  });
+  const canView = computed(
+    () => canUsers.value || canRoles.value || canInvites.value,
+  );
 
-  const hideAddButton = computed(() => tabs.value.length === 0);
-
-  const onAddButtonClick = () => {
-    if (addDisabled.value) return;
-    activeTabRef.value?.onAddClick?.();
-  };
-
-  onMounted(() => {
-    if (tabs.value.length === 0) {
+  watch(
+    canView,
+    (v) => {
+      if (v) return;
       router.replace({ name: ROUTES.dashboard });
-      return;
-    }
+    },
+    { immediate: true },
+  );
 
-    // If user opened a tab without permission - redirect to first allowed.
-    const allowed = new Set(tabs.value.map((t) => t.id as UserPageTab));
-    const current = routeToTabMap[route.name as string];
-    if (current && !allowed.has(current) && firstAllowedTab.value) {
-      router.replace({ name: tabToRouteMap[firstAllowedTab.value] });
-    }
-  });
+  watch(
+    tabs,
+    (newTabs) => {
+      if (!newTabs.length) return;
+      const allowed = new Set(newTabs.map((t) => t.id as UserPageTab));
+      const current = routeToTabMap[route.name as string];
+      if (current && !allowed.has(current) && firstAllowedTab.value) {
+        router.replace({ name: tabToRouteMap[firstAllowedTab.value] });
+      }
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
-  <div class="page">
-    <users-page-header
-      v-model:search="searchWord"
-      v-model:selected-tab="selectedTab"
-      :tabs="tabs"
-      :add-disabled="addDisabled"
-      :hide-add-button="hideAddButton"
-      @add-button-click="onAddButtonClick"
-    ></users-page-header>
-    <div class="main">
-      <router-view v-slot="{ Component }">
-        <component :is="Component" ref="activeTabRef"></component>
-      </router-view>
-    </div>
+  <div v-if="canView" class="page">
+    <page-header section-name="Користувачі"></page-header>
+
+    <app-tabs v-model:selected="selectedTab" :tabs="tabs"></app-tabs>
+
+    <router-view></router-view>
+  </div>
+  <div v-else>
+    <app-text color="secondary">
+      Недостатньо прав для перегляду користувачів
+    </app-text>
   </div>
 </template>
+
+<style scoped>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+</style>

@@ -2,13 +2,17 @@
   import UserCard from '../cards/UserCard.vue';
   import { useLoader } from '@/composables';
   import { useNetworkStore } from '@/store/network';
-  import { toRef } from 'vue';
+  import { computed, toRef } from 'vue';
   import { usersApi } from '@/api/usersApi';
   import type { User } from '@/types/user';
   import BaseCardList from './BaseCardList.vue';
   import { AppText } from '@/components/shared';
   import { usePermissions } from '@/composables';
   import { PermissionType } from '@/consts/roles';
+
+  const props = withDefaults(defineProps<{ search?: string }>(), {
+    search: '',
+  });
 
   const emit = defineEmits<{ edit: [user: User] }>();
 
@@ -28,6 +32,17 @@
     },
     enabled: () => !!networkId.value && canView(),
   });
+
+  const filteredUsers = computed(() => {
+    const list = loader.data.value ?? [];
+    const q = props.search.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((user) => {
+      const hay =
+        `${user.name} ${user.surname} ${user.email} ${user.phone}`.toLowerCase();
+      return hay.includes(q);
+    });
+  });
 </script>
 
 <template>
@@ -38,10 +53,13 @@
   </div>
   <base-card-list>
     <user-card
-      v-for="user in loader.data.value"
+      v-for="user in filteredUsers"
       :key="user.id"
       :user="user"
       @edit="emit('edit', user)"
     ></user-card>
+    <app-text v-if="canView() && filteredUsers.length === 0" color="secondary">
+      Нічого не знайдено
+    </app-text>
   </base-card-list>
 </template>

@@ -15,6 +15,7 @@
   import { useToastsStore } from '@/store/toasts';
   import type { CategoryView } from '@/types/categories';
   import { computed, ref, watch } from 'vue';
+  import { AddButton } from '@/components/buttons';
 
   const toasts = useToastsStore();
   const networkStore = useNetworkStore();
@@ -119,13 +120,9 @@
         <div class="search">
           <app-search-input v-model="search" placeholder="Пошук категорій..." />
         </div>
-        <app-button
-          class="add-btn"
-          :disabled="!networkId || !canCreate"
-          @click="openCreate"
-        >
+        <add-button :disabled="!networkId || !canCreate" @click="openCreate">
           Додати категорію
-        </app-button>
+        </add-button>
       </app-flex>
 
       <app-text v-if="loading" color="secondary">Завантаження...</app-text>
@@ -168,11 +165,6 @@
   :deep(.search .app-search-input) {
     width: 100%;
   }
-  .add-btn {
-    min-width: 200px;
-    white-space: nowrap;
-  }
-
   .list {
     display: flex;
     flex-direction: column;
