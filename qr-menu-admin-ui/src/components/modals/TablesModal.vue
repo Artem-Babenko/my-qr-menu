@@ -61,8 +61,10 @@
         :key="table.id"
         class="table-card"
       >
-        <app-flex justify="space-between" align="center">
-          <app-text weight="500">Стіл №{{ table.number }}</app-text>
+        <app-flex class="table-row" justify="space-between" align="center">
+          <app-text class="table-title" weight="500">
+            Стіл №{{ table.number }}
+          </app-text>
 
           <app-flex class="icons" gap="10" align="center">
             <app-icon
@@ -99,6 +101,13 @@
   .table-card {
     padding: 12px 14px;
   }
+  .table-row {
+    min-width: 0;
+  }
+  .table-title {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
 
   .icons .app-icon {
     color: var(--on-surface-variant);
@@ -113,5 +122,27 @@
     opacity: 0.5;
     cursor: default;
     pointer-events: none;
+  }
+
+  @media (max-width: 700px) {
+    .head {
+      flex-wrap: wrap;
+    }
+    .head :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+    .table-row {
+      flex-direction: row;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    .icons {
+      width: auto;
+      margin-left: auto;
+      justify-content: flex-end;
+      flex-wrap: nowrap;
+      gap: 12px !important;
+    }
   }
 </style>

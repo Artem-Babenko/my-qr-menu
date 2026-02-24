@@ -254,4 +254,28 @@
   .form-buttons {
     margin-top: 20px;
   }
+
+  @media (max-width: 700px) {
+    .permissions-groups {
+      max-height: 300px;
+      gap: 12px;
+    }
+    .permission-group {
+      padding: 12px;
+    }
+    .permission-item {
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-buttons {
+      flex-direction: column;
+      margin-top: 14px;
+    }
+    .form-buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

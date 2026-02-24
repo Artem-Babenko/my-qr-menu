@@ -5,3 +5,10 @@
     <router-view></router-view>
   </div>
 </template>
+
+<style scoped>
+  .auth-layout {
+    min-height: 100dvh;
+    background-color: var(--background);
+  }
+</style>

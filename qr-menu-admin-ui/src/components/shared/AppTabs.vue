@@ -24,6 +24,13 @@
 <style scoped>
   .app-tabs {
     display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .app-tabs::-webkit-scrollbar {
+    display: none;
   }
   .tab {
     text-align: center;
@@ -31,6 +38,8 @@
     border: 1px solid var(--outline-variant);
     cursor: pointer;
     transition: 0.2s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .selected {
     background-color: var(--primary);
@@ -47,5 +56,11 @@
   }
   .tab + .tab {
     border-left: 0;
+  }
+
+  @media (max-width: 640px) {
+    .tab {
+      padding: 8px 12px;
+    }
   }
 </style>

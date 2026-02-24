@@ -35,7 +35,7 @@
 
 <template>
   <div>
-    <app-flex gap="20">
+    <app-flex class="row" gap="20">
       <div class="input-block">
         <app-label for="name" label="Ім'я"></app-label>
         <app-input
@@ -64,7 +64,7 @@
         disabled
       ></app-input>
     </div>
-    <app-flex gap="20">
+    <app-flex class="row" gap="20">
       <div class="input-block">
         <app-label label="Заклад"></app-label>
         <app-select
@@ -93,5 +93,12 @@
   .input-block {
     margin-top: 20px;
     width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    .row {
+      flex-direction: column;
+      gap: 0;
+    }
   }
 </style>

@@ -22,8 +22,10 @@
     flex-direction: column;
     text-align: center;
     gap: 15px;
-    width: 400px;
-    height: 200px;
+    width: min(100%, 400px);
+    min-height: 200px;
+    box-sizing: border-box;
+    margin: 0 auto;
   }
   .clock-icon {
     width: 40px;
@@ -31,5 +33,15 @@
     background-color: var(--secondary-container);
     color: var(--on-secondary-container);
     border-radius: 10px;
+  }
+
+  @media (max-width: 640px) {
+    .no-invitations-card {
+      width: 100%;
+      min-height: 170px;
+      gap: 12px;
+      text-align: left;
+      align-items: flex-start;
+    }
   }
 </style>

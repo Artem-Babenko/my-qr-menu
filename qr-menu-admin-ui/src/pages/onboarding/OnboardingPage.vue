@@ -34,7 +34,9 @@
     flex-direction: column;
     background-color: var(--background);
     gap: 20px;
-    height: 100vh;
+    min-height: 100dvh;
+    padding: 16px;
+    box-sizing: border-box;
   }
   .surface {
     padding: 30px 20px;
@@ -42,6 +44,8 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    width: min(100%, 720px);
+    box-sizing: border-box;
   }
   .app-text {
     max-width: 450px;
@@ -49,5 +53,30 @@
   .description {
     line-height: 1.5;
     text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 12px;
+    }
+    .surface {
+      padding: 18px 14px;
+      gap: 14px;
+      width: 100%;
+      align-items: flex-start;
+    }
+    .app-text {
+      max-width: 100%;
+    }
+    .description {
+      text-align: left;
+    }
+    .surface :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

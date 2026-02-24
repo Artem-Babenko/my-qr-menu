@@ -3,7 +3,6 @@
   import { CategoryCard } from '@/components/cards';
   import { CategoryModal } from '@/components/modals';
   import {
-    AppButton,
     AppFlex,
     AppSearchInput,
     AppText,
@@ -158,6 +157,7 @@
   }
   .controls {
     width: 100%;
+    flex-wrap: wrap;
   }
   .search {
     flex: 1;
@@ -169,5 +169,19 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .controls {
+      gap: 12px;
+    }
+    .search {
+      width: 100%;
+      flex: 1 0 100%;
+    }
+    .controls :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

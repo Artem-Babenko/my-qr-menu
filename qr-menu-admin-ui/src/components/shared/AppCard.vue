@@ -35,4 +35,11 @@
     background-color: var(--surface-container-high);
     color: var(--on-surface);
   }
+
+  @media (max-width: 640px) {
+    .app-card {
+      padding: 14px;
+      border-radius: 14px;
+    }
+  }
 </style>

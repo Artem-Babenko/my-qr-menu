@@ -103,4 +103,16 @@
     border-top: 1px solid var(--outline-variant);
     padding-top: 10px;
   }
+
+  @media (max-width: 640px) {
+    .product-card {
+      height: auto;
+      min-height: 160px;
+    }
+    .bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
 </style>

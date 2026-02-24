@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed } from 'vue';
+  import { computed, onBeforeUnmount, watch } from 'vue';
   import { AppButton, AppIcon, AppText } from '.';
 
   const props = defineProps<{
@@ -19,6 +19,22 @@
   function close() {
     showed.value = false;
   }
+
+  const unlockBody = () => {
+    document.body.style.overflow = '';
+  };
+
+  watch(showed, (value) => {
+    if (value) {
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+    unlockBody();
+  });
+
+  onBeforeUnmount(() => {
+    unlockBody();
+  });
 </script>
 
 <template>
@@ -58,10 +74,11 @@
     border-radius: 15px;
     border: 1px solid var(--outline-variant);
     padding: 20px 25px;
-    min-width: 400px;
-    max-width: 90%;
-    max-height: 90%;
+    width: min(100%, var(--modal-max-width, 640px));
+    max-width: 95vw;
+    max-height: calc(100dvh - 32px);
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .header {
     display: flex;
@@ -74,5 +91,23 @@
     width: 30px;
     padding: 0;
     justify-content: center;
+  }
+
+  @media (max-width: 576px) {
+    .background {
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+    .modal {
+      width: 100%;
+      max-width: calc(100vw - 10px);
+      max-height: calc(100dvh - 20px);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .header {
+      padding-bottom: 10px;
+    }
   }
 </style>

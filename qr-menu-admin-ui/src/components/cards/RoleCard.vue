@@ -100,4 +100,11 @@
     width: 40px;
     height: 40px;
   }
+
+  @media (max-width: 640px) {
+    .role-card {
+      height: auto;
+      min-height: 150px;
+    }
+  }
 </style>

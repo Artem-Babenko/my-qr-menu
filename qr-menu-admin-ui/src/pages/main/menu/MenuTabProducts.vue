@@ -5,7 +5,6 @@
   import { ProductModal } from '@/components/modals';
   import BaseCardList from '@/components/lists/BaseCardList.vue';
   import {
-    AppButton,
     AppFlex,
     AppSearchInput,
     AppText,
@@ -208,6 +207,7 @@
   }
   .controls {
     width: 100%;
+    flex-wrap: wrap;
   }
   .search {
     flex: 1;
@@ -224,5 +224,22 @@
     padding-bottom: 10px;
     border-bottom: 1px solid var(--outline-variant);
     margin-bottom: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .controls {
+      gap: 12px;
+    }
+    .search {
+      width: 100%;
+      flex: 1 0 100%;
+    }
+    .controls :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+    .groups {
+      gap: 14px;
+    }
   }
 </style>

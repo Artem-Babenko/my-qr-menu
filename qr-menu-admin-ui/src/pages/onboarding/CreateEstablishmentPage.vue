@@ -71,26 +71,52 @@
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    height: 100vh;
+    min-height: 100dvh;
     background-color: var(--background);
+    padding: 16px;
+    box-sizing: border-box;
   }
   .surface {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: min(100%, 520px);
+    box-sizing: border-box;
   }
   .form-head {
     margin: 10px 0 30px;
     text-align: center;
   }
-  .app-input {
-    width: 350px;
-  }
   .field {
     margin-bottom: 20px;
     width: 100%;
   }
-  .app-button {
+  :deep(.field .app-input) {
+    width: 100%;
+  }
+  :deep(.app-button) {
     margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      justify-content: flex-start;
+      padding: 12px;
+    }
+    .surface {
+      width: 100%;
+      padding: 14px;
+    }
+    .form-head {
+      margin: 4px 0 18px;
+      font-size: 18px;
+    }
+    .field {
+      margin-bottom: 12px;
+    }
+    :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

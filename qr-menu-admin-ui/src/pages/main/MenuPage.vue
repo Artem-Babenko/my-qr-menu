@@ -91,9 +91,10 @@
     flex-direction: column;
     gap: 20px;
   }
-  .header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
+  @media (max-width: 768px) {
+    .page {
+      gap: 12px;
+    }
   }
 </style>

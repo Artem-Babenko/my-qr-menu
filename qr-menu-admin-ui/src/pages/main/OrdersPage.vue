@@ -266,4 +266,32 @@
     gap: 20px;
     padding: 15px;
   }
+
+  @media (max-width: 1100px) {
+    .status-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      gap: 12px;
+    }
+    .status-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .toolbar :deep(.app-search-input) {
+      width: 100%;
+    }
+    .toolbar :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

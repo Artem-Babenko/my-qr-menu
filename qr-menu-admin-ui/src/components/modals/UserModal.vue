@@ -246,4 +246,33 @@
   .buttons {
     margin-top: 10px;
   }
+
+  @media (max-width: 700px) {
+    .user-block {
+      grid-template-columns: 1fr;
+    }
+    .input-block:last-child {
+      grid-column: auto;
+    }
+    .row-content {
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .role {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .buttons {
+      flex-direction: column;
+      margin-top: 6px;
+    }
+    .buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

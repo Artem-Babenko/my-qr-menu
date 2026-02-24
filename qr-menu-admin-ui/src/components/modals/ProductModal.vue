@@ -265,4 +265,26 @@
   .form-buttons {
     margin-top: 20px;
   }
+
+  @media (max-width: 700px) {
+    .row-content {
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .price {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-buttons {
+      flex-direction: column;
+      margin-top: 14px;
+    }
+    .form-buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

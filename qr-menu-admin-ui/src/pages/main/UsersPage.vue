@@ -108,4 +108,10 @@
     flex-direction: column;
     gap: 20px;
   }
+
+  @media (max-width: 768px) {
+    .page {
+      gap: 12px;
+    }
+  }
 </style>

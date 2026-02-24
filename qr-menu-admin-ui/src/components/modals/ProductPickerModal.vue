@@ -159,4 +159,24 @@
   .buttons {
     margin-top: 16px;
   }
+
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 28px 1fr;
+      align-items: flex-start;
+    }
+    .price {
+      grid-column: 2;
+      min-width: 0;
+      text-align: left;
+    }
+    .buttons {
+      flex-direction: column;
+      margin-top: 12px;
+    }
+    .buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>

@@ -62,11 +62,26 @@
   }
   .controls {
     width: 100%;
+    flex-wrap: wrap;
   }
   .search {
     flex: 1;
   }
   :deep(.search .app-search-input) {
     width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .controls {
+      gap: 12px;
+    }
+    .search {
+      width: 100%;
+      flex: 1 0 100%;
+    }
+    .controls :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

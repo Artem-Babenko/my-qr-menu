@@ -113,4 +113,11 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
+
+  @media (max-width: 640px) {
+    .est-card {
+      height: auto;
+      min-height: 150px;
+    }
+  }
 </style>

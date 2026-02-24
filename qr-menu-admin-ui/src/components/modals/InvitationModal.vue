@@ -114,7 +114,7 @@
     </app-text>
     <div class="search-block">
       <app-label label="Номер телефону" for="phoneNumber"></app-label>
-      <app-flex gap="10">
+      <app-flex class="search-row" gap="10">
         <app-input
           v-model="phone"
           placeholder="+38..."
@@ -174,5 +174,24 @@
   .input-block {
     margin-top: 20px;
     width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    .search-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .search-row :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+    .form-buttons {
+      flex-direction: column;
+    }
+    .form-buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

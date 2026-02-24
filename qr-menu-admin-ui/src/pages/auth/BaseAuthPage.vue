@@ -19,25 +19,58 @@
 <style scoped lang="scss">
   .base-auth-page {
     justify-content: center;
+    align-items: center;
     background-color: var(--background);
-    height: 100vh;
+    min-height: 100dvh;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
 
     .site-name {
-      margin: 80px 0 40px;
+      margin: 30px 0 24px;
+      text-align: center;
     }
 
     .container {
       padding: 20px 40px;
-      width: 300px;
+      width: clamp(300px, 92vw, 420px);
+      max-width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-sizing: border-box;
 
       .page-title {
         margin: 5px 0 20px;
+        text-align: center;
       }
       :deep(.app-button) {
         margin-top: 10px;
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .base-auth-page {
+      justify-content: flex-start;
+      padding: 12px;
+
+      .site-name {
+        margin: 14px 0 16px;
+      }
+
+      .container {
+        width: 100%;
+        padding: 16px 14px;
+
+        :deep(.app-button) {
+          width: 100%;
+          justify-content: center;
+        }
+
+        :deep(.app-input) {
+          width: 100%;
+        }
       }
     }
   }

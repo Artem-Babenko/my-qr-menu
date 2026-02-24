@@ -194,7 +194,7 @@
   <div v-if="hasNetwork && canView" class="page">
     <page-header section-name="Заклади харчування"></page-header>
 
-    <div>
+    <div class="single-actions">
       <app-button
         v-if="!isMultiple"
         :disabled="!canCreateEstablishment"
@@ -308,5 +308,38 @@
 
   .content {
     min-height: 200px;
+  }
+
+  .network-head {
+    gap: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .network-wrapper {
+      padding: 14px;
+      gap: 14px;
+    }
+    .network-head {
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page {
+      gap: 12px;
+    }
+    .network-head :deep(.app-flex) {
+      width: 100%;
+      flex-direction: column;
+    }
+    .network-head :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+    .single-actions :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

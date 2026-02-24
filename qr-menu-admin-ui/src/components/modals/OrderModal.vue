@@ -191,4 +191,25 @@
   .buttons {
     margin-top: 16px;
   }
+
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .history-row {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .buttons {
+      flex-direction: column;
+      margin-top: 12px;
+    }
+    .buttons :deep(.app-button) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>
