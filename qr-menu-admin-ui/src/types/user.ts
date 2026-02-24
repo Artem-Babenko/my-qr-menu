@@ -5,6 +5,7 @@ export interface User {
   email: string;
   phone: string;
   networkId: number | null;
+  lastActivityAt?: string | null;
 
   // optional: present when returned by /users/by-network/{networkId}
   accesses?: UserEstablishmentAccess[];

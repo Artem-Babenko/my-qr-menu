@@ -13,6 +13,9 @@ public static class UserMapper
         Surname = src.Surname,
         Phone = src.Phone,
         NetworkId = src.NetworkId,
+        LastActivityAt = src.Sessions
+            .Select(s => (DateTime?)s.LastActivityAt)
+            .Max(),
         Accesses = src.UserEstablishment
             .Select(x => new UserEstablishmentAccessModel
             {

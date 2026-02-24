@@ -96,6 +96,7 @@ public class UsersController(AppDbContext db) : BaseApiController
         var users = await db.Users
             .AsNoTracking()
             .Include(u => u.UserEstablishment)
+            .Include(u => u.Sessions)
             .Where(u => u.NetworkId == networkId)
             .Select(u => u.MapToModel())
             .ToListAsync();
