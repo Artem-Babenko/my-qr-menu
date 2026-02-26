@@ -39,7 +39,9 @@
 <template>
   <app-dropdown v-model:open="showed" anchor="bottom right" self="top right">
     <template #target>
-      <dots-button></dots-button>
+      <slot name="target">
+        <dots-button></dots-button>
+      </slot>
     </template>
     <template #default>
       <div class="menu-content">
@@ -67,6 +69,6 @@
   .menu-content .app-button {
     padding: 5px 10px;
     gap: 10px;
-    justify-content: start;
+    justify-content: flex-start;
   }
 </style>

@@ -1,15 +1,12 @@
 <script setup lang="ts">
   import {
-    AppButton,
     AppCard,
-    AppDropdown,
-    AppIcon,
     AppText,
   } from '@/components/shared';
   import { useUserStore } from '@/store/user';
   import { storeToRefs } from 'pinia';
   import { CardDropdown, type ActionButton } from '../dropdowns';
-  import { computed, ref } from 'vue';
+  import { computed } from 'vue';
   import { useThemeStore } from '@/store/theme';
   import { useRouter } from 'vue-router';
   import { ROUTES } from '@/router';
@@ -23,7 +20,6 @@
 
   const { user } = storeToRefs(userStore);
   const isDarkTheme = computed(() => themeStore.theme === 'dark');
-  const menuOpen = ref(false);
 
   const buttons = computed<ActionButton[]>(() => [
     {
@@ -43,14 +39,6 @@
     },
   ]);
 
-  const onClick = async (button: ActionButton) => {
-    if (button.disabled) {
-      if (typeof button.disabled === 'function' && button.disabled()) return;
-      if (typeof button.disabled === 'boolean' && button.disabled) return;
-    }
-    button.click();
-    menuOpen.value = false;
-  };
 </script>
 
 <template>
@@ -61,12 +49,7 @@
     </app-card>
 
     <div class="mobile-info">
-      <app-dropdown
-        v-model:open="menuOpen"
-        anchor="bottom right"
-        self="top right"
-        :offset="[0, 8]"
-      >
+      <card-dropdown :buttons="buttons">
         <template #target>
           <button
             class="avatar-btn"
@@ -79,20 +62,7 @@
             ></user-initials>
           </button>
         </template>
-        <template #default>
-          <div class="menu-content">
-            <app-button
-              v-for="button in buttons"
-              :key="button.title"
-              type="text"
-              @click="onClick(button)"
-            >
-              <app-icon :name="button.icon" :size="14"></app-icon>
-              {{ button.title }}
-            </app-button>
-          </div>
-        </template>
-      </app-dropdown>
+      </card-dropdown>
     </div>
   </template>
 </template>
@@ -124,17 +94,6 @@
     border-radius: 50%;
     cursor: pointer;
   }
-  .menu-content {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .menu-content :deep(.app-button) {
-    text-align: left;
-    padding: 5px 10px;
-    gap: 10px;
-  }
-
   .avatar-btn:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
