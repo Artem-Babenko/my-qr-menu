@@ -12,14 +12,14 @@
   import { useNetworkStore } from '@/store/network';
   import { useToastsStore } from '@/store/toasts';
   import type { OrderStatusGroup } from '@/types/orders';
-  import { computed, ref, toRef, watch } from 'vue';
+  import { computed, onMounted, ref, toRef, watch } from 'vue';
   import { OrderList } from '@/components/lists';
   import { OrderCreateModal, OrderModal } from '@/components/modals';
   import { useLoader, usePermissions } from '@/composables';
   import { OrderStatus } from '@/consts/orders';
   import { PermissionType } from '@/consts/roles';
   import { ROUTES } from '@/router';
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import { PageHeader } from '@/components/headers';
   import { AddButton } from '@/components/buttons';
 
@@ -32,6 +32,7 @@
   const networkStore = useNetworkStore();
   const toasts = useToastsStore();
   const router = useRouter();
+  const route = useRoute();
   const { hasAnyOf } = usePermissions();
 
   const search = ref('');
@@ -109,6 +110,13 @@
     createShowed.value = true;
   };
 
+  const openCreateFromQuery = () => {
+    if (!canViewOrders.value) return;
+    if (route.query.openCreateModal !== '1') return;
+    createShowed.value = true;
+    router.replace({ query: {} });
+  };
+
   const openDetails = (orderId: number) => {
     if (!canViewOrders.value) return;
     selectedOrderId.value = orderId;
@@ -123,6 +131,10 @@
     },
     { immediate: true },
   );
+
+  onMounted(() => {
+    openCreateFromQuery();
+  });
 
   const filtered = computed(() => {
     if (!orders.value) return [];

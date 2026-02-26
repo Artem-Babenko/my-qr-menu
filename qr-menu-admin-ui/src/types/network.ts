@@ -15,6 +15,13 @@ export interface Network {
   establishments: Establishment[];
 }
 
+export interface DashboardStats {
+  activeOrdersCount: number;
+  activeUsersCount: number;
+  completedTodayOrdersCount: number;
+  completedTodayTotalSum: number;
+}
+
 export interface Establishment {
   id: number;
   name: string;

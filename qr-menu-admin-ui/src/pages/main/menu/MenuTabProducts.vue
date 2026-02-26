@@ -16,12 +16,15 @@
   import { useToastsStore } from '@/store/toasts';
   import type { CategoryView } from '@/types/categories';
   import type { ProductView } from '@/types/products';
-  import { computed, ref, watch } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import { AddButton } from '@/components/buttons';
+  import { useRoute, useRouter } from 'vue-router';
 
   const toasts = useToastsStore();
   const networkStore = useNetworkStore();
   const { hasAny } = usePermissions();
+  const route = useRoute();
+  const router = useRouter();
 
   const search = ref('');
   const categories = ref<CategoryView[]>([]);
@@ -107,6 +110,14 @@
     modalShowed.value = true;
   };
 
+  const openCreateFromQuery = () => {
+    if (!canCreate.value) return;
+    if (route.query.openCreateModal !== '1') return;
+    editingProduct.value = null;
+    modalShowed.value = true;
+    router.replace({ query: {} });
+  };
+
   const openEdit = (product: ProductView) => {
     if (!canEdit.value) return;
     editingProduct.value = product;
@@ -128,6 +139,10 @@
   const onSaved = async () => {
     await loadData();
   };
+
+  onMounted(() => {
+    openCreateFromQuery();
+  });
 </script>
 
 <template>

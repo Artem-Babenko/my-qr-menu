@@ -12,6 +12,17 @@ namespace QrMenuAPI.Admin.Controllers;
 [Route("network")]
 public class NetworkController(AppDbContext db) : BaseApiController
 {
+    private static readonly OrderStatus[] ActiveOrderStatuses =
+    [
+        OrderStatus.New,
+        OrderStatus.Accepted,
+        OrderStatus.InKitchen,
+        OrderStatus.Cooking,
+        OrderStatus.Ready
+    ];
+
+    private static readonly TimeSpan ActiveUserWindow = TimeSpan.FromMinutes(30);
+
     [HttpPut("{networkId:int}")]
     public async Task<IActionResult> UpdateNetwork(
         [FromRoute] int networkId,
@@ -218,5 +229,72 @@ public class NetworkController(AppDbContext db) : BaseApiController
         };
 
         return Success(response);
+    }
+
+    [HttpGet("{networkId:int}/dashboard-stats")]
+    public async Task<IActionResult> GetDashboardStats([FromRoute] int networkId)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (networkId <= 0)
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var user = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!user.NetworkId.HasValue || user.NetworkId.Value != networkId)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var now = DateTime.UtcNow;
+        var todayStart = now.Date;
+        var tomorrowStart = todayStart.AddDays(1);
+        var activeSince = now - ActiveUserWindow;
+
+        var activeOrdersCount = await db.Orders
+            .AsNoTracking()
+            .Where(o =>
+                o.Establishment.NetworkId == networkId &&
+                ActiveOrderStatuses.Contains(o.Status))
+            .CountAsync();
+
+        var completedToday = await db.Orders
+            .AsNoTracking()
+            .Where(o =>
+                o.Establishment.NetworkId == networkId &&
+                o.Status == OrderStatus.Completed &&
+                o.ClosedAt.HasValue &&
+                o.ClosedAt.Value >= todayStart &&
+                o.ClosedAt.Value < tomorrowStart)
+            .GroupBy(_ => 1)
+            .Select(g => new
+            {
+                Count = g.Count(),
+                TotalSum = g.Sum(x => x.TotalSum)
+            })
+            .FirstOrDefaultAsync();
+
+        var activeUsersCount = await db.UserSessions
+            .AsNoTracking()
+            .Where(s =>
+                s.User.NetworkId == networkId &&
+                s.ExpiresAt > now &&
+                s.LastActivityAt >= activeSince)
+            .Select(s => s.UserId)
+            .Distinct()
+            .CountAsync();
+
+        var model = new DashboardStatsResponse
+        {
+            ActiveOrdersCount = activeOrdersCount,
+            ActiveUsersCount = activeUsersCount,
+            CompletedTodayOrdersCount = completedToday?.Count ?? 0,
+            CompletedTodayTotalSum = completedToday?.TotalSum ?? 0
+        };
+
+        return Success(model);
     }
 }
