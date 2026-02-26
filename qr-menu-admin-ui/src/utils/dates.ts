@@ -13,7 +13,7 @@ export function expiresAt(dateTimeIso: string) {
   return `Діє ще ${hours} год.`;
 }
 
-export function formatDate(isoString: string): string {
+export function formatDate(isoString: string, withTime = true): string {
   if (!isoString) return '';
 
   const date = new Date(isoString);
@@ -22,6 +22,8 @@ export function formatDate(isoString: string): string {
   const year = date.getFullYear();
   const month = pad(date.getMonth() + 1);
   const day = pad(date.getDate());
+  if (!withTime) return `${year}-${month}-${day}`;
+
   const hours = pad(date.getHours());
   const minutes = pad(date.getMinutes());
   const seconds = pad(date.getSeconds());

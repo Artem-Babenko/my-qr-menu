@@ -65,8 +65,8 @@
     gap: 3px;
   }
   .menu-content .app-button {
-    text-align: left;
     padding: 5px 10px;
     gap: 10px;
+    justify-content: start;
   }
 </style>

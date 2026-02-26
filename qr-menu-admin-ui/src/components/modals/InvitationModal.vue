@@ -122,7 +122,11 @@
           id="phoneNumber"
           :disabled="form.showed"
         ></app-input>
-        <app-button @click="findUser" :disabled="form.showed">
+        <app-button
+          class="find-button"
+          @click="findUser"
+          :disabled="form.showed"
+        >
           <app-icon name="Search" :size="16" :stroke-width="2.5"></app-icon>
           Знайти
         </app-button>
@@ -174,6 +178,12 @@
   .input-block {
     margin-top: 20px;
     width: 100%;
+  }
+  .search-row :deep(.find-button) {
+    min-width: 100px;
+  }
+  .search-row :deep(.find-button .app-icon) {
+    flex-shrink: 0;
   }
 
   @media (max-width: 640px) {

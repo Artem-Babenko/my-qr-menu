@@ -250,10 +250,6 @@
     width: 100%;
   }
 
-  .est-name {
-    flex: 1;
-  }
-
   .est-name.disabled {
     opacity: 0.6;
   }

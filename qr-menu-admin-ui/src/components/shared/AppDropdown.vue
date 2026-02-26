@@ -21,6 +21,7 @@
   const targetRef = ref<HTMLElement | null>(null);
   const menuRef = ref<HTMLElement | null>(null);
   const style = ref<Record<string, string>>({});
+  const VIEWPORT_PADDING = 8;
 
   function close() {
     model.value = false;
@@ -50,10 +51,33 @@
     top += props.offset![1];
     left += props.offset![0];
 
+    const maxTop = window.innerHeight - menu.height - VIEWPORT_PADDING;
+    const maxLeft = window.innerWidth - menu.width - VIEWPORT_PADDING;
+
+    top = Math.min(
+      Math.max(top, VIEWPORT_PADDING),
+      Math.max(maxTop, VIEWPORT_PADDING),
+    );
+    left = Math.min(
+      Math.max(left, VIEWPORT_PADDING),
+      Math.max(maxLeft, VIEWPORT_PADDING),
+    );
+
     style.value = {
+      position: 'fixed',
       top: `${top}px`,
       left: `${left}px`,
     };
+  }
+
+  function bindPositionListeners() {
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+  }
+
+  function unbindPositionListeners() {
+    window.removeEventListener('resize', updatePosition);
+    window.removeEventListener('scroll', updatePosition, true);
   }
 
   function onClickOutside(e: MouseEvent) {
@@ -70,13 +94,16 @@
       await nextTick();
       updatePosition();
       document.addEventListener('click', onClickOutside);
+      bindPositionListeners();
     } else {
       document.removeEventListener('click', onClickOutside);
+      unbindPositionListeners();
     }
   });
 
   onBeforeUnmount(() => {
     document.removeEventListener('click', onClickOutside);
+    unbindPositionListeners();
   });
 </script>
 
@@ -94,13 +121,15 @@
 
 <style scoped>
   .app-dropdown {
-    position: absolute;
+    position: fixed;
     z-index: 1000;
     background-color: var(--surface-container-low);
     color: var(--on-surface);
     border-radius: 15px;
-    border: 1px solid var(--outline-variant);
     padding: 6px;
-    box-shadow: 1px 3px 9px rgba(0, 0, 0, 0.1);
+    box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.1);
+  }
+  .dark .app-dropdown {
+    box-shadow: 1px 3px 15px rgba(0, 0, 0, 0.4);
   }
 </style>

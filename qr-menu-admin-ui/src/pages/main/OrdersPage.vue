@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import { ordersApi } from '@/api/ordersApi';
   import {
-    AppButton,
-    AppCard,
     AppIcon,
+    AppCard,
+    AppFlex,
     AppSearchInput,
     AppText,
     type IconName,
@@ -21,6 +21,7 @@
   import { ROUTES } from '@/router';
   import { useRouter } from 'vue-router';
   import { PageHeader } from '@/components/headers';
+  import { AddButton } from '@/components/buttons';
 
   interface OrderStatusGroupView {
     id: OrderStatusGroup;
@@ -187,16 +188,15 @@
       </app-card>
     </div>
 
-    <app-card class="toolbar">
-      <app-search-input
-        v-model="search"
-        placeholder="Пошук замовлень..."
-      ></app-search-input>
-      <app-button @click="openCreate">
-        <app-icon name="Plus" :size="15"></app-icon>
-        Створити замовлення
-      </app-button>
-    </app-card>
+    <app-flex class="controls" align="center" gap="20">
+      <div class="search">
+        <app-search-input
+          v-model="search"
+          placeholder="Пошук замовлень..."
+        ></app-search-input>
+      </div>
+      <add-button @click="openCreate">Створити замовлення</add-button>
+    </app-flex>
 
     <order-list
       :orders="filtered"
@@ -259,12 +259,15 @@
     gap: 4px;
   }
 
-  .toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 15px;
+  .controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .search {
+    flex: 1;
+  }
+  :deep(.search .app-search-input) {
+    width: 100%;
   }
 
   @media (max-width: 1100px) {
@@ -281,15 +284,14 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
-    .toolbar {
-      flex-direction: column;
-      align-items: stretch;
+    .controls {
       gap: 12px;
     }
-    .toolbar :deep(.app-search-input) {
+    .search {
       width: 100%;
+      flex: 1 0 100%;
     }
-    .toolbar :deep(.app-button) {
+    .controls :deep(.app-button) {
       width: 100%;
       justify-content: center;
     }

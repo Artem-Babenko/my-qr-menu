@@ -136,6 +136,20 @@
     { icon: 'Settings', name: 'Налаштування', routeName: '', disabled: true },
   ]);
 
+  const getTopLevelSegment = (path: string): string => {
+    return path.split('/').filter(Boolean)[0] ?? '';
+  };
+
+  const isPageButtonSelected = (routeName: string): boolean => {
+    if (!routeName) return false;
+    const currentTopLevel = getTopLevelSegment(route.path);
+    const targetTopLevel = getTopLevelSegment(
+      router.resolve({ name: routeName }).path,
+    );
+    if (!currentTopLevel || !targetTopLevel) return false;
+    return currentTopLevel === targetTopLevel;
+  };
+
   const goToPage = (routeName: string) => {
     router.push({ name: routeName });
     if (isPhone.value) isNavOpen.value = false;
@@ -217,7 +231,7 @@
           :label="btn.name"
           :icon="btn.icon"
           :disabled="!!btn.disabled"
-          :selected="router.currentRoute.value.name === btn.routeName"
+          :selected="isPageButtonSelected(btn.routeName)"
           @click="!btn.disabled && goToPage(btn.routeName)"
         ></nav-button>
       </div>
