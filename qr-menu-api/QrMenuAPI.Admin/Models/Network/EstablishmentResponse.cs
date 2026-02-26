@@ -6,4 +6,6 @@ public class EstablishmentResponse
     public string Name { get; set; } = null!;
     public string Address { get; set; } = null!;
     public int UsersCount { get; set; }
+    public int TablesCount { get; set; }
+    public int MenuItemsCount { get; set; }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { networkApi } from '@/api/networkApi';
   import { tablesApi } from '@/api/tablesApi';
+  import { AddButton } from '@/components/buttons';
   import { AppButton, AppFlex, AppText } from '@/components/shared';
   import { EstablishmentList } from '@/components/lists';
   import {
@@ -195,13 +196,13 @@
     <page-header section-name="Заклади харчування"></page-header>
 
     <div class="single-actions">
-      <app-button
+      <add-button
         v-if="!isMultiple"
         :disabled="!canCreateEstablishment"
         @click="openCreate"
       >
         Додати заклад
-      </app-button>
+      </add-button>
     </div>
 
     <!-- Single establishment: show only card list area (card component added later) -->
@@ -233,9 +234,9 @@
           >
             Налаштування мережі
           </app-button>
-          <app-button :disabled="!canCreateEstablishment" @click="openCreate"
-            >Додати заклад</app-button
-          >
+          <add-button :disabled="!canCreateEstablishment" @click="openCreate">
+            Додати заклад
+          </add-button>
         </app-flex>
       </app-flex>
       <div class="content">

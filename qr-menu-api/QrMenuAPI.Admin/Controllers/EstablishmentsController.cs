@@ -84,10 +84,10 @@ public class EstablishmentsController(AppDbContext db) : BaseApiController
         if (establishment == null)
             return NotFound(ErrorCodes.EstablishmentNotFound);
 
-        var canDelete = await PermissionUtils.HasAnyEstablishmentPermission(
+        var canDelete = await PermissionUtils.HasAnyNetworkPermission(
             db,
             userId,
-            establishmentId,
+            user.NetworkId.Value,
             [PermissionType.EstablishmentsDelete]);
         if (!canDelete)
             return Forbidden(ErrorCodes.PermissionDenied);

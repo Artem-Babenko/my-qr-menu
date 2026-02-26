@@ -17,14 +17,12 @@
   const handleEdit = () => emit('edit', props.establishment);
   const handleTables = () => emit('tables', props.establishment);
   const handleDelete = () => emit('delete', props.establishment);
-  const { has } = usePermissions();
+  const { has, hasAny } = usePermissions();
 
   const canUpdate = computed(() =>
     has(PermissionType.establishmentsUpdate, props.establishment.id),
   );
-  const canDelete = computed(() =>
-    has(PermissionType.establishmentsDelete, props.establishment.id),
-  );
+  const canDelete = computed(() => hasAny(PermissionType.establishmentsDelete));
   const canTables = computed(() =>
     has(PermissionType.tablesView, props.establishment.id),
   );
@@ -66,39 +64,56 @@
           <app-text color="secondary" size="xs" line="m" class="address">
             {{ establishment.address }}
           </app-text>
-          <app-text color="secondary" size="xs">
-            <app-flex :gap="4" align="center">
-              <app-icon name="Users" :size="12"></app-icon>
-              {{ establishment.usersCount ?? 0 }} користувачів
-            </app-flex>
-          </app-text>
         </app-flex>
       </app-flex>
       <card-dropdown :buttons="buttons"></card-dropdown>
+    </app-flex>
+
+    <app-flex direction="column" align="flex-start" :gap="8">
+      <app-text color="secondary" size="xs">
+        <app-flex :gap="4">
+          <app-icon name="Users" :size="12"></app-icon>
+          {{ establishment.usersCount ?? 0 }} користувачів
+        </app-flex>
+      </app-text>
+      <app-text color="secondary" size="xs">
+        <app-flex :gap="4">
+          <app-icon name="Archive" :size="12"></app-icon>
+          {{ establishment.tablesCount ?? 0 }} столиків
+        </app-flex>
+      </app-text>
+      <app-text color="secondary" size="xs">
+        <app-flex :gap="4">
+          <app-icon name="Salad" :size="12"></app-icon>
+          {{ establishment.menuItemsCount ?? 0 }} позицій у меню
+        </app-flex>
+      </app-text>
     </app-flex>
   </app-card>
 </template>
 
 <style scoped>
   .est-card {
-    height: 180px;
+    min-height: 120px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 20px;
   }
 
   .info {
     min-width: 0;
   }
 
-  .title,
-  .address {
+  .title {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .address {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

@@ -192,6 +192,15 @@ public class NetworkController(AppDbContext db) : BaseApiController
             .GroupBy(ue => ue.EstablishmentId)
             .Select(g => new { EstablishmentId = g.Key, UsersCount = g.Count() })
             .ToDictionaryAsync(x => x.EstablishmentId, x => x.UsersCount);
+        var tablesCountByEstablishmentId = await db.Tables
+            .AsNoTracking()
+            .Where(t => establishmentIds.Contains(t.EstablishmentId))
+            .GroupBy(t => t.EstablishmentId)
+            .Select(g => new { EstablishmentId = g.Key, TablesCount = g.Count() })
+            .ToDictionaryAsync(x => x.EstablishmentId, x => x.TablesCount);
+        var menuItemsCount = await db.Products
+            .AsNoTracking()
+            .CountAsync(p => p.NetworkId == networkId);
 
         var response = new NetworkResponse()
         {
@@ -202,7 +211,9 @@ public class NetworkController(AppDbContext db) : BaseApiController
                 Id = x.Id,
                 Name = x.Name,
                 Address = x.Address,
-                UsersCount = usersCountByEstablishmentId.GetValueOrDefault(x.Id, 0)
+                UsersCount = usersCountByEstablishmentId.GetValueOrDefault(x.Id, 0),
+                TablesCount = tablesCountByEstablishmentId.GetValueOrDefault(x.Id, 0),
+                MenuItemsCount = menuItemsCount
             })
         };
 

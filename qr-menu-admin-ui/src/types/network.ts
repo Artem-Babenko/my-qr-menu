@@ -20,4 +20,6 @@ export interface Establishment {
   name: string;
   address: string;
   usersCount: number;
+  tablesCount?: number;
+  menuItemsCount?: number;
 }
