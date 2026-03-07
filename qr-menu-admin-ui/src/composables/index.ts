@@ -1,4 +1,5 @@
 export { useFieldValidator } from './useFieldValidator';
+export { useAnalytics } from './useAnalytics';
 export { useLoader } from './useLoader';
 export { usePermissions } from './usePermissions';
 export { useRegistrationFormFields } from './useRegistrationFormFields';

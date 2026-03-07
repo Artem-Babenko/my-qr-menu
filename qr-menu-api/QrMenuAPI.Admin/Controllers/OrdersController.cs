@@ -25,6 +25,7 @@ public class OrdersController(AppDbContext db) : BaseApiController
         PermissionType.OrdersComplete,
         PermissionType.OrdersCancel,
         PermissionType.OrdersDelete,
+        PermissionType.AnalyticsView,
     ];
 
     [HttpGet("by-network/{networkId:int}")]

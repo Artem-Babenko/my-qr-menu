@@ -78,6 +78,8 @@
     ]),
   );
 
+  const canAnalytics = computed(() => hasAnyOf([PermissionType.analyticsView]));
+
   const canUsers = computed(() =>
     hasAnyOf([
       PermissionType.usersView,
@@ -120,7 +122,12 @@
       routeName: ROUTES.orders,
       disabled: !canOrders.value,
     },
-    { icon: 'BarChart3', name: 'Аналітика', routeName: '', disabled: true },
+    {
+      icon: 'BarChart3',
+      name: 'Аналітика',
+      routeName: ROUTES.analytics,
+      disabled: !canAnalytics.value,
+    },
     {
       icon: 'Store',
       name: 'Заклади',

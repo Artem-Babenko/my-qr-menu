@@ -5,6 +5,7 @@ import LoginPage from '@/pages/auth/LoginPage.vue';
 import RegByInvitationPage from '@/pages/auth/RegByInvitationPage.vue';
 import RegistrationPage from '@/pages/auth/RegistrationPage.vue';
 import DashboardPage from '@/pages/main/DashboardPage.vue';
+import AnalyticsPage from '@/pages/main/AnalyticsPage.vue';
 import EstablishmentsPage from '@/pages/main/EstablishmentsPage.vue';
 import MenuPage from '@/pages/main/MenuPage.vue';
 import OrdersPage from '@/pages/main/OrdersPage.vue';
@@ -34,6 +35,7 @@ export const ROUTES = {
   menuProducts: 'menu-products',
   menuCategories: 'menu-categories',
   orders: 'orders',
+  analytics: 'analytics',
   establishments: 'establishments',
   users: 'users',
   usersRoles: 'users-roles',
@@ -112,6 +114,11 @@ const routes: RouteRecordRaw[] = [
             path: ROUTES.orders,
             name: ROUTES.orders,
             component: OrdersPage,
+          },
+          {
+            path: ROUTES.analytics,
+            name: ROUTES.analytics,
+            component: AnalyticsPage,
           },
           {
             path: ROUTES.establishments,

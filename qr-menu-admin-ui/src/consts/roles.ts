@@ -46,6 +46,8 @@ export enum PermissionType {
   categoriesCreate,
   categoriesEdit,
   categoriesDelete,
+
+  analyticsView,
 }
 
 export const PERMISSION_GROUPS: PermissionGroup[] = [
@@ -106,6 +108,10 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       PermissionType.rolesDelete,
     ],
   },
+  {
+    name: 'Аналітика',
+    permissions: [PermissionType.analyticsView],
+  },
 ];
 
 export const PERMISSION_LABELS: Record<PermissionType, string> = {
@@ -146,4 +152,5 @@ export const PERMISSION_LABELS: Record<PermissionType, string> = {
   [PermissionType.rolesUpdate]: 'Редагування ролей',
   [PermissionType.rolesCreate]: 'Створення ролей',
   [PermissionType.rolesDelete]: 'Видалення ролей',
+  [PermissionType.analyticsView]: 'Перегляд аналітики',
 };

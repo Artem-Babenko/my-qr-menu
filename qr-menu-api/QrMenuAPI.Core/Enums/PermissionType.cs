@@ -47,4 +47,6 @@ public enum PermissionType
     CategoriesCreate,
     CategoriesEdit,
     CategoriesDelete,
+
+    AnalyticsView,
 }
