@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using QrMenuAPI.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddControllers();
 builder.Services.AddCors();
 
 var app = builder.Build();
+var staticFilesRoot = builder.Configuration["STATIC_FILES_ROOT"] ?? Path.Combine(app.Environment.ContentRootPath, "static");
+Directory.CreateDirectory(staticFilesRoot);
 
 app.UseRouting();
 
@@ -29,6 +32,11 @@ app.UseCors(opt => opt
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials());
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(staticFilesRoot),
+    RequestPath = "/static"
+});
 
 app.MapControllers();
 
