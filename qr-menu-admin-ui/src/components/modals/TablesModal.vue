@@ -1,6 +1,9 @@
 <script setup lang="ts">
+  import QRCode from 'qrcode';
+  import { useToastsStore } from '@/store/toasts';
   import type { Establishment } from '@/types/network';
   import type { TableView } from '@/types/tables';
+  import { computed, ref } from 'vue';
   import {
     AppButton,
     AppCard,
@@ -33,7 +36,52 @@
     delete: [table: TableView];
   }>();
 
-  const noop = () => {};
+  const toasts = useToastsStore();
+
+  const qrModalShowed = ref(false);
+  const qrTable = ref<TableView | null>(null);
+  const qrCodeUrl = ref('');
+  const qrLoading = ref(false);
+  const qrError = ref('');
+
+  const qrTitle = computed(() =>
+    qrTable.value ? `QR-код для столу №${qrTable.value.number}` : 'QR-код',
+  );
+
+  const clientBaseUrl = (
+    import.meta.env.VITE_CLIENT_BASE_URL || 'http://localhost:5174'
+  ).replace(/\/+$/, '');
+
+  const getTableLink = (tableId: number) => `${clientBaseUrl}/table/${tableId}`;
+
+  const copyTableLink = async (table: TableView) => {
+    const link = getTableLink(table.id);
+    try {
+      await navigator.clipboard.writeText(link);
+      toasts.success(`Посилання для столу №${table.number} скопійовано`);
+    } catch {
+      toasts.error('Не вдалося скопіювати посилання');
+    }
+  };
+
+  const openQrModal = async (table: TableView) => {
+    qrTable.value = table;
+    qrCodeUrl.value = '';
+    qrError.value = '';
+    qrLoading.value = true;
+    qrModalShowed.value = true;
+
+    try {
+      qrCodeUrl.value = await QRCode.toDataURL(getTableLink(table.id), {
+        width: 300,
+        margin: 2,
+      });
+    } catch {
+      qrError.value = 'Не вдалося згенерувати QR-код';
+    } finally {
+      qrLoading.value = false;
+    }
+  };
 </script>
 
 <template>
@@ -72,8 +120,8 @@
               :class="{ disabled: readonly }"
               @click="!readonly && emit('edit', table)"
             ></app-icon>
-            <app-icon name="Copy" @click="noop"></app-icon>
-            <app-icon name="QrCode" @click="noop"></app-icon>
+            <app-icon name="Copy" @click="copyTableLink(table)"></app-icon>
+            <app-icon name="QrCode" @click="openQrModal(table)"></app-icon>
             <app-icon
               name="Trash"
               :class="{ disabled: readonly }"
@@ -82,6 +130,21 @@
           </app-flex>
         </app-flex>
       </app-card>
+    </div>
+  </app-modal>
+
+  <app-modal v-model:showed="qrModalShowed" :title="qrTitle" :width="350">
+    <div class="qr-content">
+      <app-text v-if="qrLoading" color="secondary">
+        Генеруємо QR-код...
+      </app-text>
+      <app-text v-else-if="qrError" color="secondary">{{ qrError }}</app-text>
+      <img
+        v-else-if="qrCodeUrl"
+        class="qr-image"
+        :src="qrCodeUrl"
+        alt="QR-код для столу"
+      />
     </div>
   </app-modal>
 </template>
@@ -122,6 +185,20 @@
     opacity: 0.5;
     cursor: default;
     pointer-events: none;
+  }
+
+  .qr-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 280px;
+  }
+
+  .qr-image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    border-radius: 20px;
   }
 
   @media (max-width: 700px) {
