@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import '@/css/app.scss';
+  import '@/css/app.css';
   import '@/css/light.css';
   import '@/css/dark.css';
 
