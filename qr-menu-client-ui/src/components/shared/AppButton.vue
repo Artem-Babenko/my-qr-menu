@@ -59,6 +59,9 @@
   .filled {
     background-color: var(--primary);
     color: var(--on-primary);
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--shadow) 10%, transparent),
+      0 2px 6px color-mix(in srgb, var(--primary) 28%, transparent);
   }
   .tonal {
     background-color: var(--secondary-container);

@@ -48,4 +48,16 @@
   --surface-container: rgb(29 32 36);
   --surface-container-high: rgb(40 42 47);
   --surface-container-highest: rgb(51 53 58);
+
+  --app-card-bg: var(--surface-container);
+  --app-card-shadow:
+    0 2px 6px color-mix(in srgb, black 45%, transparent),
+    0 10px 28px color-mix(in srgb, black 28%, transparent);
+  --app-control-surface: var(--surface-container-high);
+  --app-control-surface-strong: var(--surface-container-highest);
+
+  --bottom-nav-surface: var(--surface-container-high);
+  --bottom-nav-shadow:
+    0 6px 24px color-mix(in srgb, black 55%, transparent),
+    0 2px 8px color-mix(in srgb, black 40%, transparent);
 }

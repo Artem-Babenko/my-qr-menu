@@ -48,4 +48,16 @@
   --surface-container: rgb(237 237 244);
   --surface-container-high: rgb(231 232 238);
   --surface-container-highest: rgb(226 226 233);
+
+  --app-card-bg: var(--surface-container-lowest);
+  --app-card-shadow:
+    0 1px 2px color-mix(in srgb, var(--shadow) 7%, transparent),
+    0 4px 14px color-mix(in srgb, var(--shadow) 8%, transparent);
+  --app-control-surface: var(--surface-container);
+  --app-control-surface-strong: var(--surface-container-high);
+
+  --bottom-nav-surface: var(--surface-container-lowest);
+  --bottom-nav-shadow:
+    0 4px 20px color-mix(in srgb, var(--shadow) 12%, transparent),
+    0 2px 6px color-mix(in srgb, var(--shadow) 6%, transparent);
 }

@@ -22,7 +22,7 @@
 </script>
 
 <template>
-  <app-card class="app-toast">
+  <app-card type="elevated" class="app-toast">
     <app-flex align="center" gap="8">
       <app-icon :name="iconName" :color="iconColor" :size="18"></app-icon>
       <app-text size="s">{{ message }}</app-text>
@@ -39,7 +39,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     min-width: 260px;
     max-width: 90vw;
   }

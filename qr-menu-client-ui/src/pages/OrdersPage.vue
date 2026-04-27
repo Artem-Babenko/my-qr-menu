@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
+  import { computed } from 'vue';
   import { useRoute } from 'vue-router';
   import { AppText, AppCard, AppIcon } from '@/components/shared';
   import PageHeader from '@/components/headers/PageHeader.vue';
@@ -46,6 +46,14 @@
       minute: '2-digit',
     });
   }
+
+  function statusBadgeStyle(status: number) {
+    const c = statusColors[status] ?? '#666666';
+    return {
+      color: c,
+      backgroundColor: `color-mix(in srgb, ${c} 18%, transparent)`,
+    };
+  }
 </script>
 
 <template>
@@ -75,10 +83,7 @@
           <app-text size="m" weight="600">
             Замовлення #{{ order.orderNumber }}
           </app-text>
-          <span
-            class="status-badge"
-            :style="{ color: statusColors[order.status] ?? '#666', borderColor: statusColors[order.status] ?? '#666' }"
-          >
+          <span class="status-badge" :style="statusBadgeStyle(order.status)">
             {{ statusLabels[order.status] ?? 'Невідомо' }}
           </span>
         </div>
@@ -137,8 +142,8 @@
   }
 
   .refresh-btn {
-    background: transparent;
-    border: 1px solid var(--outline-variant);
+    background: var(--app-control-surface);
+    border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
     padding: 8px;
@@ -146,13 +151,15 @@
     align-items: center;
     justify-content: center;
     color: var(--on-surface-variant);
-    transition: all 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
     outline: none;
     flex-shrink: 0;
   }
 
   .refresh-btn:hover {
-    border-color: var(--primary);
+    background: var(--app-control-surface-strong);
     color: var(--primary);
   }
 
@@ -186,9 +193,8 @@
   .status-badge {
     font: var(--font-xxs);
     font-weight: 600;
-    padding: 3px 8px;
-    border-radius: var(--radius-sm);
-    border: 1px solid;
+    padding: 4px 10px;
+    border-radius: 999px;
     white-space: nowrap;
   }
 
@@ -196,9 +202,10 @@
     display: flex;
     flex-direction: column;
     gap: clamp(4px, 1vmin, 6px);
-    padding: clamp(6px, 1.5vw, 10px) 0;
-    border-top: 1px solid var(--outline-variant);
-    border-bottom: 1px solid var(--outline-variant);
+    padding: clamp(8px, 2vw, 12px);
+    margin: clamp(2px, 0.5vmin, 4px) 0;
+    border-radius: var(--radius-sm);
+    background: var(--app-control-surface);
   }
 
   .order-item-row {
@@ -222,7 +229,8 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding-top: clamp(4px, 1vmin, 6px);
-    border-top: 1px dashed var(--outline-variant);
+    padding-top: clamp(8px, 2vw, 10px);
+    margin-top: clamp(2px, 0.5vmin, 4px);
+    border-top: 1px solid color-mix(in srgb, var(--outline-variant) 28%, transparent);
   }
 </style>

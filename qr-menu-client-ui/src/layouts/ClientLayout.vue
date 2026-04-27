@@ -88,23 +88,28 @@
   .content {
     flex: 1;
     padding: var(--page-padding);
-    padding-bottom: calc(var(--bottom-nav-height) + var(--page-padding));
+    padding-bottom: calc(
+      var(--bottom-nav-height) +
+        max(var(--bottom-nav-float-gap), env(safe-area-inset-bottom, 0px)) +
+        var(--page-padding)
+    );
     overflow-y: auto;
   }
 
   .bottom-nav {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    left: var(--bottom-nav-side-inset);
+    right: var(--bottom-nav-side-inset);
+    bottom: max(var(--bottom-nav-float-gap), env(safe-area-inset-bottom, 0px));
     height: var(--bottom-nav-height);
-    background: var(--surface-container-lowest);
-    border-top: 1px solid var(--outline-variant);
+    background: var(--bottom-nav-surface);
+    border-radius: var(--bottom-nav-radius);
+    box-shadow: var(--bottom-nav-shadow);
     display: flex;
     align-items: center;
     justify-content: space-around;
     z-index: 100;
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding: 0 clamp(4px, 1.5vw, 8px);
   }
 
   .nav-tab {

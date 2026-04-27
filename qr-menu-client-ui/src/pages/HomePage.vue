@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useRouter, useRoute } from 'vue-router';
   import { ROUTES } from '@/router';
-  import { AppButton, AppIcon, AppText, AppCard } from '@/components/shared';
+  import { AppIcon, AppText } from '@/components/shared';
   import { useTableStore } from '@/store/table';
 
   const router = useRouter();
@@ -24,11 +24,9 @@
       <app-text size="s" color="secondary" line="m">
         {{ tableStore.table.establishmentAddress }}
       </app-text>
-      <app-card type="yellow" class="table-badge">
-        <app-text size="m" weight="600" line="m">
-          Столик {{ tableStore.table.tableNumber }}
-        </app-text>
-      </app-card>
+      <app-text size="s" color="secondary" line="m">
+        Стіл №{{ tableStore.table.tableNumber }}
+      </app-text>
     </div>
 
     <div v-else class="home-header">
@@ -75,12 +73,7 @@
     flex-direction: column;
     gap: clamp(4px, 1vmin, 8px);
     padding-top: clamp(8px, 2vmin, 16px);
-  }
-
-  .table-badge {
-    margin-top: clamp(4px, 1vmin, 8px);
-    display: inline-flex;
-    align-self: flex-start;
+    padding-bottom: clamp(12px, 3vmin, 20px);
   }
 
   .home-actions {
@@ -95,13 +88,14 @@
     align-items: flex-start;
     gap: clamp(4px, 1vmin, 8px);
     padding: var(--card-padding);
-    background: var(--surface-container-lowest);
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--radius);
+    background: var(--app-card-bg);
+    border: none;
+    border-radius: var(--radius-card);
+    box-shadow: var(--app-card-shadow);
     cursor: pointer;
     transition:
       background-color 0.2s ease,
-      border-color 0.2s ease;
+      box-shadow 0.2s ease;
     text-align: left;
     outline: none;
     position: relative;
@@ -124,7 +118,4 @@
     opacity: 0.12;
   }
 
-  .action-card:hover {
-    border-color: var(--primary);
-  }
 </style>

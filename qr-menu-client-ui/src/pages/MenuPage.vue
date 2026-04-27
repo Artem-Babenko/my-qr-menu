@@ -1,6 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, nextTick } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { ref, computed } from 'vue';
   import { AppButton, AppIcon, AppText, AppCard } from '@/components/shared';
   import PageHeader from '@/components/headers/PageHeader.vue';
   import { useTableStore } from '@/store/table';
@@ -9,7 +8,6 @@
   import { useLoader } from '@/composables/useLoader';
   import type { MenuCategory } from '@/types/menu';
 
-  const route = useRoute();
   const tableStore = useTableStore();
   const basketStore = useBasketStore();
 
@@ -85,60 +83,76 @@
               v-for="product in cat.products"
               :key="product.id"
               class="product-card"
+              :class="{ 'product-card--has-media': product.photoUrls?.length }"
             >
-              <div v-if="product.photoUrls?.length" class="product-photo-list">
-                <img
-                  v-for="(url, index) in product.photoUrls"
-                  :key="`${product.id}-${index}`"
-                  :src="url"
-                  :alt="`${product.name} ${index + 1}`"
-                  class="product-photo"
-                />
+              <div
+                v-if="product.photoUrls?.length"
+                class="product-media"
+              >
+                <div
+                  class="product-photo-list"
+                  :class="{
+                    'product-photo-list--multi':
+                      (product.photoUrls?.length ?? 0) > 1,
+                  }"
+                >
+                  <img
+                    v-for="(url, index) in product.photoUrls"
+                    :key="`${product.id}-${index}`"
+                    :src="url"
+                    :alt="`${product.name} ${index + 1}`"
+                    class="product-photo"
+                  />
+                </div>
               </div>
 
-              <div class="product-info">
-                <app-text size="m" weight="600" line="m">
-                  {{ product.name }}
-                </app-text>
-                <app-text
-                  v-if="product.description"
-                  size="xs"
-                  color="secondary"
-                  line="m"
-                  class="product-desc"
-                >
-                  {{ product.description }}
-                </app-text>
-                <app-text size="m" weight="600">
-                  {{ product.price }} ₴
-                </app-text>
-              </div>
-
-              <div class="product-action">
-                <app-button
-                  v-if="basketStore.getQuantity(product.id) === 0"
-                  type="filled"
-                  @click="addToBasket(product)"
-                >
-                  <app-icon name="Plus" :size="16" />
-                  Додати
-                </app-button>
-                <div v-else class="qty-controls">
-                  <button
-                    class="qty-btn"
-                    @click="basketStore.decrement(product.id)"
-                  >
-                    <app-icon name="Minus" :size="16" />
-                  </button>
-                  <app-text size="m" weight="600">
-                    {{ basketStore.getQuantity(product.id) }}
+              <div class="product-card-body">
+                <div class="product-info">
+                  <app-text size="m" weight="600" line="m">
+                    {{ product.name }}
                   </app-text>
-                  <button
-                    class="qty-btn"
-                    @click="basketStore.increment(product.id)"
+                  <app-text
+                    v-if="product.description"
+                    size="xs"
+                    color="secondary"
+                    line="m"
+                    class="product-desc"
                   >
-                    <app-icon name="Plus" :size="16" />
-                  </button>
+                    {{ product.description }}
+                  </app-text>
+                </div>
+
+                <div class="product-buy">
+                  <app-text size="m" weight="600" class="product-price" line="m">
+                    {{ product.price }} ₴
+                  </app-text>
+                  <div class="product-action">
+                    <app-button
+                      v-if="basketStore.getQuantity(product.id) === 0"
+                      type="filled"
+                      @click="addToBasket(product)"
+                    >
+                      <app-icon name="Plus" :size="16" />
+                      Додати
+                    </app-button>
+                    <div v-else class="qty-controls">
+                      <button
+                        class="qty-btn"
+                        @click="basketStore.decrement(product.id)"
+                      >
+                        <app-icon name="Minus" :size="16" />
+                      </button>
+                      <app-text size="m" weight="600">
+                        {{ basketStore.getQuantity(product.id) }}
+                      </app-text>
+                      <button
+                        class="qty-btn"
+                        @click="basketStore.increment(product.id)"
+                      >
+                        <app-icon name="Plus" :size="16" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </app-card>
@@ -183,8 +197,8 @@
     flex-shrink: 0;
     padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
     border-radius: 20px;
-    border: 1px solid var(--outline-variant);
-    background: var(--surface-container-lowest);
+    border: none;
+    background: var(--app-control-surface);
     color: var(--on-surface);
     font: var(--font-xs);
     font-weight: 500;
@@ -198,13 +212,13 @@
   .category-chip:hover {
     background: var(--primary);
     color: var(--on-primary);
-    border-color: var(--primary);
   }
 
   .menu-sections {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
+    padding-top: clamp(10px, 2.5vmin, 18px);
   }
 
   .section-header {
@@ -222,28 +236,76 @@
 
   .product-card {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--gap);
+  }
+
+  .product-card--has-media {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: clamp(12px, 3vw, 16px);
+  }
+
+  .product-media {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--app-control-surface);
+  }
+
+  .product-photo-list {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .product-photo-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-photo-list--multi {
+    gap: 6px;
+    padding: 0;
+  }
+
+  .product-photo {
+    display: block;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    object-fit: cover;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    max-height: min(52vw, 280px);
+    height: auto;
+    background: var(--app-control-surface);
+  }
+
+  .product-photo-list--multi .product-photo {
+    width: min(88%, 320px);
+    max-height: min(48vw, 240px);
+  }
+
+  .product-card-body {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
     justify-content: space-between;
     align-items: flex-start;
     gap: var(--gap);
     flex-wrap: wrap;
   }
 
-  .product-photo-list {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .product-photo {
-    width: 100px;
-    height: 76px;
-    object-fit: cover;
-    border-radius: 10px;
-    border: 1px solid var(--outline-variant);
-    background: var(--surface-container-lowest);
-    flex-shrink: 0;
+  .product-card--has-media .product-card-body {
+    flex-wrap: nowrap;
+    align-items: flex-start;
   }
 
   .product-info {
@@ -261,9 +323,28 @@
     overflow: hidden;
   }
 
-  .product-action {
+  .product-buy {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 2.5vw, 14px);
     flex-shrink: 0;
     margin-left: auto;
+  }
+
+  .product-price {
+    white-space: nowrap;
+  }
+
+  .product-action {
+    flex-shrink: 0;
+    --product-ctrl-h: clamp(32px, 8vmin, 40px);
+  }
+
+  .product-action :deep(.app-button) {
+    height: var(--product-ctrl-h);
+    min-height: var(--product-ctrl-h);
+    padding: 0 clamp(10px, 2.5vw, 14px);
+    gap: 6px;
   }
 
   .qty-controls {
@@ -273,11 +354,11 @@
   }
 
   .qty-btn {
-    width: clamp(32px, 8vmin, 40px);
-    height: clamp(32px, 8vmin, 40px);
+    width: var(--product-ctrl-h);
+    height: var(--product-ctrl-h);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--outline-variant);
-    background: var(--surface-container-lowest);
+    border: none;
+    background: var(--app-control-surface-strong);
     color: var(--on-surface);
     display: flex;
     align-items: center;
@@ -305,7 +386,4 @@
     opacity: 0.12;
   }
 
-  .qty-btn:hover {
-    border-color: var(--primary);
-  }
 </style>

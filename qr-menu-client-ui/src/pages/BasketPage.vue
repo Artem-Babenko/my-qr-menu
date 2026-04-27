@@ -214,8 +214,8 @@
     width: clamp(30px, 7vmin, 36px);
     height: clamp(30px, 7vmin, 36px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--outline-variant);
-    background: var(--surface-container-lowest);
+    border: none;
+    background: var(--app-control-surface-strong);
     color: var(--on-surface);
     display: flex;
     align-items: center;
@@ -240,17 +240,13 @@
     opacity: 0.08;
   }
 
-  .qty-btn:hover {
-    border-color: var(--primary);
-  }
-
   .total-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--gap) 0;
     margin-top: var(--gap);
-    border-top: 1px solid var(--outline-variant);
+    border-top: 1px solid color-mix(in srgb, var(--outline-variant) 32%, transparent);
   }
 
   .order-fields {
@@ -277,20 +273,26 @@
     width: clamp(40px, 10vmin, 48px);
     height: clamp(40px, 10vmin, 48px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--outline-variant);
-    background: var(--surface-container-lowest);
+    border: none;
+    background: var(--app-control-surface-strong);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
     color: var(--on-surface-variant);
     outline: none;
     flex-shrink: 0;
   }
 
   .clear-btn:hover {
-    border-color: var(--error);
+    background: color-mix(
+      in srgb,
+      var(--error) 14%,
+      var(--app-control-surface-strong)
+    );
     color: var(--error);
   }
 

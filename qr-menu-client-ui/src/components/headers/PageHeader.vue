@@ -20,7 +20,7 @@
   .page-header {
     display: flex;
     flex-direction: column;
-    gap: clamp(2px, 0.5vmin, 4px);
-    margin-bottom: var(--gap-lg);
+    gap: clamp(4px, 1vmin, 6px);
+    margin-bottom: clamp(16px, 4vw, 22px);
   }
 </style>
