@@ -275,6 +275,27 @@ namespace QrMenuAPI.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "product_photos",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    product_id = table.Column<int>(type: "integer", nullable: false),
+                    url = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    sort_order = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_product_photos", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_product_photos_products_product_id",
+                        column: x => x.product_id,
+                        principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "product_prices",
                 columns: table => new
                 {
@@ -523,6 +544,11 @@ namespace QrMenuAPI.Core.Migrations
                 column: "table_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_product_photos_product_id_sort_order",
+                table: "product_photos",
+                columns: new[] { "product_id", "sort_order" });
+
+            migrationBuilder.CreateIndex(
                 name: "ix_product_prices_establishment_id",
                 table: "product_prices",
                 column: "establishment_id");
@@ -596,6 +622,9 @@ namespace QrMenuAPI.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "order_status_history");
+
+            migrationBuilder.DropTable(
+                name: "product_photos");
 
             migrationBuilder.DropTable(
                 name: "product_prices");

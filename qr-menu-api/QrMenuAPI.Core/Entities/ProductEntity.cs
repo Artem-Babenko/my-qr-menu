@@ -1,4 +1,4 @@
-﻿namespace QrMenuAPI.Core.Entities;
+namespace QrMenuAPI.Core.Entities;
 
 public class ProductEntity
 {
@@ -12,5 +12,6 @@ public class ProductEntity
     public int CategoryId { get; set; }
     public CategoryEntity Category { get; set; } = null!;
 
+    public ICollection<ProductPhotoEntity> Photos { get; set; } = [];
     public ICollection<OrderItemEntity> OrderItems { get; set; } = [];
 }

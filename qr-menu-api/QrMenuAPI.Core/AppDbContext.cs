@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using QrMenuAPI.Core.Configurations;
 using QrMenuAPI.Core.Entities;
 
@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<InvitationEntity> Invitations { get; set; }
     public DbSet<TableEntity> Tables { get; set; }
     public DbSet<ProductEntity> Products { get; set; }
+    public DbSet<ProductPhotoEntity> ProductPhotos { get; set; }
     public DbSet<ProductPriceEntity> Prices { get; set; }
     public DbSet<CategoryEntity> Categories { get; set; }
     public DbSet<OrderEntity> Orders { get; set; }
@@ -39,6 +40,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new InvitationConfig());
         modelBuilder.ApplyConfiguration(new TableConfig());
         modelBuilder.ApplyConfiguration(new ProductConfig());
+        modelBuilder.ApplyConfiguration(new ProductPhotoConfig());
         modelBuilder.ApplyConfiguration(new ProductPriceConfig());
         modelBuilder.ApplyConfiguration(new CategoryConfig());
         modelBuilder.ApplyConfiguration(new OrderConfig());

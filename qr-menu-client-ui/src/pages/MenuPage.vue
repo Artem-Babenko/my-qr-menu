@@ -86,6 +86,16 @@
               :key="product.id"
               class="product-card"
             >
+              <div v-if="product.photoUrls?.length" class="product-photo-list">
+                <img
+                  v-for="(url, index) in product.photoUrls"
+                  :key="`${product.id}-${index}`"
+                  :src="url"
+                  :alt="`${product.name} ${index + 1}`"
+                  class="product-photo"
+                />
+              </div>
+
               <div class="product-info">
                 <app-text size="m" weight="600" line="m">
                   {{ product.name }}
@@ -213,8 +223,27 @@
   .product-card {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: var(--gap);
+    flex-wrap: wrap;
+  }
+
+  .product-photo-list {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .product-photo {
+    width: 100px;
+    height: 76px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    flex-shrink: 0;
   }
 
   .product-info {
@@ -234,6 +263,7 @@
 
   .product-action {
     flex-shrink: 0;
+    margin-left: auto;
   }
 
   .qty-controls {

@@ -6,4 +6,5 @@ public class MenuProductResponse
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal Price { get; set; }
+    public List<string> PhotoUrls { get; set; } = [];
 }

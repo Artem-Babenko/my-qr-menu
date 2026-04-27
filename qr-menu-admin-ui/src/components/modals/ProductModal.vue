@@ -7,7 +7,9 @@
   import {
     AppButton,
     AppCheckbox,
+    AppFileDropzone,
     AppFlex,
+    AppIcon,
     AppInput,
     AppLabel,
     AppModal,
@@ -42,6 +44,8 @@
 
   const name = ref('');
   const description = ref('');
+  const photoUrls = ref<string[]>([]);
+  const uploadingPhotos = ref(false);
   const selectedCategory = ref<CategoryView | null>(null);
 
   const rows = ref<PriceRow[]>([]);
@@ -61,6 +65,8 @@
     if (!description.value.trim()) return true;
     if (!selectedCategory.value) return true;
     if (!networkId.value && !props.product) return true;
+    if (photoUrls.value.some((p) => p.trim().length > 1000)) return true;
+    if (uploadingPhotos.value) return true;
 
     // validate prices
     for (const r of rows.value) {
@@ -100,6 +106,7 @@
 
       name.value = props.product?.name ?? '';
       description.value = props.product?.description ?? '';
+      photoUrls.value = [...(props.product?.photoUrls ?? [])];
 
       const catId = props.product?.categoryId ?? null;
       selectedCategory.value =
@@ -126,6 +133,37 @@
     }));
   }
 
+  function removePhoto(index: number) {
+    photoUrls.value.splice(index, 1);
+  }
+
+  function normalizedPhotoUrls() {
+    return photoUrls.value
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+  }
+
+  async function uploadPhoto(file: File) {
+    const resp = await productsApi.uploadPhoto(file);
+    if (!resp.success || !resp.data?.url) {
+      toasts.error(getErrorMessage(resp.errorCode));
+      return;
+    }
+    photoUrls.value.push(resp.data.url);
+  }
+
+  async function onFilesSelected(files: File[]) {
+    if (!files.length) return;
+    uploadingPhotos.value = true;
+    try {
+      for (const file of files) {
+        await uploadPhoto(file);
+      }
+    } finally {
+      uploadingPhotos.value = false;
+    }
+  }
+
   const save = async () => {
     if (saveDisabled.value) return;
     if (!selectedCategory.value) return;
@@ -135,6 +173,7 @@
       name: name.value.trim(),
       description: description.value.trim(),
       categoryId: selectedCategory.value.id,
+      photoUrls: normalizedPhotoUrls(),
       prices: toPriceItems(),
     };
 
@@ -184,6 +223,28 @@
           option-label="name"
           placeholder="Оберіть категорію"
         ></app-select>
+      </div>
+
+      <div class="photos">
+        <app-text weight="600">Фото страви</app-text>
+
+        <div v-if="photoUrls.length" class="photo-rows">
+          <div v-for="(url, idx) in photoUrls" :key="url + idx" class="photo-row">
+            <img :src="url" :alt="`Фото ${idx + 1}`" class="photo-preview" />
+            <app-text class="photo-url" size="xs" line="m">{{ url }}</app-text>
+            <button type="button" class="photo-remove" @click="removePhoto(idx)">
+              <app-icon name="Trash2" :size="16" />
+            </button>
+          </div>
+        </div>
+
+        <app-file-dropzone
+          :disabled="uploadingPhotos"
+          @select="onFilesSelected"
+        ></app-file-dropzone>
+        <app-text v-if="uploadingPhotos" size="xs" color="secondary">
+          Завантаження фото...
+        </app-text>
       </div>
 
       <div class="prices">
@@ -238,6 +299,57 @@
     border-top: 1px solid var(--outline-variant);
     padding-top: 15px;
     margin-top: 5px;
+  }
+
+  .photos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .photo-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .photo-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid var(--outline-variant);
+    border-radius: 10px;
+    background: var(--surface-container-lowest);
+  }
+
+  .photo-url {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .photo-remove {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
+    color: var(--on-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .photo-preview {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 1px solid var(--outline-variant);
+    background: var(--surface-container-lowest);
   }
 
   .rows {

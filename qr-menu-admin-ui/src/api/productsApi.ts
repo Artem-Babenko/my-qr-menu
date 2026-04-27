@@ -18,6 +18,12 @@ export const productsApi = {
   create: (payload: CreateProductRequest) =>
     apiClient.post<ProductView>('products/create', payload),
 
+  uploadPhoto: (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post<{ url: string }>('products/upload-photo', formData);
+  },
+
   update: (productId: number, payload: UpdateProductRequest) =>
     apiClient.put<ProductView>(`products/${productId}`, payload),
 

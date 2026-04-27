@@ -2,7 +2,7 @@
   import type { Establishment } from '@/types/network';
   import type { ProductView } from '@/types/products';
   import { computed } from 'vue';
-  import { AppCard, AppFlex, AppText } from '../shared';
+  import { AppCard, AppFlex, AppIcon, AppText } from '../shared';
   import { CardDropdown } from '../dropdowns';
   import type { ActionButton } from '../dropdowns';
 
@@ -55,6 +55,13 @@
   <app-card class="product-card">
     <app-flex justify="space-between" align="flex-start" :gap="10">
       <app-flex direction="column" align="flex-start" :gap="8" class="info">
+        <div v-if="product.photoUrls?.length" class="photo-wrap">
+          <img :src="product.photoUrls[0]" alt="" class="photo" />
+          <div class="photo-count" v-if="product.photoUrls.length > 1">
+            <app-icon name="Image" :size="12" />
+            +{{ product.photoUrls.length - 1 }}
+          </div>
+        </div>
         <app-text weight="600" class="title">{{ product.name }}</app-text>
         <app-text color="secondary" size="xs" line="m" class="desc">
           {{ product.description }}
@@ -83,6 +90,37 @@
 
   .info {
     min-width: 0;
+  }
+
+  .photo-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 120px;
+    height: 72px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--outline-variant);
+  }
+
+  .photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .photo-count {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 6px;
   }
 
   .title,

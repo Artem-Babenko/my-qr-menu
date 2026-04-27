@@ -448,6 +448,38 @@ namespace QrMenuAPI.Core.Migrations
                     b.ToTable("products", (string)null);
                 });
 
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductPhotoEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_product_photos");
+
+                    b.HasIndex("ProductId", "SortOrder")
+                        .HasDatabaseName("ix_product_photos_product_id_sort_order");
+
+                    b.ToTable("product_photos", (string)null);
+                });
+
             modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductPriceEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -852,6 +884,18 @@ namespace QrMenuAPI.Core.Migrations
                     b.Navigation("Network");
                 });
 
+            modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductPhotoEntity", b =>
+                {
+                    b.HasOne("QrMenuAPI.Core.Entities.ProductEntity", "Product")
+                        .WithMany("Photos")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_product_photos_products_product_id");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductPriceEntity", b =>
                 {
                     b.HasOne("QrMenuAPI.Core.Entities.EstablishmentEntity", "Establishment")
@@ -994,6 +1038,8 @@ namespace QrMenuAPI.Core.Migrations
             modelBuilder.Entity("QrMenuAPI.Core.Entities.ProductEntity", b =>
                 {
                     b.Navigation("OrderItems");
+
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("QrMenuAPI.Core.Entities.RoleEntity", b =>

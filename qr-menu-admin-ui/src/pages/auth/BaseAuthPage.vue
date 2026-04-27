@@ -16,7 +16,7 @@
   </app-flex>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
   .base-auth-page {
     justify-content: center;
     align-items: center;

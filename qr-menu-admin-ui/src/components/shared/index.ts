@@ -14,3 +14,4 @@ export { default as AppCheckbox } from './AppCheckbox.vue';
 export { default as AppErrorText } from './AppErrorText.vue';
 export { default as AppToast } from './AppToast.vue';
 export { default as AppToastContainer } from './AppToastContainer.vue';
+export { default as AppFileDropzone } from './AppFileDropzone.vue';

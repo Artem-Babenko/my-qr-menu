@@ -5,6 +5,7 @@ public class UpdateProductRequest
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public int CategoryId { get; set; }
+    public List<string> PhotoUrls { get; set; } = [];
     public List<ProductPriceItemModel> Prices { get; set; } = [];
 
     public bool IsValid()
@@ -17,6 +18,10 @@ public class UpdateProductRequest
 
         if (string.IsNullOrWhiteSpace(Description)) return false;
         if (Description.Length > 1000) return false;
+
+        if (PhotoUrls.Any(string.IsNullOrWhiteSpace)) return false;
+        if (PhotoUrls.Count > 20) return false;
+        if (PhotoUrls.Any(p => p.Trim().Length > 1000)) return false;
 
         if (Prices.Any(p => !p.IsValid())) return false;
 

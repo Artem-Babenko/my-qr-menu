@@ -11,4 +11,5 @@ export interface MenuProduct {
   name: string;
   description: string;
   price: number;
+  photoUrls: string[];
 }

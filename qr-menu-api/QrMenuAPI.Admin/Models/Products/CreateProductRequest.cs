@@ -6,6 +6,7 @@ public class CreateProductRequest
     public string Description { get; set; } = null!;
     public int NetworkId { get; set; }
     public int CategoryId { get; set; }
+    public List<string> PhotoUrls { get; set; } = [];
 
     public List<ProductPriceItemModel> Prices { get; set; } = [];
 
@@ -20,6 +21,10 @@ public class CreateProductRequest
 
         if (string.IsNullOrWhiteSpace(Description)) return false;
         if (Description.Length > 1000) return false;
+
+        if (PhotoUrls.Any(string.IsNullOrWhiteSpace)) return false;
+        if (PhotoUrls.Count > 20) return false;
+        if (PhotoUrls.Any(p => p.Trim().Length > 1000)) return false;
 
         if (Prices.Any(p => !p.IsValid())) return false;
 

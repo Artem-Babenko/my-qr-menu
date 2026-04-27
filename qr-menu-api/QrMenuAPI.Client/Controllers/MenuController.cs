@@ -43,6 +43,12 @@ public class MenuController(AppDbContext db) : BaseController
                     p.Description,
                     p.CategoryId,
                     pp.Price,
+                    PhotoUrls = db.ProductPhotos
+                        .AsNoTracking()
+                        .Where(ph => ph.ProductId == p.Id)
+                        .OrderBy(ph => ph.SortOrder)
+                        .Select(ph => ph.Url)
+                        .ToList()
                 })
             .ToListAsync();
 
@@ -65,6 +71,7 @@ public class MenuController(AppDbContext db) : BaseController
                         Name = p.Name,
                         Description = p.Description,
                         Price = p.Price,
+                        PhotoUrls = p.PhotoUrls
                     })
                     .ToList()
             })

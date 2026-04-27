@@ -10,6 +10,7 @@ export interface ProductView {
   description: string;
   networkId: number;
   categoryId: number;
+  photoUrls: string[];
   prices: ProductPriceItem[];
 }
 
@@ -18,6 +19,7 @@ export interface CreateProductRequest {
   description: string;
   networkId: number;
   categoryId: number;
+  photoUrls: string[];
   prices: ProductPriceItem[];
 }
 
@@ -25,6 +27,7 @@ export interface UpdateProductRequest {
   name: string;
   description: string;
   categoryId: number;
+  photoUrls: string[];
   prices: ProductPriceItem[];
 }
 

@@ -10,8 +10,94 @@ using QrMenuAPI.Core.Enums;
 namespace QrMenuAPI.Admin.Controllers;
 
 [Route("products")]
-public class ProductsController(AppDbContext db) : BaseApiController
+public class ProductsController(AppDbContext db, IWebHostEnvironment env, IConfiguration configuration) : BaseApiController
 {
+    private const long MaxPhotoSizeBytes = 5 * 1024 * 1024;
+    private static readonly HashSet<string> AllowedPhotoExtensions =
+    [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    ];
+
+    private static List<string> NormalizePhotoUrls(IEnumerable<string>? photoUrls)
+    {
+        return (photoUrls ?? [])
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Select(p => p.Trim())
+            .ToList();
+    }
+
+    private async Task<List<string>> SaveProductPhotos(int productId, IEnumerable<string>? photoUrls)
+    {
+        var normalized = NormalizePhotoUrls(photoUrls);
+        var existingPhotos = await db.ProductPhotos
+            .Where(pp => pp.ProductId == productId)
+            .ToListAsync();
+
+        db.ProductPhotos.RemoveRange(existingPhotos);
+
+        var photosToAdd = normalized
+            .Select((url, idx) => new ProductPhotoEntity
+            {
+                ProductId = productId,
+                Url = url,
+                SortOrder = idx
+            })
+            .ToList();
+
+        db.ProductPhotos.AddRange(photosToAdd);
+        return photosToAdd.Select(p => p.Url).ToList();
+    }
+
+    [HttpPost("upload-photo")]
+    public async Task<IActionResult> UploadPhoto([FromForm] IFormFile? file)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        var user = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+            return Unauthorized(ErrorCodes.UserNotFound);
+
+        if (!user.NetworkId.HasValue)
+            return NotFound(ErrorCodes.NetworkNotFound);
+
+        var canEdit = await PermissionUtils.HasAnyNetworkPermission(
+            db,
+            userId,
+            user.NetworkId.Value,
+            [PermissionType.ProductsCreate, PermissionType.ProductsEdit]);
+        if (!canEdit)
+            return Forbidden(ErrorCodes.PermissionDenied);
+
+        if (file == null || file.Length == 0 || file.Length > MaxPhotoSizeBytes)
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var ext = Path.GetExtension(file.FileName);
+        if (string.IsNullOrWhiteSpace(ext) || !AllowedPhotoExtensions.Contains(ext))
+            return BadRequest(ErrorCodes.InvalidRequest);
+
+        var staticFilesRoot = configuration["STATIC_FILES_ROOT"]
+            ?? Path.Combine(env.ContentRootPath, "static");
+        var photosDir = Path.Combine(staticFilesRoot, "products");
+        Directory.CreateDirectory(photosDir);
+
+        var fileName = $"{Guid.NewGuid():N}{ext.ToLowerInvariant()}";
+        var filePath = Path.Combine(photosDir, fileName);
+
+        await using (var stream = new FileStream(filePath, FileMode.CreateNew))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var url = $"{Request.Scheme}://{Request.Host}/static/products/{fileName}";
+        return Success(new { url });
+    }
+
     [HttpGet("lookup")]
     public async Task<IActionResult> Lookup([FromQuery] int establishmentId, [FromQuery] string q)
     {
@@ -130,6 +216,12 @@ public class ProductsController(AppDbContext db) : BaseApiController
                 Description = p.Description,
                 NetworkId = p.NetworkId,
                 CategoryId = p.CategoryId,
+                PhotoUrls = db.ProductPhotos
+                    .AsNoTracking()
+                    .Where(pp => pp.ProductId == p.Id)
+                    .OrderBy(pp => pp.SortOrder)
+                    .Select(pp => pp.Url)
+                    .ToList(),
                 Prices = db.Prices
                     .AsNoTracking()
                     .Where(pp => pp.ProductId == p.Id)
@@ -215,6 +307,7 @@ public class ProductsController(AppDbContext db) : BaseApiController
             };
         }).ToList();
 
+        var photoUrls = await SaveProductPhotos(product.Id, req.PhotoUrls);
         db.Prices.AddRange(pricesToAdd);
         await db.SaveChangesAsync();
 
@@ -225,6 +318,7 @@ public class ProductsController(AppDbContext db) : BaseApiController
             Description = product.Description,
             NetworkId = product.NetworkId,
             CategoryId = product.CategoryId,
+            PhotoUrls = photoUrls,
             Prices = pricesToAdd.Select(pp => new ProductPriceItemModel
             {
                 EstablishmentId = pp.EstablishmentId,
@@ -281,6 +375,7 @@ public class ProductsController(AppDbContext db) : BaseApiController
         product.Name = name;
         product.Description = req.Description.Trim();
         product.CategoryId = req.CategoryId;
+        var photoUrls = await SaveProductPhotos(productId, req.PhotoUrls);
 
         var establishments = await db.Establishments
             .AsNoTracking()
@@ -341,6 +436,7 @@ public class ProductsController(AppDbContext db) : BaseApiController
             Description = product.Description,
             NetworkId = product.NetworkId,
             CategoryId = product.CategoryId,
+            PhotoUrls = photoUrls,
             Prices = prices
         });
     }

@@ -7,6 +7,7 @@ public class ProductResponse
     public string Description { get; set; } = null!;
     public int NetworkId { get; set; }
     public int CategoryId { get; set; }
+    public List<string> PhotoUrls { get; set; } = [];
 
     public List<ProductPriceItemModel> Prices { get; set; } = [];
 }
